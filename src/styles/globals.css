@@ -67,6 +67,61 @@
   .container-magazine {
     @apply max-w-8xl mx-auto px-4 sm:px-6 lg:px-8;
   }
+  
+  /* Advertisement Styles */
+  .ad-container {
+    @apply my-8 flex justify-center;
+  }
+  
+  .ad-container.ad-native {
+    @apply my-12;
+  }
+  
+  .ad-container.ad-banner {
+    @apply my-8;
+  }
+  
+  .ad-placeholder {
+    @apply relative bg-gray-100 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center;
+    position: relative;
+  }
+  
+  .ad-label {
+    @apply absolute top-2 left-2 text-xs font-medium text-gray-500 uppercase tracking-wide;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  
+  .ad-content {
+    @apply flex flex-col items-center justify-center gap-2 text-gray-400;
+  }
+  
+  .ad-size-badge {
+    @apply text-sm font-semibold;
+  }
+  
+  .ad-position-badge {
+    @apply text-xs text-gray-500;
+  }
+  
+  /* Responsive ad adjustments */
+  @media (max-width: 768px) {
+    .ad-placeholder {
+      @apply w-full max-w-full;
+    }
+    
+    .ad-container {
+      @apply px-4;
+    }
+  }
+  
+  /* Responsive size handling */
+  @media (max-width: 1024px) {
+    .ad-placeholder[style*="728px"] {
+      width: 100% !important;
+      max-width: 728px;
+    }
+  }
 }
 
 @layer utilities {

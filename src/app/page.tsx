@@ -2,6 +2,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import HeroSection from '@/components/HeroSection'
 import ArticleCard from '@/components/ArticleCard'
+import AdPlaceholder from '@/components/AdPlaceholder'
 import { getFeaturedArticles, getLatestArticles, mockEvents } from '@/lib/mockData'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -19,6 +20,28 @@ export default function HomePage() {
       
       {/* Hero Section */}
       <HeroSection articles={featuredArticles} />
+
+      {/* Advertisement: Sidebar (Desktop) / Banner (Mobile) */}
+      <div className="container-magazine py-8">
+        <div className="flex justify-end">
+          {/* Desktop Sidebar Ad */}
+          <div className="hidden lg:block">
+            <AdPlaceholder 
+              position="sidebar-top" 
+              size="300x250" 
+              style="banner"
+            />
+          </div>
+          {/* Mobile Banner Ad */}
+          <div className="lg:hidden w-full">
+            <AdPlaceholder 
+              position="mobile-banner-top" 
+              size="320x50" 
+              style="banner"
+            />
+          </div>
+        </div>
+      </div>
 
       <main>
         {/* Latest Articles Section */}
@@ -52,6 +75,16 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Advertisement: In-stream after Latest Stories */}
+        <div className="container-magazine py-8">
+          <AdPlaceholder 
+            position="in-stream-1" 
+            size="responsive" 
+            style="native"
+            className="w-full"
+          />
+        </div>
 
         {/* Featured Categories Section */}
         <section className="py-16 bg-background-light">
@@ -136,6 +169,24 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Advertisement: Mid-page Banner */}
+        <div className="container-magazine py-8">
+          <div className="hidden md:block">
+            <AdPlaceholder 
+              position="mid-page-banner" 
+              size="728x90" 
+              style="banner"
+            />
+          </div>
+          <div className="md:hidden">
+            <AdPlaceholder 
+              position="mid-page-banner-mobile" 
+              size="320x50" 
+              style="banner"
+            />
+          </div>
+        </div>
+
         {/* Upcoming Events Section */}
         <section className="py-16 bg-white">
           <div className="container-magazine">
@@ -204,6 +255,16 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Advertisement: In-stream after Events */}
+        <div className="container-magazine py-8">
+          <AdPlaceholder 
+            position="in-stream-2" 
+            size="responsive" 
+            style="native"
+            className="w-full"
+          />
+        </div>
 
         {/* Newsletter Section */}
         <section className="py-16 bg-background-teal text-white">
