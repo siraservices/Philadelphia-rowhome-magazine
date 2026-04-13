@@ -314,16 +314,38 @@ function rowhome_magazine_newsletter_subscribe() {
         wp_send_json_error(array('message' => 'Please enter a valid email address.'));
     }
 
-    // Here you would integrate with your email service provider
-    // For now, we'll just save to WordPress options or a custom table
+    // Always save locally as a backup subscriber list
     $subscribers = get_option('rowhome_newsletter_subscribers', array());
-    
     if (in_array($email, $subscribers)) {
         wp_send_json_error(array('message' => 'This email is already subscribed.'));
     }
-
     $subscribers[] = $email;
     update_option('rowhome_newsletter_subscribers', $subscribers);
+
+    // Mailchimp integration — activate by defining MAILCHIMP_API_KEY and MAILCHIMP_LIST_ID in wp-config.php
+    if (defined('MAILCHIMP_API_KEY') && defined('MAILCHIMP_LIST_ID') && MAILCHIMP_API_KEY) {
+        $api_key    = MAILCHIMP_API_KEY;
+        $list_id    = MAILCHIMP_LIST_ID;
+        $data_center = substr($api_key, strpos($api_key, '-') + 1); // e.g. "us21"
+        $url        = "https://{$data_center}.api.mailchimp.com/3.0/lists/{$list_id}/members";
+
+        $response = wp_remote_post($url, array(
+            'headers' => array(
+                'Authorization' => 'Basic ' . base64_encode('anystring:' . $api_key),
+                'Content-Type'  => 'application/json',
+            ),
+            'body'    => wp_json_encode(array(
+                'email_address' => $email,
+                'status'        => 'subscribed',
+            )),
+            'timeout' => 10,
+        ));
+
+        if (is_wp_error($response)) {
+            // Log Mailchimp error but still return success (local save succeeded)
+            error_log('Mailchimp subscribe error: ' . $response->get_error_message());
+        }
+    }
 
     wp_send_json_success(array('message' => 'Thank you for subscribing!'));
 }
