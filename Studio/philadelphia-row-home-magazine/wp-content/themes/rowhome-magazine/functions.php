@@ -893,6 +893,24 @@ function rowhome_magazine_seo_meta() {
         $og_type     = 'article';
         $title       = get_the_title( $post );
         $description = has_excerpt( $post ) ? strip_tags( get_the_excerpt() ) : wp_trim_words( strip_tags( $post->post_content ), 30 );
+
+        // Section landing pages — use taxonomy description if available
+        $page_template = get_page_template_slug( $post );
+        if ( 'template-section.php' === $page_template ) {
+            $og_type      = 'website';
+            $section_slug = get_post_meta( $post->ID, '_section_category', true );
+            if ( ! $section_slug ) {
+                $section_slug = $post->post_name;
+            }
+            $section_term = get_term_by( 'slug', $section_slug, 'department_category' );
+            if ( ! $section_term && strpos( $section_slug, 'dept-' ) !== 0 ) {
+                $section_term = get_term_by( 'slug', 'dept-' . $section_slug, 'department_category' );
+            }
+            if ( $section_term && $section_term->description ) {
+                $description = $section_term->description;
+            }
+        }
+
         if ( has_post_thumbnail( $post ) ) {
             $thumb = wp_get_attachment_image_src( get_post_thumbnail_id( $post ), 'rowhome-hero' );
             if ( $thumb ) {
@@ -943,6 +961,27 @@ function rowhome_magazine_seo_meta() {
         echo '<link rel="canonical" href="' . esc_url( get_permalink( $post ) ) . '">' . "\n";
     } elseif ( is_home() || is_front_page() ) {
         echo '<link rel="canonical" href="' . esc_url( home_url( '/' ) ) . '">' . "\n";
+    } elseif ( is_category() || is_tag() || is_tax() ) {
+        $term_link = get_term_link( get_queried_object() );
+        if ( ! is_wp_error( $term_link ) ) {
+            echo '<link rel="canonical" href="' . esc_url( $term_link ) . '">' . "\n";
+        }
+    } elseif ( is_post_type_archive() ) {
+        echo '<link rel="canonical" href="' . esc_url( get_post_type_archive_link( get_queried_object()->name ) ) . '">' . "\n";
+    } elseif ( is_author() ) {
+        echo '<link rel="canonical" href="' . esc_url( get_author_posts_url( get_queried_object_id() ) ) . '">' . "\n";
+    } elseif ( is_search() ) {
+        echo '<link rel="canonical" href="' . esc_url( get_search_link( get_search_query() ) ) . '">' . "\n";
+    }
+
+    // Article-specific OG tags for publish time
+    if ( is_singular() && $post ) {
+        echo '<meta property="article:published_time" content="' . esc_attr( get_the_date( 'c', $post ) ) . '">' . "\n";
+        echo '<meta property="article:modified_time" content="' . esc_attr( get_the_modified_date( 'c', $post ) ) . '">' . "\n";
+        $categories = get_the_category( $post->ID );
+        if ( $categories ) {
+            echo '<meta property="article:section" content="' . esc_attr( $categories[0]->name ) . '">' . "\n";
+        }
     }
 }
 add_action( 'wp_head', 'rowhome_magazine_seo_meta', 2 );
@@ -983,4 +1022,156 @@ function rowhome_magazine_local_business_schema() {
     echo '<script type="application/ld+json">' . json_encode( $schema, JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
 }
 add_action( 'wp_head', 'rowhome_magazine_local_business_schema', 3 );
+
+/**
+ * SEO-optimized document titles via title-tag
+ */
+function rowhome_magazine_document_title_parts( $title ) {
+    if ( is_front_page() ) {
+        $title['title']   = get_bloginfo( 'name' );
+        $title['tagline'] = get_bloginfo( 'description' ) ?: 'Philadelphia\'s Neighborhood Magazine';
+    }
+    if ( is_singular( 'pictorial' ) ) {
+        $title['title'] = get_the_title() . ' — Photo Gallery';
+    }
+    if ( is_search() ) {
+        $title['title'] = sprintf( 'Search results for "%s"', get_search_query() );
+    }
+    return $title;
+}
+add_filter( 'document_title_parts', 'rowhome_magazine_document_title_parts' );
+
+/**
+ * Custom document title separator
+ */
+function rowhome_magazine_document_title_separator() {
+    return '—';
+}
+add_filter( 'document_title_separator', 'rowhome_magazine_document_title_separator' );
+
+/**
+ * Pictorial (ImageGallery) JSON-LD schema for single pictorial posts
+ */
+function rowhome_magazine_pictorial_schema() {
+    if ( ! is_singular( 'pictorial' ) ) {
+        return;
+    }
+    global $post;
+
+    $images      = array();
+    $gallery_ids = get_post_meta( $post->ID, '_pictorial_gallery', true );
+    if ( ! empty( $gallery_ids ) && is_array( $gallery_ids ) ) {
+        foreach ( $gallery_ids as $img_id ) {
+            $url = wp_get_attachment_url( $img_id );
+            if ( $url ) {
+                $images[] = $url;
+            }
+        }
+    }
+    if ( has_post_thumbnail( $post ) ) {
+        $thumb_url = get_the_post_thumbnail_url( $post, 'full' );
+        if ( $thumb_url && ! in_array( $thumb_url, $images, true ) ) {
+            array_unshift( $images, $thumb_url );
+        }
+    }
+
+    $photographer = get_post_meta( $post->ID, '_pictorial_photographer', true );
+    $location     = get_post_meta( $post->ID, '_pictorial_location', true );
+
+    $schema = array(
+        '@context'        => 'https://schema.org',
+        '@type'           => 'ImageGallery',
+        'name'            => get_the_title( $post ),
+        'description'     => has_excerpt( $post ) ? wp_strip_all_tags( get_the_excerpt() ) : wp_trim_words( wp_strip_all_tags( $post->post_content ), 30 ),
+        'url'             => get_permalink( $post ),
+        'datePublished'   => get_the_date( 'c', $post ),
+        'dateModified'    => get_the_modified_date( 'c', $post ),
+        'mainEntityOfPage' => array(
+            '@type' => 'WebPage',
+            '@id'   => get_permalink( $post ),
+        ),
+        'publisher'       => array(
+            '@type' => 'Organization',
+            'name'  => get_bloginfo( 'name' ),
+            'logo'  => array(
+                '@type' => 'ImageObject',
+                'url'   => get_template_directory_uri() . '/assets/images/rowhome-logo.png',
+            ),
+        ),
+    );
+
+    if ( $photographer ) {
+        $schema['author'] = array(
+            '@type' => 'Person',
+            'name'  => $photographer,
+        );
+    }
+    if ( $location ) {
+        $schema['contentLocation'] = array(
+            '@type' => 'Place',
+            'name'  => $location,
+        );
+    }
+    if ( ! empty( $images ) ) {
+        $schema['image'] = $images;
+    }
+
+    echo '<script type="application/ld+json">' . json_encode( $schema, JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+}
+add_action( 'wp_head', 'rowhome_magazine_pictorial_schema', 4 );
+
+/**
+ * Add sitemap URL to robots.txt
+ */
+function rowhome_magazine_robots_txt( $output, $public ) {
+    if ( '0' === $public ) {
+        return $output;
+    }
+    $sitemap_url = home_url( '/wp-sitemap.xml' );
+    if ( strpos( $output, 'Sitemap:' ) === false ) {
+        $output .= "\nSitemap: " . esc_url( $sitemap_url ) . "\n";
+    }
+    return $output;
+}
+add_filter( 'robots_txt', 'rowhome_magazine_robots_txt', 10, 2 );
+
+/**
+ * Ensure pictorial CPT and department CPT appear in WordPress built-in sitemap
+ */
+function rowhome_magazine_sitemap_post_types( $post_types ) {
+    if ( ! isset( $post_types['pictorial'] ) ) {
+        $pictorial = get_post_type_object( 'pictorial' );
+        if ( $pictorial ) {
+            $post_types['pictorial'] = $pictorial;
+        }
+    }
+    if ( ! isset( $post_types['department'] ) ) {
+        $department = get_post_type_object( 'department' );
+        if ( $department ) {
+            $post_types['department'] = $department;
+        }
+    }
+    return $post_types;
+}
+add_filter( 'wp_sitemaps_post_types', 'rowhome_magazine_sitemap_post_types' );
+
+/**
+ * Include department_category and gallery_category taxonomies in sitemap
+ */
+function rowhome_magazine_sitemap_taxonomies( $taxonomies ) {
+    if ( ! isset( $taxonomies['department_category'] ) ) {
+        $dept_tax = get_taxonomy( 'department_category' );
+        if ( $dept_tax ) {
+            $taxonomies['department_category'] = $dept_tax;
+        }
+    }
+    if ( ! isset( $taxonomies['gallery_category'] ) ) {
+        $gal_tax = get_taxonomy( 'gallery_category' );
+        if ( $gal_tax ) {
+            $taxonomies['gallery_category'] = $gal_tax;
+        }
+    }
+    return $taxonomies;
+}
+add_filter( 'wp_sitemaps_taxonomies', 'rowhome_magazine_sitemap_taxonomies' );
 
