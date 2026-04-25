@@ -3285,5 +3285,8 @@
     .homepage-cta-banner__content p {
         max-width: 100%;
     }
-}
+    .homepage-cta-banner__actions {
+        width: 100%;
+        justify-content: center;
+    }
 }

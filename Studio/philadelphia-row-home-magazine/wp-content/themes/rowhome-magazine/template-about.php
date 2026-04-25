@@ -37,7 +37,7 @@ get_header();
                         <div class="section-header">
                             <h2 class="section-title">Our Story</h2>
                         </div>
-                        <p class="about-story__lead">Philadelphia RowHome Magazine was born on a block in South Philly over fourteen years ago, out of a simple idea: <em>this city deserves a magazine as interesting as its people.</em></p>
+                        <p class="about-story__lead">Philadelphia RowHome Magazine was born on a block in South Philly over sixteen years ago, out of a simple idea: <em>this city deserves a magazine as interesting as its people.</em></p>
                         <p>Founded by Dorette Rota Jackson and Dawn, RowHome started as a neighborhood publication celebrating the character of Philadelphia's iconic row homes — the architecture, the block parties, the stoops, and the stories that make each street its own community.</p>
                         <p>What began as a hyperlocal print pamphlet grew, issue by issue, into a full-fledged lifestyle magazine covering every corner of the city — from the art galleries of Old City to the garden clubs of Germantown, the BYOB restaurants of South Philly to the real estate boom reshaping Fishtown and Kensington.</p>
                         <p>Today, RowHome Magazine reaches over 40,000 readers across the Greater Philadelphia region. We publish six times a year in print, with fresh content online daily. We are fiercely independent, unapologetically local, and proud to call Philadelphia home.</p>
@@ -52,15 +52,15 @@ get_header();
                             </div>
                             <div class="about-milestone">
                                 <span class="about-milestone__year">2016</span>
-                                <span class="about-milestone__event">Launched rowhomemagazine.com</span>
+                                <span class="about-milestone__event">Launched rowhomemag.com</span>
                             </div>
                             <div class="about-milestone">
                                 <span class="about-milestone__year">2019</span>
                                 <span class="about-milestone__event">Best Philadelphia Magazine — Philly Press Club</span>
                             </div>
                             <div class="about-milestone">
-                                <span class="about-milestone__year">2024</span>
-                                <span class="about-milestone__event">14+ years &amp; 40K+ readers strong</span>
+                                <span class="about-milestone__year">2026</span>
+                                <span class="about-milestone__event">16+ years &amp; 40K+ readers strong</span>
                             </div>
                         </div>
                     </div>
@@ -75,7 +75,7 @@ get_header();
                         </div>
                         <div class="about-stat-box">
                             <div class="about-stat">
-                                <span class="about-stat__number">14+</span>
+                                <span class="about-stat__number">16+</span>
                                 <span class="about-stat__label">Years of Publishing</span>
                             </div>
                             <div class="about-stat">
@@ -199,7 +199,7 @@ get_header();
                             <span class="faq-icon" aria-hidden="true">+</span>
                         </button>
                         <div class="faq-answer" hidden>
-                            <p>Philadelphia RowHome Magazine publishes six print issues per year — roughly every two months. Our website at rowhomemagazine.com is updated daily with new articles, photo galleries, and neighborhood features.</p>
+                            <p>Philadelphia RowHome Magazine publishes six print issues per year — roughly every two months. Our website at rowhomemag.com is updated daily with new articles, photo galleries, and neighborhood features.</p>
                         </div>
                     </div>
 
@@ -219,7 +219,7 @@ get_header();
                             <span class="faq-icon" aria-hidden="true">+</span>
                         </button>
                         <div class="faq-answer" hidden>
-                            <p>Visit our <a href="<?php echo esc_url(home_url('/subscribe')); ?>">Subscribe page</a> to see all plans including Digital, Print, and Bundle options. Gift subscriptions are also available — we'll send a personalized card to your recipient. Email <a href="mailto:subscribe@rowhomemagazine.com">subscribe@rowhomemagazine.com</a> with any questions.</p>
+                            <p>Visit our <a href="<?php echo esc_url(home_url('/subscribe')); ?>">Subscribe page</a> to see all plans including Digital, Print, and Bundle options. Gift subscriptions are also available — we'll send a personalized card to your recipient. Email <a href="mailto:subscribe@rowhomemag.com">subscribe@rowhomemag.com</a> with any questions.</p>
                         </div>
                     </div>
 
@@ -229,7 +229,7 @@ get_header();
                             <span class="faq-icon" aria-hidden="true">+</span>
                         </button>
                         <div class="faq-answer" hidden>
-                            <p>We welcome pitches from Philadelphia-based writers and photographers. Please send a brief (3–5 sentence) pitch describing your story idea, its relevance to Philadelphia readers, and links to two or three previous clips to <a href="mailto:editorial@rowhomemagazine.com">editorial@rowhomemagazine.com</a>. We read every pitch and respond within 2–3 weeks.</p>
+                            <p>We welcome pitches from Philadelphia-based writers and photographers. Please send a brief (3–5 sentence) pitch describing your story idea, its relevance to Philadelphia readers, and links to two or three previous clips to <a href="mailto:editorial@rowhomemag.com">editorial@rowhomemag.com</a>. We read every pitch and respond within 2–3 weeks.</p>
                         </div>
                     </div>
 
@@ -239,7 +239,7 @@ get_header();
                             <span class="faq-icon" aria-hidden="true">+</span>
                         </button>
                         <div class="faq-answer" hidden>
-                            <p>We offer print, digital, and integrated advertising packages. Visit our <a href="<?php echo esc_url(home_url('/subscribe')); ?>#advertise">Advertise page</a> to see package details, or email <a href="mailto:advertising@rowhomemagazine.com">advertising@rowhomemagazine.com</a> to request a media kit and current rate card.</p>
+                            <p>We offer print, digital, and integrated advertising packages. Visit our <a href="<?php echo esc_url(home_url('/subscribe')); ?>#advertise">Advertise page</a> to see package details, or email <a href="mailto:advertising@rowhomemag.com">advertising@rowhomemag.com</a> to request a media kit and current rate card.</p>
                         </div>
                     </div>
 
@@ -259,7 +259,7 @@ get_header();
                             <span class="faq-icon" aria-hidden="true">+</span>
                         </button>
                         <div class="faq-answer" hidden>
-                            <p>We take accuracy seriously. If you spot an error in any of our content, please email <a href="mailto:editorial@rowhomemagazine.com">editorial@rowhomemagazine.com</a> with the article title, the error, and the correct information. We investigate all correction requests and issue corrections promptly when warranted.</p>
+                            <p>We take accuracy seriously. If you spot an error in any of our content, please email <a href="mailto:editorial@rowhomemag.com">editorial@rowhomemag.com</a> with the article title, the error, and the correct information. We investigate all correction requests and issue corrections promptly when warranted.</p>
                         </div>
                     </div>
 
@@ -269,7 +269,7 @@ get_header();
                             <span class="faq-icon" aria-hidden="true">+</span>
                         </button>
                         <div class="faq-answer" hidden>
-                            <p>All content published by RowHome Magazine is protected by copyright. Brief excerpts with clear attribution and a link back to the original article are generally acceptable. Republishing full articles, photos, or graphics requires written permission. Please contact <a href="mailto:editorial@rowhomemagazine.com">editorial@rowhomemagazine.com</a> for licensing inquiries.</p>
+                            <p>All content published by RowHome Magazine is protected by copyright. Brief excerpts with clear attribution and a link back to the original article are generally acceptable. Republishing full articles, photos, or graphics requires written permission. Please contact <a href="mailto:editorial@rowhomemag.com">editorial@rowhomemag.com</a> for licensing inquiries.</p>
                         </div>
                     </div>
 

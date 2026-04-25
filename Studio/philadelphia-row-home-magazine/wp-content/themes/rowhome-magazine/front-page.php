@@ -15,7 +15,7 @@ get_header();
 <!-- Hero Carousel Section -->
 <section class="hero-carousel" id="heroCarousel">
     <div class="carousel-slide active">
-        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero-1.jpg" alt="Skinny Cheesesteaks Feature" onerror="this.src='https://placehold.co/1200x500/5f8a8b/ffffff?text=SKINNY+CHEESESTEAKS'">
+        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero-1.jpg" alt="Skinny Cheesesteaks Feature" loading="eager" fetchpriority="high" onerror="this.src='https://placehold.co/1200x500/5f8a8b/ffffff?text=SKINNY+CHEESESTEAKS'">
         <div class="carousel-content">
             <h2 class="carousel-title">SKINNY CHEESESTEAKS</h2>
             <p class="carousel-subtitle">A TRIBUTE TO FAMILY TRADITIONS</p>
@@ -25,7 +25,7 @@ get_header();
         </div>
     </div>
     <div class="carousel-slide">
-        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero-2.jpg" alt="Local Artist Feature" onerror="this.src='https://placehold.co/1200x500/5f8a8b/ffffff?text=PHILADELPHIA+STORIES'">
+        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero-2.jpg" alt="Local Artist Feature" loading="lazy" onerror="this.src='https://placehold.co/1200x500/5f8a8b/ffffff?text=PHILADELPHIA+STORIES'">
         <div class="carousel-content">
             <h2 class="carousel-title">PHILADELPHIA STORIES</h2>
             <p class="carousel-subtitle">CELEBRATING LOCAL CULTURE</p>
@@ -35,7 +35,7 @@ get_header();
         </div>
     </div>
     <div class="carousel-slide">
-        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero-3.jpg" alt="Neighborhood Guide" onerror="this.src='https://placehold.co/1200x500/5f8a8b/ffffff?text=NEIGHBORHOOD+GUIDE'">
+        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero-3.jpg" alt="Neighborhood Guide" loading="lazy" onerror="this.src='https://placehold.co/1200x500/5f8a8b/ffffff?text=NEIGHBORHOOD+GUIDE'">
         <div class="carousel-content">
             <h2 class="carousel-title">NEIGHBORHOOD GUIDE</h2>
             <p class="carousel-subtitle">DISCOVER HIDDEN GEMS</p>
@@ -59,7 +59,7 @@ get_header();
     </div>
     <div class="homepage-cta-banner__actions">
         <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="subscribe-btn-primary">Subscribe Now</a>
-        <a href="<?php echo esc_url(home_url('/subscribe')); ?>#advertise" class="subscribe-btn-secondary">Advertise With Us</a>
+        <a href="<?php echo esc_url(home_url('/advertise')); ?>" class="subscribe-btn-secondary">Advertise With Us</a>
     </div>
 </div>
 
@@ -94,14 +94,27 @@ get_header();
                         while ($life_query->have_posts()) : $life_query->the_post();
                     ?>
                         <article class="article-card with-vertical-label">
-                            <span class="vertical-label">FLASHBACK</span>
+                            <?php
+                            $life_terms = get_the_terms(get_the_ID(), 'department_category');
+                            $life_label = 'LIFE';
+                            if (!empty($life_terms) && !is_wp_error($life_terms)) {
+                                $life_dept_slugs = array('dept-life', 'dept-health', 'dept-fashion', 'dept-brides-guide', 'dept-community', 'dept-writers-block');
+                                foreach ($life_terms as $term) {
+                                    if (in_array($term->slug, $life_dept_slugs, true)) {
+                                        $life_label = strtoupper($term->name);
+                                        break;
+                                    }
+                                }
+                            }
+                            ?>
+                            <span class="vertical-label"><?php echo esc_html($life_label); ?></span>
                             <?php if (has_post_thumbnail()) : ?>
                                 <div class="article-image">
                                     <?php the_post_thumbnail('rowhome-article-card'); ?>
                                 </div>
                             <?php else : ?>
                                 <div class="article-image">
-                                    <img src="https://placehold.co/400x300/cccccc/333333?text=LIFE" alt="<?php the_title_attribute(); ?>">
+                                    <img src="https://placehold.co/400x300/cccccc/333333?text=LIFE" alt="<?php the_title_attribute(); ?>" loading="lazy">
                                 </div>
                             <?php endif; ?>
                             <div class="article-content">
@@ -120,12 +133,12 @@ get_header();
                     else :
                         // Fallback placeholder articles
                         for ($i = 1; $i <= 3; $i++) :
-                            $labels = array('FLASHBACK', 'LIFE', 'LIFE');
+                            $labels = array('LIFE', 'LIFE', 'LIFE');
                     ?>
                         <article class="article-card with-vertical-label">
                             <span class="vertical-label"><?php echo $labels[$i-1]; ?></span>
                             <div class="article-image">
-                                <img src="https://placehold.co/400x300/cccccc/ffffff?text=LIFE+<?php echo $i; ?>" alt="Life Article <?php echo $i; ?>">
+                                <img src="https://placehold.co/400x300/cccccc/ffffff?text=LIFE+<?php echo $i; ?>" alt="Life Article <?php echo $i; ?>" loading="lazy">
                             </div>
                             <div class="article-content">
                                 <div class="article-author-avatar">
@@ -186,7 +199,7 @@ get_header();
                     </div>
                     
                     <div class="hotspots-image">
-                        <img src="https://placehold.co/400x400/cccccc/333333?text=HOTSPOT" alt="Philadelphia Hotspots">
+                        <img src="https://placehold.co/400x400/cccccc/333333?text=HOTSPOT" alt="Philadelphia Hotspots" loading="lazy">
                     </div>
                 </div>
             </section>
@@ -210,14 +223,14 @@ get_header();
                 <h2 class="business-large-title">VICTOR<br>DELLA<br>BARBA</h2>
                 <p class="business-subtitle">LOCAL ARTIST TURNS <span class="highlight-text">IDEAS</span> INTO <span class="highlight-text">VISIONS</span></p>
                 <div class="business-logo">
-                    <img src="https://placehold.co/200x100/ffffff/000000?text=Victor+Co" alt="Business Logo">
+                    <img src="https://placehold.co/200x100/ffffff/000000?text=Victor+Co" alt="Business Logo" loading="lazy">
                 </div>
             </div>
             
             <div class="business-images">
                 <div class="business-image-grid">
-                    <img src="https://placehold.co/350x250/4a90e2/ffffff?text=Business+Image+1" alt="Business Feature 1">
-                    <img src="https://placehold.co/350x250/e74c3c/ffffff?text=Business+Image+2" alt="Business Feature 2">
+                    <img src="https://placehold.co/350x250/4a90e2/ffffff?text=Business+Image+1" alt="Business Feature 1" loading="lazy">
+                    <img src="https://placehold.co/350x250/e74c3c/ffffff?text=Business+Image+2" alt="Business Feature 2" loading="lazy">
                 </div>
             </div>
         </div>
@@ -302,7 +315,7 @@ get_header();
                 <article class="article-card with-vertical-label">
                     <span class="vertical-label">HEALTH</span>
                     <div class="article-image">
-                        <img src="https://placehold.co/400x300/cccccc/ffffff?text=HEALTH+<?php echo $i; ?>" alt="Health Article <?php echo $i; ?>">
+                        <img src="https://placehold.co/400x300/cccccc/ffffff?text=HEALTH+<?php echo $i; ?>" alt="Health Article <?php echo $i; ?>" loading="lazy">
                     </div>
                     <div class="article-content">
                         <div class="article-author-avatar">
@@ -363,7 +376,7 @@ get_header();
                         </div>
                         <div class="article-text">
                             <h5 class="article-title"><?php the_title(); ?></h5>
-                            <p class="article-subtitle">by <?php the_author(); ?></p>
+                            <p class="article-subtitle">by <?php $re_author = trim(get_the_author() ?? ''); echo esc_html($re_author !== '' ? $re_author : 'RowHome Staff'); ?></p>
                             <div class="article-excerpt"><?php echo wp_trim_words(get_the_excerpt(), 15); ?></div>
                         </div>
                     </div>
@@ -377,7 +390,7 @@ get_header();
                 <article class="article-card with-vertical-label real-estate-card">
                     <span class="vertical-label">REAL ESTATE</span>
                     <div class="article-image">
-                        <img src="https://placehold.co/400x300/cccccc/ffffff?text=REAL+ESTATE+<?php echo $i; ?>" alt="Real Estate <?php echo $i; ?>">
+                        <img src="https://placehold.co/400x300/cccccc/ffffff?text=REAL+ESTATE+<?php echo $i; ?>" alt="Real Estate <?php echo $i; ?>" loading="lazy">
                     </div>
                     <div class="article-content">
                         <div class="article-author-avatar">
@@ -460,7 +473,7 @@ get_header();
                 <article class="article-card with-vertical-label menu-card">
                     <span class="vertical-label vertical-label-green">MENU</span>
                     <div class="article-image">
-                        <img src="https://placehold.co/400x300/cccccc/ffffff?text=MENU+<?php echo $i; ?>" alt="Menu <?php echo $i; ?>">
+                        <img src="https://placehold.co/400x300/cccccc/ffffff?text=MENU+<?php echo $i; ?>" alt="Menu <?php echo $i; ?>" loading="lazy">
                     </div>
                     <div class="article-content">
                         <h5 class="article-title"><?php echo esc_html($menu_titles[$i-1]); ?></h5>
@@ -524,7 +537,7 @@ get_header();
                         <?php if (has_post_thumbnail()) : ?>
                             <?php the_post_thumbnail('rowhome-small-card'); ?>
                         <?php else : ?>
-                            <img src="https://placehold.co/300x300/cccccc/ffffff?text=Bride+<?php echo $count; ?>" alt="Bride <?php echo $count; ?>">
+                            <img src="https://placehold.co/300x300/cccccc/ffffff?text=Bride+<?php echo $count; ?>" alt="Bride <?php echo $count; ?>" loading="lazy">
                         <?php endif; ?>
                     </div>
                 <?php
@@ -538,7 +551,7 @@ get_header();
                             </div>
                         <?php endif; ?>
                         <div class="brides-grid-image">
-                            <img src="https://placehold.co/300x300/cccccc/ffffff?text=Bride+<?php echo $i; ?>" alt="Bride <?php echo $i; ?>">
+                            <img src="https://placehold.co/300x300/cccccc/ffffff?text=Bride+<?php echo $i; ?>" alt="Bride <?php echo $i; ?>" loading="lazy">
                         </div>
                     <?php endfor;
                 endif;
@@ -555,7 +568,7 @@ get_header();
     <!-- MUSIC & ART Section -->
     <section class="music-art-section">
         <div class="section-header">
-            <h2 class="section-title">PRH<span style="color: #5f8a8b;">MUSIC&ART</span></h2>
+            <h2 class="section-title">PRH <span style="color: #5f8a8b;">MUSIC &amp; ART</span></h2>
         </div>
         
         <div class="music-art-layout">
@@ -593,7 +606,7 @@ get_header();
                             </div>
                         <?php else : ?>
                             <div class="article-image">
-                                <img src="https://placehold.co/400x300/cccccc/ffffff?text=<?php echo $label; ?>" alt="<?php the_title_attribute(); ?>">
+                                <img src="https://placehold.co/400x300/cccccc/ffffff?text=<?php echo $label; ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
                             </div>
                         <?php endif; ?>
                         <div class="article-content">
@@ -649,7 +662,7 @@ get_header();
     <!-- WRITERS BLOCK Section -->
     <section class="writers-block-section">
         <div class="section-header">
-            <h2 class="section-title">PRH<span style="color: #999999;">WRITERSBLOCK</span></h2>
+            <h2 class="section-title">PRH <span style="color: #999999;">WRITERS BLOCK</span></h2>
         </div>
         
         <div class="writers-block-grid">
@@ -699,7 +712,7 @@ get_header();
                     </div>
                     <div class="writers-block-content">
                         <h4 class="writers-block-title"><?php echo esc_html($title); ?></h4>
-                        <div class="writers-block-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</div>
+                        <div class="writers-block-excerpt">Philadelphia's row homes tell stories that span generations — from immigrant neighborhoods to artist enclaves. Each block holds a different chapter of the city's living history, waiting to be explored and celebrated.</div>
                         <div class="writers-block-meta">by <span class="article-author">Contributing Writer</span> | November 26, 2025</div>
                     </div>
                 </article>
@@ -738,7 +751,7 @@ get_header();
                     <?php if (has_post_thumbnail()) : ?>
                         <?php the_post_thumbnail('rowhome-article-card'); ?>
                     <?php else : ?>
-                        <img src="https://placehold.co/300x380/ffffff/000000?text=<?php echo urlencode(get_the_title()); ?>" alt="<?php the_title_attribute(); ?>">
+                        <img src="https://placehold.co/300x380/ffffff/000000?text=<?php echo urlencode(get_the_title()); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
                     <?php endif; ?>
                 </div>
             <?php
@@ -758,7 +771,7 @@ get_header();
                 foreach ($ad_names as $ad_name) :
             ?>
                 <div class="magazine-ad-item">
-                    <img src="https://placehold.co/300x380/ffffff/000000?text=<?php echo urlencode($ad_name); ?>" alt="<?php echo esc_attr($ad_name); ?>">
+                    <img src="https://placehold.co/300x380/ffffff/000000?text=<?php echo urlencode($ad_name); ?>" alt="<?php echo esc_attr($ad_name); ?>" loading="lazy">
                 </div>
             <?php
                 endforeach;

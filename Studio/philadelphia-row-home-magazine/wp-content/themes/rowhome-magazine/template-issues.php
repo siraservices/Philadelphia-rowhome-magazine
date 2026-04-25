@@ -26,7 +26,7 @@ $magazine_issues = array(
         'number'      => 'Vol. 14, No. 5',
         'date'        => 'Fall 2024',
         'title'       => 'Neighbors & Neighborhoods',
-        'description' => 'A deep dive into Philadelphia's most vibrant neighborhoods — from Fishtown to Fairmount, we explore what makes each block unique.',
+        'description' => 'A deep dive into Philadelphia\'s most vibrant neighborhoods — from Fishtown to Fairmount, we explore what makes each block unique.',
         'cover'       => get_template_directory_uri() . '/assets/images/issue-fall-2024.jpg',
         'cover_alt'   => 'RowHome Magazine Fall 2024 Cover',
         'color'       => '#8B4513',
@@ -53,7 +53,7 @@ $magazine_issues = array(
         'number'      => 'Vol. 14, No. 2',
         'date'        => 'March/April 2024',
         'title'       => 'The Class of Philadelphia',
-        'description' => 'Celebrating Philadelphia's institutions — from Drexel to the Academy of Music — and the people who keep them world-class.',
+        'description' => 'Celebrating Philadelphia\'s institutions — from Drexel to the Academy of Music — and the people who keep them world-class.',
         'cover'       => get_template_directory_uri() . '/assets/images/issue-marapr-2024.jpg',
         'cover_alt'   => 'RowHome Magazine March/April 2024 Cover',
         'color'       => '#1A237E',
@@ -133,7 +133,7 @@ $magazine_issues = array(
             <div class="container">
                 <p class="issues-hero__eyebrow">Philadelphia RowHome Magazine</p>
                 <h1 class="issues-hero__title">Past Issues</h1>
-                <p class="issues-hero__subtitle">Browse every issue of RowHome Magazine — 14 years of Philadelphia living, neighborhoods, culture, and community.</p>
+                <p class="issues-hero__subtitle">Browse every issue of RowHome Magazine — 16 years of Philadelphia living, neighborhoods, culture, and community.</p>
                 <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="subscribe-btn">Subscribe to Never Miss an Issue</a>
             </div>
         </div>
@@ -214,7 +214,7 @@ $magazine_issues = array(
                 </div>
                 <div class="issues-subscribe-cta__actions">
                     <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="subscribe-btn-primary">See Subscription Plans</a>
-                    <a href="mailto:subscribe@rowhomemagazine.com" class="subscribe-btn-secondary">Contact Us</a>
+                    <a href="<?php echo esc_url(home_url('/contact')); ?>" class="subscribe-btn-secondary">Contact Us</a>
                 </div>
             </div>
 
