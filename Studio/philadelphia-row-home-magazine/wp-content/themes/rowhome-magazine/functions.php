@@ -405,7 +405,7 @@ add_action('wp_ajax_nopriv_load_more_posts', 'rowhome_magazine_load_more_posts')
  * Add Schema Markup for Articles
  */
 function rowhome_magazine_article_schema() {
-    if (is_single()) {
+    if (is_singular('post') || is_singular('department')) {
         global $post;
         
         $schema = array(
