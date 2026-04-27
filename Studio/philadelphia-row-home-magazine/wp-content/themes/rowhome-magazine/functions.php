@@ -883,7 +883,9 @@ function rowhome_magazine_seo_meta() {
     if ( empty( $site_desc ) ) {
         $site_desc = 'Philadelphia\'s neighborhood magazine covering life, business, arts, food, real estate, and culture. River to River. One Neighborhood.';
     }
-    $current_url  = ( is_ssl() ? 'https' : 'http' ) . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $http_host    = isset( $_SERVER['HTTP_HOST'] ) ? $_SERVER['HTTP_HOST'] : '';
+    $request_uri  = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '/';
+    $current_url  = ( is_ssl() ? 'https' : 'http' ) . '://' . $http_host . $request_uri;
     $og_type      = 'website';
     $title        = '';
     $description  = '';

@@ -175,7 +175,7 @@ get_header();
                                 array(
                                     'taxonomy' => 'department_category',
                                     'field' => 'slug',
-                                    'terms' => '2025-hotspots',
+                                    'terms' => 'dept-2025-hotspots',
                                 ),
                             ),
                         ));

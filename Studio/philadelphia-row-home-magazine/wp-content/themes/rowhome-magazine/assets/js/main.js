@@ -453,6 +453,28 @@
     /**
      * Initialize All Functions on Document Ready
      */
+    /**
+     * Mobile Hamburger Menu
+     */
+    function initMobileMenu() {
+        const toggle = document.getElementById('menu-toggle');
+        const nav = document.getElementById('mobile-nav');
+        if (!toggle || !nav) return;
+
+        toggle.addEventListener('click', function() {
+            const isOpen = nav.classList.toggle('mobile-nav-open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!nav.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)) {
+                nav.classList.remove('mobile-nav-open');
+                toggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
     function init() {
         initCarousel();
         initSearch();
@@ -463,6 +485,7 @@
         initDepartmentNav();
         initArticleCards();
         initLoadMore();
+        initMobileMenu();
 
         // Theme initialized
     }

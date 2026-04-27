@@ -21,6 +21,7 @@
 
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
+<a class="skip-link" href="#main"><?php esc_html_e( 'Skip to content', 'rowhome-magazine' ); ?></a>
 
 <header class="site-header">
     <!-- Main Header -->
@@ -44,6 +45,11 @@
                 </a>
             </div>
             <div class="header-actions">
+                <button id="menu-toggle" class="btn-menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav" type="button">
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                </button>
                 <button id="search-toggle" class="btn-search-toggle" aria-label="Open search" type="button">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
@@ -57,7 +63,7 @@
     </div>
 
     <!-- Department Navigation -->
-    <nav class="department-nav" role="navigation" aria-label="Department Navigation">
+    <nav id="mobile-nav" class="department-nav" role="navigation" aria-label="Department Navigation">
         <ul class="department-menu">
             <?php
             // Organized department structure with dropdowns
