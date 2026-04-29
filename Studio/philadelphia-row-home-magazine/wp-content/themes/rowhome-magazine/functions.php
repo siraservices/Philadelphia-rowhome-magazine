@@ -450,6 +450,7 @@ add_action('wp_head', 'rowhome_magazine_article_schema');
 require get_template_directory() . '/inc/template-tags.php';
 require get_template_directory() . '/inc/template-functions.php';
 require get_template_directory() . '/inc/custom-post-types.php';
+require get_template_directory() . '/inc/custom-login.php';
 
 /**
  * Add support for lazy loading images
@@ -1176,4 +1177,3 @@ function rowhome_magazine_sitemap_taxonomies( $taxonomies ) {
     return $taxonomies;
 }
 add_filter( 'wp_sitemaps_taxonomies', 'rowhome_magazine_sitemap_taxonomies' );
-
