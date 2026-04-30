@@ -64,6 +64,11 @@
 
     <!-- Department Navigation -->
     <nav id="mobile-nav" class="department-nav" role="navigation" aria-label="Department Navigation">
+        <!-- Mobile-only action links (subscribe + login) — visible inside hamburger menu -->
+        <div class="mobile-nav-actions">
+            <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="mobile-subscribe-link">Subscribe for $1/Week</a>
+            <a href="<?php echo esc_url(wp_login_url()); ?>" class="mobile-login-link">Log In</a>
+        </div>
         <ul class="department-menu">
             <?php
             // Organized department structure with dropdowns

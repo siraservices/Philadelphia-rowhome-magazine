@@ -2221,58 +2221,80 @@ section {
     }
     
     .main-header .container {
-        flex-direction: column;
-        text-align: center;
-        gap: 12px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0;
+        padding: 0 15px;
     }
-    
+
+    /* Hide the inline search bar on mobile — use the search toggle icon instead */
     .header-search {
-        position: static;
-        transform: none;
-        order: 2;
-        width: 100%;
-        max-width: 200px;
+        display: none;
     }
-    
-    .header-search-input {
-        width: 100px;
-        font-size: 0.8rem;
-    }
-    
-    .header-search-input:focus {
-        width: 120px;
-    }
-    
+
     .site-logo {
         text-align: center;
         order: 1;
+        flex: 1;
     }
-    
+
     .main-header .header-actions {
         position: static;
         transform: none;
-        order: 3;
+        order: 2;
+        flex-shrink: 0;
     }
-    
+
     .logo-image {
         height: 30px;
         margin: 0 auto;
     }
-    
+
     .header-actions {
-        width: 100%;
-        justify-content: center;
-        gap: 8px;
+        width: auto;
+        justify-content: flex-end;
+        gap: 4px;
     }
-    
-    .btn-subscribe {
-        padding: 8px 12px;
-        font-size: 0.7rem;
-    }
-    
+
+    /* Hide full-text buttons on mobile — they live in the hamburger menu */
+    .btn-subscribe,
     .btn-login {
-        padding: 8px 12px;
-        font-size: 0.7rem;
+        display: none;
+    }
+
+    /* Mobile nav action links (subscribe/login inside hamburger) */
+    .mobile-nav-actions {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 2px solid #333;
+        padding: 0;
+    }
+
+    .mobile-nav-actions a {
+        display: block;
+        padding: 14px 16px;
+        color: #ffffff;
+        text-decoration: none;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        border-bottom: 1px solid #1a1a1a;
+        transition: background-color 0.2s ease;
+    }
+
+    .mobile-nav-actions a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-nav-actions .mobile-subscribe-link {
+        background-color: #5f8a8b;
+    }
+
+    .mobile-nav-actions .mobile-subscribe-link:hover {
+        background-color: #4a7071;
     }
     
     .logo-text {
@@ -2628,6 +2650,11 @@ button:focus:not(:focus-visible) {
    Mobile Hamburger Menu
    =========================== */
 
+/* Hide mobile nav actions on desktop */
+.mobile-nav-actions {
+    display: none;
+}
+
 .btn-menu-toggle {
     display: none;
     background: none;
@@ -2644,7 +2671,7 @@ button:focus:not(:focus-visible) {
     display: block;
     width: 22px;
     height: 2px;
-    background-color: #000000;
+    background-color: #ffffff;
     border-radius: 2px;
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
@@ -2673,6 +2700,10 @@ button:focus:not(:focus-visible) {
 
     .department-nav.mobile-nav-open {
         display: block;
+    }
+
+    .department-nav.mobile-nav-open .mobile-nav-actions {
+        display: flex;
     }
 
     .department-nav.mobile-nav-open .department-menu {
