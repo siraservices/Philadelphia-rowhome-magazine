@@ -2689,6 +2689,16 @@ button:focus:not(:focus-visible) {
 }
 
 @media (max-width: 768px) {
+    /* Hide Subscribe/Login and inline search at the same breakpoint the hamburger appears */
+    .btn-subscribe,
+    .btn-login {
+        display: none;
+    }
+
+    .header-search {
+        display: none;
+    }
+
     .btn-menu-toggle {
         display: flex;
     }
