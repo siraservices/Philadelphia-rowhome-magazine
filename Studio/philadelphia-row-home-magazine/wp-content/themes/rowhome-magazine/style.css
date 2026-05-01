@@ -2650,8 +2650,12 @@ button:focus:not(:focus-visible) {
    Mobile Hamburger Menu
    =========================== */
 
-/* Hide mobile nav actions on desktop */
+/* Hide mobile-only elements on desktop */
 .mobile-nav-actions {
+    display: none;
+}
+
+.btn-search-toggle {
     display: none;
 }
 
@@ -2697,6 +2701,12 @@ button:focus:not(:focus-visible) {
 
     .header-search {
         display: none;
+    }
+
+    .btn-search-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .btn-menu-toggle {

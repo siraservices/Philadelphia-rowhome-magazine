@@ -84,7 +84,7 @@ function rowhome_magazine_scripts() {
     wp_enqueue_style('rowhome-google-fonts', 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:wght@400;700;900&display=swap', array(), null);
     
     // Enqueue main stylesheet
-    wp_enqueue_style('rowhome-magazine-style', get_stylesheet_uri(), array(), '1.0.0');
+    wp_enqueue_style('rowhome-magazine-style', get_stylesheet_uri(), array(), '1.1.0');
     
     // Enqueue custom JavaScript
     wp_enqueue_script('rowhome-magazine-scripts', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), '1.0.0', true);
