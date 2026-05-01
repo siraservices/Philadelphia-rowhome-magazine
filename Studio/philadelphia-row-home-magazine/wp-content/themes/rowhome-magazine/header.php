@@ -115,8 +115,16 @@
                 // Generate menu with dropdowns
                 foreach ($department_structure as $parent => $children) {
                     $parent_slug = sanitize_title($parent);
-                    
-                    $dept_slug = 'dept-' . $parent_slug;
+
+                    // Use bare slug for URL; fallback to dept- prefixed term if needed
+                    $dept_slug = $parent_slug;
+                    $dept_term = get_term_by('slug', $dept_slug, 'department_category');
+                    if (!$dept_term) {
+                        $dept_term = get_term_by('slug', 'dept-' . $dept_slug, 'department_category');
+                        if ($dept_term) {
+                            $dept_slug = $dept_term->slug;
+                        }
+                    }
 
                     // Special handling for People dropdown
                     if ($children === 'people') {
@@ -277,12 +285,20 @@
                     if ($has_dropdown) {
                         echo '<div class="dropdown-menu">';
                         echo '<div class="dropdown-content">';
-                        
+
                         // First section - Subcategories
                         echo '<div class="dropdown-section">';
                         echo '<div class="dropdown-section-title">Sections</div>';
                         foreach ($children as $child) {
-                            $child_slug = 'dept-' . sanitize_title($child);
+                            $child_slug = sanitize_title($child);
+                            // Resolve actual term slug (bare or dept- prefixed)
+                            $child_term = get_term_by('slug', $child_slug, 'department_category');
+                            if (!$child_term) {
+                                $child_term = get_term_by('slug', 'dept-' . $child_slug, 'department_category');
+                                if ($child_term) {
+                                    $child_slug = $child_term->slug;
+                                }
+                            }
                             echo '<a href="' . esc_url(home_url('/department/' . $child_slug)) . '" class="dropdown-item">' . esc_html($child) . '</a>';
                         }
                         echo '</div>';

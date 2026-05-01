@@ -591,16 +591,21 @@ function rowhome_magazine_section_load_more() {
         }
         if ($term) {
             // Include sub-department terms (matches header nav structure)
+            // Keys/values without dept- prefix; lookup tries both forms.
             $section_children_map = array(
-                'dept-life'      => array('dept-health', 'dept-fashion', 'dept-brides-guide', 'dept-community', 'dept-writers-block'),
-                'dept-business'  => array('dept-real-estate', 'dept-tech', 'dept-education', 'dept-politics'),
-                'dept-arts'      => array('dept-music-art', 'dept-film', 'dept-flashback', 'dept-history'),
-                'dept-lifestyle' => array('dept-menu', 'dept-travel', 'dept-2025-hotspots', 'dept-events'),
+                'life'      => array('health', 'fashion', 'brides-guide', 'community', 'writers-block'),
+                'business'  => array('real-estate', 'tech', 'education', 'politics'),
+                'arts'      => array('music-art', 'film', 'flashback', 'history'),
+                'lifestyle' => array('menu', 'travel', '2025-hotspots', 'events'),
             );
             $term_ids = array($term->term_id);
-            if (isset($section_children_map[$term->slug])) {
-                foreach ($section_children_map[$term->slug] as $child_slug) {
+            $map_key = preg_replace('/^dept-/', '', $term->slug);
+            if (isset($section_children_map[$map_key])) {
+                foreach ($section_children_map[$map_key] as $child_slug) {
                     $child_term = get_term_by('slug', $child_slug, 'department_category');
+                    if (!$child_term) {
+                        $child_term = get_term_by('slug', 'dept-' . $child_slug, 'department_category');
+                    }
                     if ($child_term) {
                         $term_ids[] = $child_term->term_id;
                     }
