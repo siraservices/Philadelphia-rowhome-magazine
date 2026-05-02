@@ -358,7 +358,6 @@
     cursor: pointer;
     padding: 4px 8px;
     color: inherit;
-    display: flex;
     align-items: center;
     justify-content: center;
     line-height: 1;
