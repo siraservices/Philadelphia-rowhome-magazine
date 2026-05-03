@@ -1,50 +1,67 @@
 import React, { useState } from 'react';
-import s3 from './aws-config'; // Import the configured S3 instance
+import AWS from 'aws-sdk';
+import './FileUpload.css';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB limit
+AWS.config.update({
+  region: 'us-east-1',
+  credentials: new AWS.Credentials({
+    accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY,
+  }),
+});
+
+const s3 = new AWS.S3();
 
 const FileUpload = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedResume, setSelectedResume] = useState(null);
+  const [selectedJobDescription, setSelectedJobDescription] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState('');
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file && file.size > MAX_FILE_SIZE) {
-      alert('File size exceeds the 5 MB limit. Please upload a smaller file.');
-      return;
-    }
-    setSelectedFile(file);
+  const handleResumeChange = (event) => {
+    setSelectedResume(event.target.files[0]);
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      alert('Please select a file before uploading');
+  const handleJobDescriptionChange = (event) => {
+    setSelectedJobDescription(event.target.files[0]);
+  };
+
+  const uploadFile = async (file, bucketName, fileNamePrefix) => {
+    if (!file) {
+      setUploadStatus(`Please select a file before uploading to ${fileNamePrefix}`);
       return;
     }
 
     const params = {
-      Bucket: 'resume-upload-bucket-sweng894', // Your S3 bucket name
-      Key: `resumes/${selectedFile.name}`, // File path in S3 bucket
-      Body: selectedFile,
-      ContentType: selectedFile.type,
-      ACL: 'public-read', // Set appropriate permissions
+      Bucket: bucketName,
+      Key: `${fileNamePrefix}/${file.name}`,
+      Body: file,
+      ContentType: file.type,
     };
 
     try {
-      const data = await s3.upload(params).promise();
-      console.log('Upload successful:', data);
-      alert('File uploaded successfully');
-    } catch (err) {
-      console.error('Upload error:', err); // Log the error to the console
-      alert(`File upload failed: ${err.message}`);
+      await s3.upload(params).promise();
+      setUploadStatus(`File uploaded successfully to ${fileNamePrefix}`);
+    } catch (error) {
+      console.error('Upload error:', error);
+      setUploadStatus(`File upload failed: ${error.message}`);
     }
   };
 
   return (
-    <div>
-      <h2>Upload Resume</h2>
-      <input type="file" accept=".pdf" onChange={handleFileChange} />
-      <button onClick={handleUpload}>Upload</button>
-      {selectedFile && <p>Selected file: {selectedFile.name}</p>}
+    <div className="upload-container">
+      <h2>Resume and Job Description Upload</h2>
+      
+      <input type="file" accept=".pdf" onChange={handleResumeChange} />
+      <button onClick={() => uploadFile(selectedResume, 'resume-upload-bucket-sweng894', 'resumes')}>
+        Upload Resume
+      </button>
+
+      <input type="file" accept=".pdf" onChange={handleJobDescriptionChange} />
+      <button onClick={() => uploadFile(selectedJobDescription, 'job-description-upload-bucket-sweng894', 'job-descriptions')}>
+        Upload Job Description
+      </button>
+
+      {uploadStatus && <p>{uploadStatus}</p>}
     </div>
   );
 };

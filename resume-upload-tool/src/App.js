@@ -1,16 +1,24 @@
-import React from 'react';
-import './App.css';
+import React, { useState } from 'react';
+import Login from './Login';
 import FileUpload from './FileUpload';
+import './App.css';
 
-function App() {
+const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = (status) => {
+    setIsLoggedIn(status);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Resume Upload Tool</h1>
+    <div className="app-container">
+      {isLoggedIn ? (
         <FileUpload />
-      </header>
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
     </div>
   );
-}
+};
 
 export default App;
