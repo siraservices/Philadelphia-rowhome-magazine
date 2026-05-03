@@ -179,9 +179,8 @@ get_header();
                                 ),
                             ),
                         ));
-                        
-                        <?php $hotspots_thumb = ''; ?>
-                        <?php if ($hotspots_query->have_posts()) :
+                        $hotspots_thumb = '';
+                        if ($hotspots_query->have_posts()) :
                             while ($hotspots_query->have_posts()) : $hotspots_query->the_post();
                                 $hotspots_thumb = get_the_post_thumbnail(null, 'rowhome-article-card', array('alt' => 'Philadelphia Hotspots', 'loading' => 'lazy'));
                         ?>
