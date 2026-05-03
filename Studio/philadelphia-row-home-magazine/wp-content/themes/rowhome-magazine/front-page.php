@@ -203,7 +203,7 @@ get_header();
                         <?php if ($hotspots_thumb) : ?>
                             <?php echo $hotspots_thumb; ?>
                         <?php else : ?>
-                            <img src="https://placehold.co/400x400/cccccc/333333?text=HOTSPOT" alt="Philadelphia Hotspots" loading="lazy">
+                            <img src="<?php echo esc_url(content_url('uploads/2026/05/magic-garden.jpg')); ?>" alt="Philadelphia Hotspots" loading="lazy">
                         <?php endif; ?>
                     </div>
                 </div>
@@ -524,7 +524,7 @@ get_header();
                 <?php if ($brides_featured_thumb) : ?>
                     <?php echo $brides_featured_thumb; ?>
                 <?php else : ?>
-                    <img src="https://placehold.co/400x350/cccccc/ffffff?text=Bride+Feature" alt="Brides Guide Featured" loading="lazy">
+                    <img src="<?php echo esc_url(content_url('uploads/2026/05/row-homes.jpg')); ?>" alt="Brides Guide Featured" loading="lazy">
                 <?php endif; ?>
             </div>
             <div class="brides-featured-text">
