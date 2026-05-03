@@ -180,8 +180,10 @@ get_header();
                             ),
                         ));
                         
-                        if ($hotspots_query->have_posts()) :
+                        <?php $hotspots_thumb = ''; ?>
+                        <?php if ($hotspots_query->have_posts()) :
                             while ($hotspots_query->have_posts()) : $hotspots_query->the_post();
+                                $hotspots_thumb = get_the_post_thumbnail(null, 'rowhome-article-card', array('alt' => 'Philadelphia Hotspots', 'loading' => 'lazy'));
                         ?>
                             <h3><?php the_title(); ?></h3>
                             <?php the_excerpt(); ?>
@@ -197,9 +199,13 @@ get_header();
                             <p>Check back regularly as we update our list with the freshest additions to Philadelphia's vibrant scene.</p>
                         <?php endif; ?>
                     </div>
-                    
+
                     <div class="hotspots-image">
-                        <img src="https://placehold.co/400x400/cccccc/333333?text=HOTSPOT" alt="Philadelphia Hotspots" loading="lazy">
+                        <?php if ($hotspots_thumb) : ?>
+                            <?php echo $hotspots_thumb; ?>
+                        <?php else : ?>
+                            <img src="https://placehold.co/400x400/cccccc/333333?text=HOTSPOT" alt="Philadelphia Hotspots" loading="lazy">
+                        <?php endif; ?>
                     </div>
                 </div>
             </section>
@@ -494,9 +500,33 @@ get_header();
         </div>
         
         <!-- Featured Content -->
+        <?php
+        $brides_featured_query = new WP_Query(array(
+            'posts_per_page' => 1,
+            'post_type' => array('post', 'department'),
+            'tax_query' => array(
+                array(
+                    'taxonomy' => 'department_category',
+                    'field' => 'slug',
+                    'terms' => 'dept-brides-guide',
+                ),
+            ),
+        ));
+        $brides_featured_thumb = '';
+        if ($brides_featured_query->have_posts()) :
+            while ($brides_featured_query->have_posts()) : $brides_featured_query->the_post();
+                $brides_featured_thumb = get_the_post_thumbnail(null, 'rowhome-article-card', array('alt' => 'Brides Guide Featured', 'loading' => 'lazy'));
+            endwhile;
+            wp_reset_postdata();
+        endif;
+        ?>
         <div class="brides-featured-content">
             <div class="brides-featured-image">
-                <img src="https://placehold.co/400x350/cccccc/ffffff?text=Bride+Feature" alt="Brides Guide Featured">
+                <?php if ($brides_featured_thumb) : ?>
+                    <?php echo $brides_featured_thumb; ?>
+                <?php else : ?>
+                    <img src="https://placehold.co/400x350/cccccc/ffffff?text=Bride+Feature" alt="Brides Guide Featured" loading="lazy">
+                <?php endif; ?>
             </div>
             <div class="brides-featured-text">
                 <h3>Your Perfect Philadelphia Wedding</h3>
