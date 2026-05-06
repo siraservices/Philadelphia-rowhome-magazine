@@ -3290,3 +3290,388 @@
         justify-content: center;
     }
 }
+
+
+/* ===========================
+   My Account Page
+   =========================== */
+
+.my-account-hero {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 40px 0 30px;
+    margin-bottom: 0;
+}
+
+.my-account-title {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 8px;
+}
+
+.my-account-greeting {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    opacity: 0.75;
+    margin: 0;
+}
+
+.my-account-container {
+    padding-top: 40px;
+    padding-bottom: 60px;
+    max-width: 860px;
+}
+
+/* Notices */
+.my-account-notice {
+    padding: 14px 20px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+}
+
+.my-account-notice--success {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    color: #1b5e20;
+}
+
+.my-account-notice--error {
+    background-color: #ffebee;
+    border-left: 4px solid #f44336;
+    color: #b71c1c;
+}
+
+/* Tab navigation */
+.my-account-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 2px solid #e0e0e0;
+    margin-bottom: 36px;
+}
+
+.my-account-tab {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 12px 20px;
+    color: #666;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.my-account-tab:hover {
+    color: #1a1a1a;
+}
+
+.my-account-tab.is-active {
+    color: #FF0000;
+    border-bottom-color: #FF0000;
+}
+
+/* Section heading */
+.my-account-section-title {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.6rem;
+    margin-bottom: 24px;
+}
+
+/* Subscription cards */
+.subscription-status-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 36px;
+    position: relative;
+}
+
+.subscription-status-card--active {
+    border-color: #4caf50;
+}
+
+.subscription-status-card--inactive {
+    border-color: #e0e0e0;
+    background-color: #f9f9f9;
+}
+
+.subscription-status-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: #4caf50;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.subscription-plan-name {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+}
+
+.subscription-renewal {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.subscription-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Plans overview */
+.subscription-plans-overview {
+    margin-top: 20px;
+}
+
+.subscription-plans-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #999;
+    margin-bottom: 16px;
+}
+
+.subscription-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.subscription-plan-item {
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.subscription-plan-item strong {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+}
+
+.subscription-plan-item span {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 1.2rem;
+    color: #FF0000;
+}
+
+.subscription-plan-item small {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: #777;
+}
+
+.subscription-plan-item--featured {
+    border: 2px solid #FF0000;
+}
+
+/* Buttons */
+.btn-my-account-primary {
+    display: inline-block;
+    background-color: #FF0000;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 12px 24px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-my-account-primary:hover {
+    background-color: #cc0000;
+    color: #ffffff;
+}
+
+.btn-my-account-secondary {
+    display: inline-block;
+    background-color: transparent;
+    color: #333;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 11px 22px;
+    text-decoration: none;
+    border: 2px solid #ccc;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.btn-my-account-secondary:hover {
+    border-color: #333;
+}
+
+.btn-my-account-link {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    color: #FF0000;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-my-account-link:hover {
+    text-decoration: underline;
+}
+
+/* Profile form */
+.my-account-form {
+    max-width: 600px;
+}
+
+.form-row--split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #555;
+}
+
+.my-account-input {
+    border: 1px solid #ccc;
+    padding: 10px 14px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+.my-account-input:focus {
+    outline: none;
+    border-color: #FF0000;
+}
+
+.form-divider {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 28px 0 24px;
+}
+
+.form-section-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.form-hint {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.form-actions {
+    margin-top: 8px;
+}
+
+/* Notifications */
+.notification-option {
+    margin-bottom: 20px;
+}
+
+.notification-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    cursor: pointer;
+}
+
+.notification-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 4px;
+    accent-color: #FF0000;
+    flex-shrink: 0;
+}
+
+.notification-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.notification-text strong {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+}
+
+.notification-text small {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    color: #777;
+}
+
+/* Log out */
+.my-account-logout {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.my-account-logout-link {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    color: #999;
+    text-decoration: none;
+}
+
+.my-account-logout-link:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .form-row--split {
+        grid-template-columns: 1fr;
+    }
+
+    .my-account-tabs {
+        overflow-x: auto;
+    }
+
+    .my-account-tab {
+        padding: 10px 14px;
+        white-space: nowrap;
+    }
+}
