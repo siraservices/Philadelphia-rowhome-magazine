@@ -59,6 +59,7 @@
                 <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="btn-subscribe">SUBSCRIBE FOR $1/WEEK</a>
                 <?php if ( is_user_logged_in() ) : ?>
                 <a href="<?php echo esc_url(home_url('/my-account/')); ?>" class="btn-login">MY ACCOUNT</a>
+                <a href="<?php echo esc_url(wp_logout_url(home_url('/'))); ?>" class="btn-logout">LOG OUT</a>
                 <?php else : ?>
                 <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="btn-login">LOG IN</a>
                 <?php endif; ?>
