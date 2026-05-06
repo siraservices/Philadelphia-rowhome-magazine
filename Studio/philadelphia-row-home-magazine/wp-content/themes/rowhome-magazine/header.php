@@ -132,11 +132,11 @@
                         $current_class = is_tax('department_category', $dept_slug) ? ' active' : '';
 
                         echo '<li class="menu-item' . $dropdown_class . $current_class . '">';
-                        echo '<a href="' . esc_url(home_url('/department/' . $dept_slug)) . '">';
+                        echo '<a href="' . esc_url(home_url('/' . $parent_slug)) . '">';
                         echo esc_html($parent);
                         echo '<svg class="dropdown-icon" width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0h10L5 6z"/></svg>';
                         echo '</a>';
-                        
+
                         echo '<div class="dropdown-menu people-dropdown-menu">';
                         echo '<div class="dropdown-content people-dropdown-content">';
                         
@@ -275,7 +275,7 @@
                     $current_class = is_tax('department_category', $dept_slug) ? ' active' : '';
 
                     echo '<li class="menu-item' . $dropdown_class . $current_class . '">';
-                    echo '<a href="' . esc_url(home_url('/department/' . $dept_slug)) . '">';
+                    echo '<a href="' . esc_url(home_url('/' . $parent_slug)) . '">';
                     echo esc_html($parent);
                     if ($has_dropdown) {
                         echo '<svg class="dropdown-icon" width="10" height="6" viewBox="0 0 10 6" fill="currentColor"><path d="M5 6L0 0h10L5 6z"/></svg>';
@@ -299,7 +299,7 @@
                                     $child_slug = $child_term->slug;
                                 }
                             }
-                            echo '<a href="' . esc_url(home_url('/department/' . $child_slug)) . '" class="dropdown-item">' . esc_html($child) . '</a>';
+                            echo '<a href="' . esc_url(home_url('/department_category/' . $child_slug)) . '" class="dropdown-item">' . esc_html($child) . '</a>';
                         }
                         echo '</div>';
                         
@@ -314,7 +314,7 @@
                         // Third section - More
                         echo '<div class="dropdown-section">';
                         echo '<div class="dropdown-section-title">More</div>';
-                        echo '<a href="' . esc_url(home_url('/department/' . $dept_slug)) . '" class="dropdown-item">All ' . esc_html($parent) . '</a>';
+                        echo '<a href="' . esc_url(home_url('/' . $parent_slug)) . '" class="dropdown-item">All ' . esc_html($parent) . '</a>';
                         echo '<a href="' . esc_url(home_url('/newsletter')) . '" class="dropdown-item">Newsletter</a>';
                         echo '</div>';
                         
