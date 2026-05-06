@@ -1414,6 +1414,12 @@ section {
     grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
 }
 
+.article-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
 .article-card {
     background-color: #ffffff;
     overflow: hidden;
@@ -1650,6 +1656,7 @@ section {
     border: 1px solid #e0e0e0;
     padding: clamp(15px, 2vw, 25px);
     transition: box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
 .writers-block-card:hover {
