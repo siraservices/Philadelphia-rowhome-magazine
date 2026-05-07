@@ -93,6 +93,7 @@ get_header();
                     if ($life_query->have_posts()) :
                         while ($life_query->have_posts()) : $life_query->the_post();
                     ?>
+                        <a href="<?php the_permalink(); ?>" class="article-card-link">
                         <article class="article-card with-vertical-label">
                             <?php
                             $life_terms = get_the_terms(get_the_ID(), 'department_category');
@@ -127,6 +128,7 @@ get_header();
                                 </div>
                             </div>
                         </article>
+                        </a>
                     <?php
                         endwhile;
                         wp_reset_postdata();
@@ -135,6 +137,7 @@ get_header();
                         for ($i = 1; $i <= 3; $i++) :
                             $labels = array('LIFE', 'LIFE', 'LIFE');
                     ?>
+                        <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
                         <article class="article-card with-vertical-label">
                             <span class="vertical-label"><?php echo $labels[$i-1]; ?></span>
                             <div class="article-image">
@@ -150,6 +153,7 @@ get_header();
                                 </div>
                             </div>
                         </article>
+                        </a>
                     <?php
                         endfor;
                     endif;
@@ -290,6 +294,7 @@ get_header();
             if ($health_query->have_posts()) :
                 while ($health_query->have_posts()) : $health_query->the_post();
             ?>
+                <a href="<?php the_permalink(); ?>" class="article-card-link">
                 <article class="article-card with-vertical-label">
                     <span class="vertical-label">HEALTH</span>
                     <?php if (has_post_thumbnail()) : ?>
@@ -311,12 +316,14 @@ get_header();
                         </div>
                     </div>
                 </article>
+                </a>
             <?php
                 endwhile;
                 wp_reset_postdata();
             else :
                 for ($i = 1; $i <= 2; $i++) :
             ?>
+                <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
                 <article class="article-card with-vertical-label">
                     <span class="vertical-label">HEALTH</span>
                     <div class="article-image">
@@ -332,6 +339,7 @@ get_header();
                         </div>
                     </div>
                 </article>
+                </a>
             <?php
                 endfor;
             endif;
@@ -364,6 +372,7 @@ get_header();
             if ($realestate_query->have_posts()) :
                 while ($realestate_query->have_posts()) : $realestate_query->the_post();
             ?>
+                <a href="<?php the_permalink(); ?>" class="article-card-link">
                 <article class="article-card with-vertical-label real-estate-card">
                     <span class="vertical-label">REAL ESTATE</span>
                     <?php if (has_post_thumbnail()) : ?>
@@ -386,12 +395,14 @@ get_header();
                         </div>
                     </div>
                 </article>
+                </a>
             <?php
                 endwhile;
                 wp_reset_postdata();
             else :
                 for ($i = 1; $i <= 4; $i++) :
             ?>
+                <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
                 <article class="article-card with-vertical-label real-estate-card">
                     <span class="vertical-label">REAL ESTATE</span>
                     <div class="article-image">
@@ -408,6 +419,7 @@ get_header();
                         </div>
                     </div>
                 </article>
+                </a>
             <?php
                 endfor;
             endif;
@@ -447,6 +459,7 @@ get_header();
             if ($menu_query->have_posts()) :
                 while ($menu_query->have_posts()) : $menu_query->the_post();
             ?>
+                <a href="<?php the_permalink(); ?>" class="article-card-link">
                 <article class="article-card with-vertical-label menu-card">
                     <span class="vertical-label vertical-label-green">MENU</span>
                     <?php if (has_post_thumbnail()) : ?>
@@ -463,6 +476,7 @@ get_header();
                         <div class="article-excerpt"><?php echo wp_trim_words(get_the_excerpt(), 25); ?></div>
                     </div>
                 </article>
+                </a>
             <?php
                 endwhile;
                 wp_reset_postdata();
@@ -475,6 +489,7 @@ get_header();
                         'Late Night Eats in Center City'
                     );
             ?>
+                <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
                 <article class="article-card with-vertical-label menu-card">
                     <span class="vertical-label vertical-label-green">MENU</span>
                     <div class="article-image">
@@ -485,6 +500,7 @@ get_header();
                         <div class="article-excerpt">Explore Philadelphia's vibrant culinary scene with our curated guide to the best dining experiences. From classic cheesesteaks to innovative fusion cuisine, discover the flavors that make our city unique. Each recommendation comes from local food lovers who know where to find the best meals in town.</div>
                     </div>
                 </article>
+                </a>
             <?php
                 endfor;
             endif;
@@ -562,6 +578,7 @@ get_header();
                             </div>
                         <?php endif;
                 ?>
+                    <a href="<?php the_permalink(); ?>" class="article-card-link">
                     <div class="brides-grid-image">
                         <?php if (has_post_thumbnail()) : ?>
                             <?php the_post_thumbnail('rowhome-small-card'); ?>
@@ -569,6 +586,7 @@ get_header();
                             <img src="https://placehold.co/300x300/cccccc/ffffff?text=Bride+<?php echo $count; ?>" alt="Bride <?php echo $count; ?>" loading="lazy">
                         <?php endif; ?>
                     </div>
+                    </a>
                 <?php
                     endwhile;
                     wp_reset_postdata();
@@ -579,9 +597,11 @@ get_header();
                                 <div class="philly-logo">Philly</div>
                             </div>
                         <?php endif; ?>
+                        <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
                         <div class="brides-grid-image">
                             <img src="https://placehold.co/300x300/cccccc/ffffff?text=Bride+<?php echo $i; ?>" alt="Bride <?php echo $i; ?>" loading="lazy">
                         </div>
+                        </a>
                     <?php endfor;
                 endif;
                 ?>
@@ -627,6 +647,7 @@ get_header();
                         $count++;
                         $label = ($count % 2 == 0) ? 'ART' : 'MUSIC';
                 ?>
+                    <a href="<?php the_permalink(); ?>" class="article-card-link">
                     <article class="article-card with-vertical-label">
                         <span class="vertical-label vertical-label-teal"><?php echo $label; ?></span>
                         <?php if (has_post_thumbnail()) : ?>
@@ -648,6 +669,7 @@ get_header();
                             </div>
                         </div>
                     </article>
+                    </a>
                 <?php
                     endwhile;
                     wp_reset_postdata();
@@ -655,6 +677,7 @@ get_header();
                     $labels = array('MUSIC', 'ART', 'MUSIC');
                     for ($i = 1; $i <= 3; $i++) :
                 ?>
+                    <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
                     <article class="article-card with-vertical-label">
                         <span class="vertical-label vertical-label-teal"><?php echo $labels[$i-1]; ?></span>
                         <div class="article-image">
@@ -670,6 +693,7 @@ get_header();
                             </div>
                         </div>
                     </article>
+                    </a>
                 <?php
                     endfor;
                 endif;
@@ -711,6 +735,7 @@ get_header();
             if ($writers_query->have_posts()) :
                 while ($writers_query->have_posts()) : $writers_query->the_post();
             ?>
+                <a href="<?php the_permalink(); ?>" class="article-card-link">
                 <article class="writers-block-card">
                     <div class="writers-block-image">
                         <?php if (has_post_thumbnail()) : ?>
@@ -725,6 +750,7 @@ get_header();
                         <div class="writers-block-meta"><?php rowhome_magazine_article_meta(); ?></div>
                     </div>
                 </article>
+                </a>
             <?php
                 endwhile;
                 wp_reset_postdata();
@@ -735,6 +761,7 @@ get_header();
                 );
                 foreach ($writer_articles as $index => $title) :
             ?>
+                <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
                 <article class="writers-block-card">
                     <div class="writers-block-image">
                         <img src="https://placehold.co/300x250/cccccc/ffffff?text=Writers+Block" alt="<?php echo esc_attr($title); ?>">
@@ -745,6 +772,7 @@ get_header();
                         <div class="writers-block-meta">by <span class="article-author">Contributing Writer</span> | November 26, 2025</div>
                     </div>
                 </article>
+                </a>
             <?php
                 endforeach;
             endif;
@@ -776,6 +804,7 @@ get_header();
             if ($ads_query->have_posts()) :
                 while ($ads_query->have_posts()) : $ads_query->the_post();
             ?>
+                <a href="<?php the_permalink(); ?>" class="article-card-link">
                 <div class="magazine-ad-item">
                     <?php if (has_post_thumbnail()) : ?>
                         <?php the_post_thumbnail('rowhome-article-card'); ?>
@@ -783,6 +812,7 @@ get_header();
                         <img src="https://placehold.co/300x380/ffffff/000000?text=<?php echo urlencode(get_the_title()); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
                     <?php endif; ?>
                 </div>
+                </a>
             <?php
                 endwhile;
                 wp_reset_postdata();
@@ -799,9 +829,11 @@ get_header();
                 );
                 foreach ($ad_names as $ad_name) :
             ?>
+                <a href="<?php echo esc_url(home_url('/advertise/')); ?>" class="article-card-link">
                 <div class="magazine-ad-item">
                     <img src="https://placehold.co/300x380/ffffff/000000?text=<?php echo urlencode($ad_name); ?>" alt="<?php echo esc_attr($ad_name); ?>" loading="lazy">
                 </div>
+                </a>
             <?php
                 endforeach;
             endif;

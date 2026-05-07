@@ -395,6 +395,27 @@ section {
     opacity: 1;
 }
 
+.btn-logout {
+    background-color: transparent;
+    color: #666666;
+    padding: 10px 12px;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-logout:hover {
+    color: #FF0000;
+    opacity: 1;
+}
+
 .site-logo a {
     display: inline-block;
 }
@@ -1414,6 +1435,12 @@ section {
     grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
 }
 
+.article-card-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
 .article-card {
     background-color: #ffffff;
     overflow: hidden;
@@ -1650,6 +1677,7 @@ section {
     border: 1px solid #e0e0e0;
     padding: clamp(15px, 2vw, 25px);
     transition: box-shadow 0.3s ease;
+    cursor: pointer;
 }
 
 .writers-block-card:hover {
@@ -2259,7 +2287,8 @@ section {
 
     /* Hide full-text buttons on mobile — they live in the hamburger menu */
     .btn-subscribe,
-    .btn-login {
+    .btn-login,
+    .btn-logout {
         display: none;
     }
 
@@ -2661,7 +2690,8 @@ button:focus:not(:focus-visible) {
 @media (max-width: 768px) {
     /* Hide Subscribe/Login and inline search at the same breakpoint the hamburger appears */
     .btn-subscribe,
-    .btn-login {
+    .btn-login,
+    .btn-logout {
         display: none;
     }
 
