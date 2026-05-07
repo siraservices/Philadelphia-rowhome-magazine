@@ -21,8 +21,8 @@ $image_size = isset($args['image_size']) ? $args['image_size'] : 'rowhome-articl
                 <?php the_post_thumbnail($image_size, array('loading' => 'lazy')); ?>
             <?php else : ?>
                 <?php
-                $philly_imgs = array('uploads/2026/05/row-homes.jpg','uploads/2026/05/magic-garden.jpg','uploads/2026/05/independence-hall.jpg','uploads/2026/05/philly-mural.jpg','uploads/2026/05/cheesesteak-menu.jpg','uploads/2026/02/800-1.jpg','uploads/2026/02/800-2.jpg','uploads/2026/02/800-3.jpg','uploads/2026/02/800-4.jpg','uploads/2026/02/800-5.jpg','uploads/2026/02/800-6.jpg');
-                $fallback = content_url($philly_imgs[get_the_ID() % count($philly_imgs)]);
+                $philly_imgs = array('/assets/images/hero-1.jpg','/assets/images/hero-2.jpg','/assets/images/hero-3.jpg','/assets/images/about-hero.jpg','/assets/images/subscribe-hero.jpg');
+                $fallback = get_template_directory_uri() . $philly_imgs[get_the_ID() % count($philly_imgs)];
                 ?>
                 <img src="<?php echo esc_url($fallback); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
             <?php endif; ?>

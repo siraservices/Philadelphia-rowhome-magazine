@@ -12,8 +12,8 @@ $show_category = isset($args['show_category']) ? $args['show_category'] : true;
 
 $featured_image = get_the_post_thumbnail_url(get_the_ID(), 'full');
 if (!$featured_image) {
-    $philly_imgs = array('uploads/2026/05/independence-hall.jpg','uploads/2026/05/philly-mural.jpg','uploads/2026/05/row-homes.jpg','uploads/2026/05/magic-garden.jpg','uploads/2026/05/cheesesteak-menu.jpg','uploads/2026/02/800-1.jpg','uploads/2026/02/800-5.jpg');
-    $featured_image = content_url($philly_imgs[get_the_ID() % count($philly_imgs)]);
+    $philly_imgs = array('/assets/images/hero-1.jpg','/assets/images/hero-2.jpg','/assets/images/hero-3.jpg','/assets/images/about-hero.jpg','/assets/images/subscribe-hero.jpg');
+    $featured_image = get_template_directory_uri() . $philly_imgs[get_the_ID() % count($philly_imgs)];
 }
 ?>
 

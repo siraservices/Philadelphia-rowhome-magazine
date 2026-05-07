@@ -1135,9 +1135,13 @@ function rowhome_magazine_robots_txt( $output, $public ) {
     if ( '0' === $public ) {
         return $output;
     }
-    $sitemap_url = home_url( '/wp-sitemap.xml' );
     if ( strpos( $output, 'Sitemap:' ) === false ) {
-        $output .= "\nSitemap: " . esc_url( $sitemap_url ) . "\n";
+        // Yoast SEO uses /sitemap_index.xml; WordPress built-in uses /wp-sitemap.xml
+        if ( defined( 'WPSEO_VERSION' ) ) {
+            $output .= "\nSitemap: " . esc_url( home_url( '/sitemap_index.xml' ) ) . "\n";
+        } else {
+            $output .= "\nSitemap: " . esc_url( home_url( '/wp-sitemap.xml' ) ) . "\n";
+        }
     }
     return $output;
 }
