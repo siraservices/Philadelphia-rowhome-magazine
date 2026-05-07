@@ -874,6 +874,14 @@ function rowhome_magazine_favicon() {
 add_action( 'wp_head', 'rowhome_magazine_favicon', 1 );
 
 /**
+ * Google Search Console site verification meta tag.
+ */
+function rowhome_magazine_google_site_verification() {
+    echo '<meta name="google-site-verification" content="kxR7Dht1rVuInJGipET2wlbbywZLzd0Pn5YhM3bx5gM">' . "\n";
+}
+add_action( 'wp_head', 'rowhome_magazine_google_site_verification', 1 );
+
+/**
  * Output SEO meta tags and Open Graph / Twitter Card tags
  */
 function rowhome_magazine_seo_meta() {
