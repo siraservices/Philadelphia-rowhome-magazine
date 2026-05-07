@@ -475,6 +475,38 @@
         });
     }
 
+    /**
+     * User Avatar Dropdown Toggle
+     */
+    function initUserMenu() {
+        var btn = document.querySelector('.user-avatar-btn');
+        var dropdown = document.getElementById('user-dropdown');
+        if (!btn || !dropdown) return;
+
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var isOpen = dropdown.classList.toggle('is-open');
+            btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+
+        // Close on outside click
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+                dropdown.classList.remove('is-open');
+                btn.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Close on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && dropdown.classList.contains('is-open')) {
+                dropdown.classList.remove('is-open');
+                btn.setAttribute('aria-expanded', 'false');
+                btn.focus();
+            }
+        });
+    }
+
     function init() {
         initCarousel();
         initSearch();
@@ -486,6 +518,7 @@
         initArticleCards();
         initLoadMore();
         initMobileMenu();
+        initUserMenu();
 
         // Theme initialized
     }

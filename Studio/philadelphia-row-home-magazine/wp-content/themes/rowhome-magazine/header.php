@@ -57,9 +57,32 @@
                     </svg>
                 </button>
                 <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="btn-subscribe">SUBSCRIBE FOR $1/WEEK</a>
-                <?php if ( is_user_logged_in() ) : ?>
-                <a href="<?php echo esc_url(home_url('/my-account/')); ?>" class="btn-login">MY ACCOUNT</a>
-                <a href="<?php echo esc_url(wp_logout_url(home_url('/'))); ?>" class="btn-logout">LOG OUT</a>
+                <?php if ( is_user_logged_in() ) :
+                    $current_user   = wp_get_current_user();
+                    $google_avatar  = get_user_meta( $current_user->ID, 'rowhome_google_avatar', true );
+                    $avatar_url     = $google_avatar ? $google_avatar : get_avatar_url( $current_user->ID, array( 'size' => 64 ) );
+                    $display_name   = $current_user->display_name;
+                    $first_initial  = mb_strtoupper( mb_substr( $display_name, 0, 1 ) );
+                ?>
+                <div class="user-menu-wrapper">
+                    <button class="user-avatar-btn" aria-label="Account menu" aria-expanded="false" aria-controls="user-dropdown" type="button">
+                        <?php if ( $avatar_url ) : ?>
+                            <img src="<?php echo esc_url( $avatar_url ); ?>" alt="" class="user-avatar-img" width="32" height="32" referrerpolicy="no-referrer">
+                        <?php else : ?>
+                            <span class="user-avatar-initial"><?php echo esc_html( $first_initial ); ?></span>
+                        <?php endif; ?>
+                    </button>
+                    <div id="user-dropdown" class="user-dropdown" role="menu">
+                        <div class="user-dropdown-header">
+                            <span class="user-dropdown-name"><?php echo esc_html( $display_name ); ?></span>
+                            <span class="user-dropdown-email"><?php echo esc_html( $current_user->user_email ); ?></span>
+                        </div>
+                        <a href="<?php echo esc_url( home_url( '/my-account/' ) ); ?>" class="user-dropdown-item" role="menuitem">My Account</a>
+                        <a href="<?php echo esc_url( home_url( '/my-account/?tab=notifications' ) ); ?>" class="user-dropdown-item" role="menuitem">Notifications</a>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>" class="user-dropdown-item user-dropdown-logout" role="menuitem">Log Out</a>
+                    </div>
+                </div>
                 <?php else : ?>
                 <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="btn-login">LOG IN</a>
                 <?php endif; ?>
@@ -72,7 +95,21 @@
         <!-- Mobile-only action links (subscribe + login) — visible inside hamburger menu -->
         <div class="mobile-nav-actions">
             <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="mobile-subscribe-link">Subscribe for $1/Week</a>
-            <?php if ( is_user_logged_in() ) : ?>
+            <?php if ( is_user_logged_in() ) :
+                // Reuse vars set above in desktop header; if not set, resolve again.
+                if ( ! isset( $avatar_url ) ) {
+                    $current_user  = wp_get_current_user();
+                    $google_avatar = get_user_meta( $current_user->ID, 'rowhome_google_avatar', true );
+                    $avatar_url    = $google_avatar ? $google_avatar : get_avatar_url( $current_user->ID, array( 'size' => 64 ) );
+                    $display_name  = $current_user->display_name;
+                }
+            ?>
+            <div class="mobile-user-info">
+                <?php if ( $avatar_url ) : ?>
+                    <img src="<?php echo esc_url( $avatar_url ); ?>" alt="" class="mobile-user-avatar" width="24" height="24" referrerpolicy="no-referrer">
+                <?php endif; ?>
+                <span class="mobile-user-name"><?php echo esc_html( $display_name ); ?></span>
+            </div>
             <a href="<?php echo esc_url(home_url('/my-account/')); ?>" class="mobile-login-link">My Account</a>
             <a href="<?php echo esc_url(wp_logout_url(home_url('/'))); ?>" class="mobile-login-link">Log Out</a>
             <?php else : ?>

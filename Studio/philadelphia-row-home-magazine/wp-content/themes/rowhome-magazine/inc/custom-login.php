@@ -341,8 +341,11 @@ function rowhome_magazine_google_callback_init() {
     $google_id      = isset( $profile['id'] )         ? sanitize_text_field( $profile['id'] )         : '';
     $first_name     = isset( $profile['given_name'] ) ? sanitize_text_field( $profile['given_name'] ) : '';
     $last_name      = isset( $profile['family_name'] )? sanitize_text_field( $profile['family_name'] ): '';
+    $google_picture = isset( $profile['picture'] )    ? esc_url_raw( $profile['picture'] )            : '';
 
     // --- Find or create the WordPress user. ---
+
+    $is_new_user = false; // True when we create a fresh account in this request.
 
     // 1. Try to find by stored Google ID meta (most reliable across email changes).
     $user = false;
@@ -392,12 +395,16 @@ function rowhome_magazine_google_callback_init() {
             );
         }
 
-        $user = get_user_by( 'id', $new_user_id );
+        $user        = get_user_by( 'id', $new_user_id );
+        $is_new_user = true;
     }
 
-    // Store / refresh Google ID meta so future lookups are fast.
+    // Store / refresh Google ID and avatar URL so future lookups are fast.
     if ( $google_id ) {
         update_user_meta( $user->ID, 'rowhome_google_id', $google_id );
+    }
+    if ( $google_picture ) {
+        update_user_meta( $user->ID, 'rowhome_google_avatar', $google_picture );
     }
 
     // Update display name and names if the account was just linked
@@ -418,9 +425,15 @@ function rowhome_magazine_google_callback_init() {
 
     do_action( 'wp_login', $user->user_login, $user );
 
-    // Subscribers go to the homepage; admins/editors go to wp-admin.
+    // Subscribers: new accounts see the welcome page once, then the homepage.
+    // Admins/editors go to wp-admin.
     if ( in_array( 'subscriber', (array) $user->roles, true ) ) {
-        $redirect = home_url( '/' );
+        if ( $is_new_user || get_user_meta( $user->ID, 'rowhome_show_welcome', true ) ) {
+            update_user_meta( $user->ID, 'rowhome_show_welcome', '1' );
+            $redirect = home_url( '/welcome/' );
+        } else {
+            $redirect = home_url( '/' );
+        }
     } else {
         $redirect = admin_url();
     }
