@@ -1,0 +1,512 @@
+
+/* ===========================
+   CoverMasthead — Homepage only
+   Spec: §3.1 (SIR-777)
+   =========================== */
+
+.rh-cover-masthead {
+    position: relative;
+    height: 980px;
+    width: 100%;
+    overflow: hidden;
+    isolation: isolate;
+    background: var(--rh-ink);
+}
+
+.rh-cover-masthead__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    filter: contrast(1.05);
+    z-index: 0;
+}
+
+.rh-cover-masthead__bg--ink {
+    background: var(--rh-ink);
+}
+
+/* 60% black gradient fallback — always on for low-contrast photos */
+.rh-cover-masthead__gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.15) 0%,
+        rgba(0,0,0,.05) 40%,
+        rgba(0,0,0,.60) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* ── Dateline strip (top) ── */
+.rh-cover-masthead__dateline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 18px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--rh-ui);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    mix-blend-mode: difference;
+    color: #fff;
+    z-index: 2;
+}
+
+.rh-cover-masthead__dateline-link {
+    color: #fff;
+    text-decoration: none;
+}
+.rh-cover-masthead__dateline-link:hover {
+    text-decoration: underline;
+}
+
+/* ── Wordmark (centered, absolute top:60) ── */
+.rh-cover-masthead__wordmark {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    mix-blend-mode: difference;
+    color: #fff;
+    z-index: 2;
+}
+
+.rh-cover-masthead__wordmark-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.rh-cover-masthead__wordmark-text {
+    display: block;
+    font-family: var(--rh-display);
+    font-size: clamp(80px, 14vw, 200px);
+    font-weight: 800;
+    line-height: .86;
+    letter-spacing: -.03em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 30px rgba(0,0,0,.35);
+}
+
+.rh-cover-masthead__wordmark-text em {
+    font-weight: 400;
+    font-style: italic;
+}
+
+.rh-cover-masthead__tagline-text {
+    display: block;
+    font-family: var(--rh-body);
+    font-size: 18px;
+    font-style: italic;
+    margin-top: 20px;
+    opacity: .85;
+}
+
+/* ── Cover lines (left, top:380) ── */
+.rh-cover-masthead__lines {
+    position: absolute;
+    top: 380px;
+    left: 36px;
+    max-width: 340px;
+    mix-blend-mode: difference;
+    color: #fff;
+    z-index: 2;
+}
+
+.rh-cover-masthead__lines-eyebrow {
+    display: block;
+    font-family: var(--rh-ui);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    opacity: .75;
+    margin-bottom: 14px;
+}
+
+.rh-cover-masthead__line-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,.40);
+    font-family: var(--rh-display);
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.rh-cover-masthead__line-link {
+    color: #fff;
+    text-decoration: none;
+    flex: 1;
+}
+.rh-cover-masthead__line-link:hover {
+    text-decoration: underline;
+}
+
+.rh-cover-masthead__line-page {
+    font-family: var(--rh-ui);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .08em;
+    flex-shrink: 0;
+    opacity: .65;
+}
+
+/* ── Cover headline (right, bottom:80) ── */
+.rh-cover-masthead__headline {
+    position: absolute;
+    bottom: 80px;
+    right: 36px;
+    max-width: 560px;
+    text-align: right;
+    mix-blend-mode: difference;
+    color: #fff;
+    z-index: 2;
+}
+
+.rh-cover-masthead__hed-tag {
+    display: inline-block;
+    padding: 4px 9px;
+    font-family: var(--rh-ui);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    /* White bg inverts to black against light photo via mix-blend-mode:difference */
+    background: #fff;
+    color: #000;
+    margin-bottom: 16px;
+}
+
+.rh-cover-masthead__hed-link {
+    text-decoration: none;
+    color: #fff;
+    display: block;
+}
+.rh-cover-masthead__hed-link:hover .rh-cover-masthead__hed-title {
+    text-decoration: underline;
+}
+
+.rh-cover-masthead__hed-title {
+    font-family: var(--rh-display);
+    font-size: clamp(40px, 5.5vw, 78px);
+    font-weight: 700;
+    line-height: .96;
+    letter-spacing: -.02em;
+    text-shadow: 0 2px 30px rgba(0,0,0,.60);
+    text-wrap: balance;
+    margin: 0;
+}
+
+/* ── Bottom nav strip with backdrop blur ── */
+.rh-cover-masthead__nav {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,.70);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 14px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 3;
+}
+
+.rh-cover-masthead__nav-sections {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+.rh-cover-masthead__nav-link {
+    font-family: var(--rh-ui);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .10em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgba(255,255,255,.85);
+    transition: color .15s;
+}
+.rh-cover-masthead__nav-link:hover {
+    color: #fff;
+}
+
+.rh-cover-masthead__nav-hint {
+    font-family: var(--rh-ui);
+    font-size: 11px;
+    letter-spacing: .06em;
+    color: rgba(255,255,255,.50);
+    flex-shrink: 0;
+}
+
+/* ===========================
+   Homepage main wrapper
+   =========================== */
+
+.rh-homepage-main {
+    background: var(--rh-bg);
+}
+
+/* ===========================
+   In This Issue (SIR-777)
+   =========================== */
+
+.rh-in-this-issue {
+    border-bottom: var(--rh-hairline);
+}
+
+.rh-in-this-issue__inner {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 56px;
+    align-items: start;
+}
+
+.rh-in-this-issue__left {
+    position: sticky;
+    top: 32px;
+}
+
+.rh-in-this-issue__issue-label {
+    font-family: var(--rh-display);
+    font-size: var(--rh-display-5);
+    line-height: var(--rh-lh-display-5);
+    font-weight: 700;
+    color: var(--rh-ink);
+}
+
+.rh-in-this-issue__issue-meta {
+    font-family: var(--rh-body);
+    font-size: var(--rh-body-sm);
+    color: var(--rh-mute);
+    font-style: italic;
+    margin-top: 8px;
+}
+
+.rh-in-this-issue__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 var(--rh-grid-gap);
+}
+
+.rh-contents-row-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+.rh-contents-row-link:hover .rh-contents-row__headline {
+    color: var(--rh-accent);
+}
+
+.rh-contents-row__body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* ===========================
+   Sponsor strip (SIR-777)
+   =========================== */
+
+.rh-sponsor-strip {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+    border-bottom: var(--rh-hairline);
+    background: var(--rh-bg);
+}
+
+.rh-density-subtle .rh-sponsor-strip {
+    display: none;
+}
+
+/* ===========================
+   Section header with rule lines
+   =========================== */
+
+.rh-section-header--ruled {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding-bottom: 0;
+    text-align: left;
+}
+
+.rh-section-header--ruled::before,
+.rh-section-header--ruled::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rh-rule);
+}
+
+/* ===========================
+   The Hot List (SIR-777)
+   =========================== */
+
+.rh-hot-list {
+    border-bottom: var(--rh-hairline);
+}
+
+.rh-hot-list__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 280px;
+    gap: var(--rh-grid-gap);
+    align-items: start;
+    margin-top: 32px;
+}
+
+.rh-hot-list__stacked {
+    display: flex;
+    flex-direction: column;
+    gap: var(--rh-grid-gap);
+}
+
+.rh-story-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+.rh-story-card-link:hover .rh-story-card__headline {
+    color: var(--rh-accent);
+}
+
+.rh-ticker-item-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+.rh-ticker-item-link:hover .rh-ticker-item__headline {
+    color: var(--rh-accent);
+}
+
+/* ===========================
+   Dept Spotlights section wrapper
+   =========================== */
+
+.rh-dept-spotlights-section {
+    border-bottom: var(--rh-hairline);
+}
+
+/* ===========================
+   All Departments (SIR-777)
+   =========================== */
+
+.rh-all-depts {
+    border-bottom: var(--rh-hairline);
+}
+
+.rh-all-depts__heading {
+    font-family: var(--rh-display);
+    font-size: var(--rh-display-4);
+    line-height: var(--rh-lh-display-4);
+    font-weight: 700;
+    color: var(--rh-ink);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.rh-all-depts__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: var(--rh-hairline);
+}
+
+.rh-dept-index-item {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: var(--rh-hairline);
+    border-right: var(--rh-hairline);
+    text-decoration: none;
+    color: var(--rh-ink);
+    transition: background .12s;
+}
+.rh-dept-index-item:hover {
+    background: color-mix(in srgb, var(--rh-ink) 3%, transparent);
+}
+.rh-dept-index-item:nth-child(3n) {
+    border-right: none;
+}
+
+.rh-dept-index-item__num {
+    font-family: var(--rh-ui);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--rh-mute);
+    letter-spacing: .04em;
+}
+
+.rh-dept-index-item__name {
+    font-family: var(--rh-ui);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.rh-dept-index-item__arrow {
+    font-size: 14px;
+    color: var(--rh-mute);
+    transition: color .12s, transform .12s;
+}
+.rh-dept-index-item:hover .rh-dept-index-item__arrow {
+    color: var(--rh-accent);
+    transform: translateX(3px);
+}
+
+/* ===========================
+   Homepage responsive (SIR-777)
+   =========================== */
+
+@media (max-width: 1024px) {
+    .rh-cover-masthead { height: 700px; }
+    .rh-cover-masthead__lines { top: 260px; }
+    .rh-cover-masthead__headline { bottom: 60px; max-width: 420px; }
+    .rh-hot-list__grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .rh-hot-list__sidebar { display: none; }
+    .rh-in-this-issue__inner { grid-template-columns: 200px 1fr; gap: 32px; }
+}
+
+@media (max-width: 768px) {
+    .rh-cover-masthead { height: 560px; }
+    .rh-cover-masthead__dateline { padding: 12px 20px; font-size: 10px; }
+    .rh-cover-masthead__tagline-text { font-size: 14px; }
+    .rh-cover-masthead__lines { display: none; }
+    .rh-cover-masthead__headline { right: 20px; bottom: 60px; max-width: 280px; }
+    .rh-cover-masthead__nav { padding: 12px 20px; }
+    .rh-cover-masthead__nav-sections { gap: 14px; }
+    .rh-cover-masthead__nav-link { font-size: 10px; }
+    .rh-cover-masthead__nav-hint { display: none; }
+    .rh-in-this-issue__inner { grid-template-columns: 1fr; gap: 24px; }
+    .rh-in-this-issue__left { position: static; }
+    .rh-in-this-issue__grid { grid-template-columns: 1fr; }
+    .rh-hot-list__grid { grid-template-columns: 1fr; }
+    .rh-all-depts__grid { grid-template-columns: repeat(2, 1fr); }
+    .rh-dept-index-item:nth-child(3n) { border-right: var(--rh-hairline); }
+    .rh-dept-index-item:nth-child(2n) { border-right: none; }
+}
+
+@media (max-width: 480px) {
+    .rh-cover-masthead { height: 480px; }
+    .rh-all-depts__grid { grid-template-columns: 1fr; }
+    .rh-dept-index-item:nth-child(2n) { border-right: var(--rh-hairline); }
+    .rh-dept-index-item { border-right: none; }
+}
