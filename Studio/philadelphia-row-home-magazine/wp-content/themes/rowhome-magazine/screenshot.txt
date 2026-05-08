@@ -1,0 +1,20 @@
+RowHome Magazine Theme Screenshot
+
+To generate a proper screenshot.png file (1200x900px):
+
+1. After activating the theme and adding content, visit the homepage
+2. Take a screenshot of the homepage
+3. Resize to 1200x900 pixels
+4. Save as screenshot.png in the theme root directory
+
+Or use this placeholder service:
+https://placehold.co/1200x900/000000/ffffff?text=ROWHOME+MAGAZINE+THEME
+
+The screenshot should showcase:
+- The header with logo and navigation
+- Hero carousel with featured article
+- Article grid layouts
+- Department sections
+
+WordPress will display this screenshot in the Appearance > Themes admin panel.
+
