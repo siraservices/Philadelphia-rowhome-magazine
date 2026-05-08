@@ -1,0 +1,30 @@
+# WordPress files
+.DS_Store
+Thumbs.db
+
+# Node modules (if using build tools)
+node_modules/
+package-lock.json
+
+# Build files
+*.map
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# macOS
+.AppleDouble
+.LSOverride
+
+# Windows
+Desktop.ini
+
