@@ -1,849 +1,627 @@
 <?php
 /**
- * The template for displaying the homepage
+ * Direction B — Homepage
+ *
+ * Sections (top to bottom):
+ *   1. CoverMasthead  — full-bleed 980px, mix-blend-mode:difference wordmark
+ *   2. In This Issue  — left heading, right 2-col 6-item ContentsRow grid
+ *   3. Sponsor strip  — 970×90 leaderboard (hidden for rh-density-subtle)
+ *   4. The Hot List   — section header w/ rules, 3-col grid + sidebar
+ *   5. Dept Spotlights — 3 tinted panels (Food / Real Estate / Arts)
+ *   6. All Departments — centered h2 + 21-item 3-col index grid
  *
  * @package RowHome_Magazine
- * @since 1.0.0
+ * @since 2.0.0
+ * @see SIR-777, SIR-775 §2.1
  */
 
-get_header();
+get_header('homepage');
+
+/* ================================================================
+   DATA QUERIES
+   ================================================================ */
+
+// ── Cover story: sticky post first, fall back to latest ──────────
+$sticky_ids = get_option('sticky_posts');
+if (!empty($sticky_ids)) {
+    $cover_q = new WP_Query(array(
+        'posts_per_page'      => 1,
+        'post_type'           => array('post', 'department'),
+        'post__in'            => $sticky_ids,
+        'orderby'             => 'date',
+        'order'               => 'DESC',
+        'ignore_sticky_posts' => 0,
+    ));
+    if (!$cover_q->have_posts()) {
+        $cover_q = new WP_Query(array(
+            'posts_per_page' => 1,
+            'post_type'      => array('post', 'department'),
+        ));
+    }
+} else {
+    $cover_q = new WP_Query(array(
+        'posts_per_page' => 1,
+        'post_type'      => array('post', 'department'),
+    ));
+}
+
+$cover_id    = 0;
+$cover_title = 'Philadelphia at Its Best';
+$cover_url   = home_url('/');
+$cover_image = '';
+$cover_kicker = '';
+
+if ($cover_q->have_posts()) {
+    $cover_q->the_post();
+    $cover_id    = get_the_ID();
+    $cover_title = get_the_title();
+    $cover_url   = get_permalink();
+    $cover_image = get_the_post_thumbnail_url(null, 'rowhome-hero');
+    $cover_terms = get_the_terms($cover_id, 'department_category');
+    if ($cover_terms && !is_wp_error($cover_terms)) {
+        $cover_kicker = $cover_terms[0]->name . ' · The Cover Story';
+    } else {
+        $cover_kicker = 'Feature · The Cover Story';
+    }
+    wp_reset_postdata();
+}
+
+// ── Cover lines: 4 posts after the cover story ───────────────────
+$exclude = $cover_id ? array($cover_id) : array();
+$lines_q = new WP_Query(array(
+    'posts_per_page' => 4,
+    'post_type'      => array('post', 'department'),
+    'post__not_in'   => $exclude,
+    'orderby'        => 'date',
+    'order'          => 'DESC',
+));
+
+// ── In This Issue: 6 most recent posts ───────────────────────────
+$contents_q = new WP_Query(array(
+    'posts_per_page' => 6,
+    'post_type'      => array('post', 'department'),
+    'orderby'        => 'date',
+    'order'          => 'DESC',
+));
+
+// ── Hot List: 3 posts for hero + stacked cards ───────────────────
+$hot_q = new WP_Query(array(
+    'posts_per_page' => 3,
+    'post_type'      => array('post', 'department'),
+    'post__not_in'   => $exclude,
+    'orderby'        => 'date',
+    'order'          => 'DESC',
+));
+
+// ── Ticker: 3 most-read posts by comment count ───────────────────
+$ticker_q = new WP_Query(array(
+    'posts_per_page' => 3,
+    'post_type'      => array('post', 'department'),
+    'orderby'        => 'comment_count',
+    'order'          => 'DESC',
+));
+
+// ── Department Spotlights ─────────────────────────────────────────
+function rh_dept_spotlight_query($slugs) {
+    return new WP_Query(array(
+        'posts_per_page' => 1,
+        'post_type'      => array('post', 'department'),
+        'tax_query'      => array(array(
+            'taxonomy' => 'department_category',
+            'field'    => 'slug',
+            'terms'    => $slugs,
+            'operator' => 'IN',
+        )),
+    ));
+}
+$spotlight_food_q = rh_dept_spotlight_query(array('dept-menu', 'menu'));
+$spotlight_re_q   = rh_dept_spotlight_query(array('dept-real-estate', 'real-estate'));
+$spotlight_arts_q = rh_dept_spotlight_query(array('dept-music-art', 'music-art'));
+
+// ── All 21 Departments ────────────────────────────────────────────
+$all_departments = array(
+    array('name' => 'Health',        'slug' => 'dept-health'),
+    array('name' => 'Fashion',       'slug' => 'dept-fashion'),
+    array('name' => 'Brides Guide',  'slug' => 'dept-brides-guide'),
+    array('name' => 'Community',     'slug' => 'dept-community'),
+    array('name' => 'Writers Block', 'slug' => 'dept-writers-block'),
+    array('name' => 'Real Estate',   'slug' => 'dept-real-estate'),
+    array('name' => 'Tech',          'slug' => 'dept-tech'),
+    array('name' => 'Education',     'slug' => 'dept-education'),
+    array('name' => 'Politics',      'slug' => 'dept-politics'),
+    array('name' => 'Music & Art',   'slug' => 'dept-music-art'),
+    array('name' => 'Film',          'slug' => 'dept-film'),
+    array('name' => 'Flashback',     'slug' => 'dept-flashback'),
+    array('name' => 'History',       'slug' => 'dept-history'),
+    array('name' => 'Menu',          'slug' => 'dept-menu'),
+    array('name' => 'Travel',        'slug' => 'dept-travel'),
+    array('name' => '2025 Hotspots', 'slug' => 'dept-2025-hotspots'),
+    array('name' => 'Events',        'slug' => 'dept-events'),
+    array('name' => 'Sports',        'slug' => 'dept-sports'),
+    array('name' => 'Environment',   'slug' => 'dept-environment'),
+    array('name' => 'Games',         'slug' => 'dept-games'),
+    array('name' => 'People',        'slug' => 'dept-people'),
+);
+
+// Navigation sections (bottom strip + per-spec 6 umbrella labels)
+$nav_sections = array(
+    'Life'        => home_url('/life'),
+    'Business'    => home_url('/business'),
+    'Arts'        => home_url('/arts'),
+    'Lifestyle'   => home_url('/lifestyle'),
+    'Sports'      => home_url('/sports'),
+    'Environment' => home_url('/environment'),
+);
+
+/* ================================================================
+   PAGE BODY
+   ================================================================ */
 ?>
 
-<!-- Advertisement Banner -->
-<?php rowhome_magazine_display_adsense_ad('', 'auto', 'responsive', '', true); ?>
+<!-- ================================================================
+     1. COVER MASTHEAD
+     Full-bleed 980px. CoverMasthead replaces site header on homepage.
+     All foreground text: mix-blend-mode:difference + color:#fff
+     Spec: §3.1
+     ================================================================ -->
+<div class="rh-cover-masthead" role="banner" aria-label="<?php esc_attr_e('Cover', 'rowhome-magazine'); ?>">
 
-<!-- Hero Carousel Section -->
-<section class="hero-carousel" id="heroCarousel">
-    <div class="carousel-slide active">
-        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero-1.jpg" alt="Skinny Cheesesteaks Feature" loading="eager" fetchpriority="high" onerror="this.src='https://placehold.co/1200x500/5f8a8b/ffffff?text=SKINNY+CHEESESTEAKS'">
-        <div class="carousel-content">
-            <h2 class="carousel-title">SKINNY CHEESESTEAKS</h2>
-            <p class="carousel-subtitle">A TRIBUTE TO FAMILY TRADITIONS</p>
-            <div class="carousel-meta">
-                by DORETTE ROTA JACKSON | photos by ANDREW ANDREOZZI
-            </div>
-        </div>
-    </div>
-    <div class="carousel-slide">
-        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero-2.jpg" alt="Local Artist Feature" loading="lazy" onerror="this.src='https://placehold.co/1200x500/5f8a8b/ffffff?text=PHILADELPHIA+STORIES'">
-        <div class="carousel-content">
-            <h2 class="carousel-title">PHILADELPHIA STORIES</h2>
-            <p class="carousel-subtitle">CELEBRATING LOCAL CULTURE</p>
-            <div class="carousel-meta">
-                by ANTHONY PANVINI | photos by JAMES MITCHELL
-            </div>
-        </div>
-    </div>
-    <div class="carousel-slide">
-        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/hero-3.jpg" alt="Neighborhood Guide" loading="lazy" onerror="this.src='https://placehold.co/1200x500/5f8a8b/ffffff?text=NEIGHBORHOOD+GUIDE'">
-        <div class="carousel-content">
-            <h2 class="carousel-title">NEIGHBORHOOD GUIDE</h2>
-            <p class="carousel-subtitle">DISCOVER HIDDEN GEMS</p>
-            <div class="carousel-meta">
-                by MARIA GONZALEZ | photos by ROBERT CHEN
-            </div>
-        </div>
-    </div>
-    <div class="carousel-dots">
-        <span class="carousel-dot active" data-slide="0"></span>
-        <span class="carousel-dot" data-slide="1"></span>
-        <span class="carousel-dot" data-slide="2"></span>
-    </div>
-</section>
+    <?php if ($cover_image) : ?>
+        <img
+            src="<?php echo esc_url($cover_image); ?>"
+            alt="<?php echo esc_attr($cover_title); ?>"
+            class="rh-cover-masthead__bg rh-photo"
+            loading="eager"
+            fetchpriority="high"
+        >
+    <?php else : ?>
+        <!-- Solid ink fallback when no cover image available -->
+        <div class="rh-cover-masthead__bg rh-cover-masthead__bg--ink"></div>
+    <?php endif; ?>
 
-<!-- Subscribe & Advertise CTA Banner -->
-<div class="homepage-cta-banner">
-    <div class="homepage-cta-banner__content">
-        <h2>Philadelphia's Magazine, Your Way</h2>
-        <p>Get RowHome delivered to your door or inbox — or reach 40,000+ Philly readers by advertising with us.</p>
+    <!-- 60% black gradient — always on for low-contrast photo fallback -->
+    <div class="rh-cover-masthead__gradient" aria-hidden="true"></div>
+
+    <!-- Dateline strip (top) -->
+    <div class="rh-cover-masthead__dateline">
+        <span>Issue 03 &middot; Feb 2026 &middot; $7.95</span>
+        <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="rh-cover-masthead__dateline-link">Subscribe &middot; $1/wk</a>
     </div>
-    <div class="homepage-cta-banner__actions">
-        <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="subscribe-btn-primary">Subscribe Now</a>
-        <a href="<?php echo esc_url(home_url('/advertise')); ?>" class="subscribe-btn-secondary">Advertise With Us</a>
+
+    <!-- Wordmark (centered, top:60) -->
+    <div class="rh-cover-masthead__wordmark">
+        <a href="<?php echo esc_url(home_url('/')); ?>" rel="home" class="rh-cover-masthead__wordmark-link">
+            <span class="rh-cover-masthead__wordmark-text">Row<em>Home</em></span>
+        </a>
+        <span class="rh-cover-masthead__tagline-text">River to River. One Neighborhood.</span>
+    </div>
+
+    <!-- Cover lines (left, top:380) — 4 teaser rows from recent posts -->
+    <div class="rh-cover-masthead__lines" aria-label="<?php esc_attr_e('Inside this issue', 'rowhome-magazine'); ?>">
+        <span class="rh-cover-masthead__lines-eyebrow">Inside</span>
+        <?php
+        if ($lines_q->have_posts()) :
+            $line_num = 0;
+            while ($lines_q->have_posts()) : $lines_q->the_post();
+                $line_num++;
+                $line_page = 18 + ($line_num * 12);
+        ?>
+            <div class="rh-cover-masthead__line-item">
+                <a href="<?php the_permalink(); ?>" class="rh-cover-masthead__line-link">
+                    <?php the_title(); ?>
+                </a>
+                <span class="rh-cover-masthead__line-page">p.&nbsp;<?php echo $line_page; ?></span>
+            </div>
+        <?php
+            endwhile;
+            wp_reset_postdata();
+        else :
+            // Static fallback cover lines
+            $fallback_lines = array(
+                array('title' => 'The Best Row Homes in Fishtown', 'page' => 30),
+                array('title' => "South Philly's Hidden Restaurant Scene", 'page' => 42),
+                array('title' => 'How Local Art Is Reshaping the City', 'page' => 56),
+                array('title' => 'The 2025 Real Estate Outlook', 'page' => 68),
+            );
+            foreach ($fallback_lines as $line) :
+        ?>
+            <div class="rh-cover-masthead__line-item">
+                <span class="rh-cover-masthead__line-link"><?php echo esc_html($line['title']); ?></span>
+                <span class="rh-cover-masthead__line-page">p.&nbsp;<?php echo $line['page']; ?></span>
+            </div>
+        <?php
+            endforeach;
+        endif;
+        ?>
+    </div>
+
+    <!-- Cover headline (right, bottom:80) — the cover story -->
+    <div class="rh-cover-masthead__headline">
+        <?php if ($cover_kicker) : ?>
+            <span class="rh-cover-masthead__hed-tag"><?php echo esc_html($cover_kicker); ?></span>
+        <?php endif; ?>
+        <a href="<?php echo esc_url($cover_url); ?>" class="rh-cover-masthead__hed-link">
+            <h1 class="rh-cover-masthead__hed-title"><?php echo esc_html($cover_title); ?></h1>
+        </a>
+    </div>
+
+    <!-- Bottom nav strip with backdrop blur -->
+    <nav class="rh-cover-masthead__nav" aria-label="<?php esc_attr_e('Section navigation', 'rowhome-magazine'); ?>">
+        <div class="rh-cover-masthead__nav-sections">
+            <?php foreach ($nav_sections as $label => $url) : ?>
+                <a href="<?php echo esc_url($url); ?>" class="rh-cover-masthead__nav-link">
+                    <?php echo esc_html($label); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+        <span class="rh-cover-masthead__nav-hint">&#8595; Scroll for the issue</span>
+    </nav>
+</div><!-- .rh-cover-masthead -->
+
+<main id="main" class="rh-homepage-main" tabindex="-1">
+
+<!-- ================================================================
+     2. IN THIS ISSUE
+     Left col: heading. Right col: 2-col grid of 6 ContentsRow items.
+     Spec: §2.1 section 2, §3.3
+     ================================================================ -->
+<section class="rh-in-this-issue rh-section" aria-labelledby="rh-in-this-issue-heading">
+    <div class="rh-container">
+        <div class="rh-in-this-issue__inner">
+
+            <!-- Left: heading (sticky) -->
+            <div class="rh-in-this-issue__left">
+                <h2 id="rh-in-this-issue-heading" class="rh-in-this-issue__issue-label">In This Issue</h2>
+                <p class="rh-in-this-issue__issue-meta">Issue 03 &middot; Feb 2026</p>
+            </div>
+
+            <!-- Right: 2-col ContentsRow grid -->
+            <div class="rh-in-this-issue__grid">
+                <?php
+                if ($contents_q->have_posts()) :
+                    $row_num = 0;
+                    while ($contents_q->have_posts()) : $contents_q->the_post();
+                        $row_num++;
+                        $row_page   = 18 + ($row_num * 12);
+                        $row_terms  = get_the_terms(get_the_ID(), 'department_category');
+                        $row_kicker = ($row_terms && !is_wp_error($row_terms)) ? $row_terms[0]->name : 'Feature';
+                ?>
+                    <a href="<?php the_permalink(); ?>" class="rh-contents-row-link">
+                        <div class="rh-contents-row">
+                            <span class="rh-contents-row__number"><?php echo str_pad($row_num, 2, '0', STR_PAD_LEFT); ?></span>
+                            <div class="rh-contents-row__body">
+                                <span class="rh-eyebrow"><?php echo esc_html($row_kicker); ?></span>
+                                <p class="rh-contents-row__headline"><?php the_title(); ?></p>
+                                <span class="rh-byline">By <?php the_author(); ?></span>
+                            </div>
+                            <span class="rh-contents-row__page">p.&nbsp;<?php echo $row_page; ?></span>
+                        </div>
+                    </a>
+                <?php
+                    endwhile;
+                    wp_reset_postdata();
+                else :
+                    // Static fallback for 6 contents rows
+                    $fallback_contents = array(
+                        array('kicker' => 'Life',        'title' => 'Skinny Cheesesteaks: A Family Tradition',  'author' => 'Dorette Rota Jackson'),
+                        array('kicker' => 'Real Estate', 'title' => 'The Row Home Resurgence of Fishtown',       'author' => 'Maria Gonzalez'),
+                        array('kicker' => 'Music & Art', 'title' => "Philadelphia's Mural Arts at 40",           'author' => 'Anthony Panvini'),
+                        array('kicker' => 'Menu',        'title' => 'Best New Restaurants of the Year',          'author' => 'Robert Chen'),
+                        array('kicker' => 'Sports',      'title' => "Eagles' Road to the Postseason",            'author' => 'James Mitchell'),
+                        array('kicker' => 'Community',   'title' => 'Neighbors Building the City They Love',     'author' => 'Lisa Tran'),
+                    );
+                    foreach ($fallback_contents as $idx => $item) :
+                        $row_num  = $idx + 1;
+                        $row_page = 18 + ($row_num * 12);
+                ?>
+                    <div class="rh-contents-row">
+                        <span class="rh-contents-row__number"><?php echo str_pad($row_num, 2, '0', STR_PAD_LEFT); ?></span>
+                        <div class="rh-contents-row__body">
+                            <span class="rh-eyebrow"><?php echo esc_html($item['kicker']); ?></span>
+                            <p class="rh-contents-row__headline"><?php echo esc_html($item['title']); ?></p>
+                            <span class="rh-byline">By <?php echo esc_html($item['author']); ?></span>
+                        </div>
+                        <span class="rh-contents-row__page">p.&nbsp;<?php echo $row_page; ?></span>
+                    </div>
+                <?php
+                    endforeach;
+                endif;
+                ?>
+            </div><!-- .rh-in-this-issue__grid -->
+        </div><!-- .rh-in-this-issue__inner -->
+    </div><!-- .rh-container -->
+</section><!-- .rh-in-this-issue -->
+
+<!-- ================================================================
+     3. SPONSOR STRIP
+     970×90 leaderboard. Hidden when .rh-density-subtle on root.
+     Spec: §2.1 section 3, §3.7
+     ================================================================ -->
+<div class="rh-sponsor-strip" aria-label="<?php esc_attr_e('Advertisement', 'rowhome-magazine'); ?>">
+    <div class="rh-ad rh-ad--leader" aria-label="Advertisement · 970 × 90">
+        Advertisement &middot; 970 &times; 90
     </div>
 </div>
 
-<div class="container">
+<!-- ================================================================
+     4. THE HOT LIST
+     Section header w/ rule lines.
+     3-col grid: hero StoryCard (xl) | 2 stacked StoryCards (m) | sidebar
+     Sidebar: 300×300 ad + 3 TickerItems (most read)
+     Spec: §2.1 section 4, §3.4, §3.5
+     ================================================================ -->
+<section class="rh-hot-list rh-section" aria-labelledby="rh-hot-list-heading">
+    <div class="rh-container">
 
-    <!-- Combined LIFE & HOTSPOTS Section with Shared Banner -->
-    <div class="section-with-shared-banner">
-        <div class="main-content-sections">
-            
-            <!-- LIFE Section -->
-            <section class="life-section">
-                <div class="section-header">
-                    <h2 class="section-title">PRH LIFE</h2>
-                </div>
-                
-                <div class="article-grid grid-3">
-                    <?php
-                    // Get recent LIFE articles
-                    $life_query = new WP_Query(array(
-                        'posts_per_page' => 3,
-                        'post_type' => array('post', 'department'),
-                        'tax_query' => array(
-                            array(
-                                'taxonomy' => 'department_category',
-                                'field' => 'slug',
-                                'terms' => 'dept-life',
-                            ),
-                        ),
-                    ));
-                    
-                    if ($life_query->have_posts()) :
-                        while ($life_query->have_posts()) : $life_query->the_post();
-                    ?>
-                        <a href="<?php the_permalink(); ?>" class="article-card-link">
-                        <article class="article-card with-vertical-label">
-                            <?php
-                            $life_terms = get_the_terms(get_the_ID(), 'department_category');
-                            $life_label = 'LIFE';
-                            if (!empty($life_terms) && !is_wp_error($life_terms)) {
-                                $life_dept_slugs = array('dept-life', 'dept-health', 'dept-fashion', 'dept-brides-guide', 'dept-community', 'dept-writers-block');
-                                foreach ($life_terms as $term) {
-                                    if (in_array($term->slug, $life_dept_slugs, true)) {
-                                        $life_label = strtoupper($term->name);
-                                        break;
-                                    }
-                                }
-                            }
-                            ?>
-                            <span class="vertical-label"><?php echo esc_html($life_label); ?></span>
-                            <?php if (has_post_thumbnail()) : ?>
-                                <div class="article-image">
-                                    <?php the_post_thumbnail('rowhome-article-card'); ?>
-                                </div>
-                            <?php else : ?>
-                                <div class="article-image">
-                                    <img src="https://placehold.co/400x300/cccccc/333333?text=LIFE" alt="<?php the_title_attribute(); ?>" loading="lazy">
-                                </div>
-                            <?php endif; ?>
-                            <div class="article-content">
-                                <div class="article-author-avatar">
-                                    <?php echo get_avatar(get_the_author_meta('ID'), 50); ?>
-                                </div>
-                                <div class="article-text">
-                                    <h4 class="article-title"><?php the_title(); ?></h4>
-                                    <div class="article-excerpt"><?php echo wp_trim_words(get_the_excerpt(), 12); ?></div>
-                                </div>
+        <!-- Section header with rule lines -->
+        <div class="rh-section-header rh-section-header--ruled">
+            <h2 id="rh-hot-list-heading" class="rh-section-header__title">The Hot List</h2>
+        </div>
+
+        <div class="rh-hot-list__grid">
+
+            <!-- Col 1: Hero StoryCard (xl) -->
+            <?php
+            $hot_posts = array();
+            if ($hot_q->have_posts()) :
+                while ($hot_q->have_posts()) : $hot_q->the_post();
+                    $hot_posts[] = array(
+                        'id'      => get_the_ID(),
+                        'title'   => get_the_title(),
+                        'url'     => get_permalink(),
+                        'image'   => get_the_post_thumbnail_url(null, 'rowhome-article-card'),
+                        'author'  => get_the_author(),
+                        'kicker'  => '',
+                    );
+                    $ht = get_the_terms(get_the_ID(), 'department_category');
+                    if ($ht && !is_wp_error($ht)) {
+                        $hot_posts[count($hot_posts) - 1]['kicker'] = $ht[0]->name;
+                    }
+                endwhile;
+                wp_reset_postdata();
+            endif;
+
+            // Fallback posts for empty installs
+            if (empty($hot_posts)) {
+                $hot_posts = array(
+                    array('id' => 0, 'title' => "Philadelphia's Best Neighborhoods for Row Home Buyers", 'url' => home_url('/'), 'image' => '', 'author' => 'Maria Gonzalez',    'kicker' => 'Real Estate'),
+                    array('id' => 0, 'title' => 'Top Cheesesteak Spots Ranked by Locals',                'url' => home_url('/'), 'image' => '', 'author' => 'Robert Chen',       'kicker' => 'Menu'),
+                    array('id' => 0, 'title' => 'Eagles Pre-Season Predictions from the Experts',        'url' => home_url('/'), 'image' => '', 'author' => 'James Mitchell',     'kicker' => 'Sports'),
+                );
+            }
+
+            $hero = $hot_posts[0];
+            $hero_img = $hero['image'] ?: 'https://placehold.co/800x600/0c0c0c/fefdfa?text=Hot+List';
+            ?>
+            <a href="<?php echo esc_url($hero['url']); ?>" class="rh-story-card-link">
+                <article class="rh-story-card rh-story-card--xl">
+                    <div class="rh-story-card__image">
+                        <?php if ($hero['kicker']) : ?>
+                            <span class="rh-tag rh-story-card__tag"><?php echo esc_html($hero['kicker']); ?></span>
+                        <?php endif; ?>
+                        <img src="<?php echo esc_url($hero_img); ?>"
+                             alt="<?php echo esc_attr($hero['title']); ?>"
+                             loading="lazy"
+                             class="rh-photo">
+                    </div>
+                    <div class="rh-story-card__body">
+                        <?php if ($hero['kicker']) : ?>
+                            <span class="rh-eyebrow"><?php echo esc_html($hero['kicker']); ?></span>
+                        <?php endif; ?>
+                        <h3 class="rh-story-card__headline"><?php echo esc_html($hero['title']); ?></h3>
+                        <span class="rh-byline">By <?php echo esc_html($hero['author']); ?></span>
+                    </div>
+                </article>
+            </a>
+
+            <!-- Col 2: 2 stacked StoryCards (m) -->
+            <div class="rh-hot-list__stacked">
+                <?php
+                $stacked = array_slice($hot_posts, 1, 2);
+                if (count($stacked) < 2) {
+                    // Pad with extra fallback items
+                    $stacked_fallbacks = array(
+                        array('title' => 'Center City Dining Guide 2026', 'url' => home_url('/'), 'image' => '', 'author' => 'Lisa Tran', 'kicker' => 'Menu'),
+                        array('title' => 'Art Galleries Worth the Trip This Month', 'url' => home_url('/'), 'image' => '', 'author' => 'Anthony Panvini', 'kicker' => 'Arts'),
+                    );
+                    $stacked = array_pad($stacked, 2, null);
+                    for ($i = 0; $i < 2; $i++) {
+                        if (is_null($stacked[$i])) {
+                            $stacked[$i] = $stacked_fallbacks[$i];
+                        }
+                    }
+                }
+                foreach ($stacked as $card) :
+                    if (!$card) continue;
+                    $card_img = !empty($card['image']) ? $card['image'] : 'https://placehold.co/800x600/0c0c0c/fefdfa?text=Story';
+                ?>
+                    <a href="<?php echo esc_url($card['url']); ?>" class="rh-story-card-link">
+                        <article class="rh-story-card rh-story-card--m">
+                            <div class="rh-story-card__image">
+                                <?php if (!empty($card['kicker'])) : ?>
+                                    <span class="rh-tag rh-story-card__tag"><?php echo esc_html($card['kicker']); ?></span>
+                                <?php endif; ?>
+                                <img src="<?php echo esc_url($card_img); ?>"
+                                     alt="<?php echo esc_attr($card['title']); ?>"
+                                     loading="lazy"
+                                     class="rh-photo">
+                            </div>
+                            <div class="rh-story-card__body">
+                                <?php if (!empty($card['kicker'])) : ?>
+                                    <span class="rh-eyebrow"><?php echo esc_html($card['kicker']); ?></span>
+                                <?php endif; ?>
+                                <h3 class="rh-story-card__headline"><?php echo esc_html($card['title']); ?></h3>
+                                <span class="rh-byline">By <?php echo esc_html($card['author']); ?></span>
                             </div>
                         </article>
+                    </a>
+                <?php endforeach; ?>
+            </div><!-- .rh-hot-list__stacked -->
+
+            <!-- Col 3: Sidebar — 300×300 ad + 3 TickerItems (Most Read) -->
+            <div class="rh-hot-list__sidebar rh-sidebar">
+
+                <!-- 300×300 ad -->
+                <div class="rh-sidebar-block">
+                    <div class="rh-ad rh-ad--rect" aria-label="Advertisement · 300 × 300">
+                        Advertisement &middot; 300 &times; 300
+                    </div>
+                </div>
+
+                <!-- Most Read ticker -->
+                <div class="rh-sidebar-block">
+                    <div class="rh-sidebar-block__label">Most Read</div>
+                    <?php
+                    if ($ticker_q->have_posts()) :
+                        $tick_num = 0;
+                        while ($ticker_q->have_posts()) : $ticker_q->the_post();
+                            $tick_num++;
+                            $tick_terms = get_the_terms(get_the_ID(), 'department_category');
+                            $tick_tag   = ($tick_terms && !is_wp_error($tick_terms)) ? $tick_terms[0]->name : '';
+                    ?>
+                        <a href="<?php the_permalink(); ?>" class="rh-ticker-item-link">
+                            <div class="rh-ticker-item">
+                                <span class="rh-ticker-item__index"><?php echo str_pad($tick_num, 2, '0', STR_PAD_LEFT); ?></span>
+                                <div>
+                                    <?php if ($tick_tag) : ?>
+                                        <span class="rh-eyebrow"><?php echo esc_html($tick_tag); ?></span>
+                                    <?php endif; ?>
+                                    <p class="rh-ticker-item__headline"><?php the_title(); ?></p>
+                                    <span class="rh-ticker-item__byline">By <?php the_author(); ?></span>
+                                </div>
+                            </div>
                         </a>
                     <?php
                         endwhile;
                         wp_reset_postdata();
                     else :
-                        // Fallback placeholder articles
-                        for ($i = 1; $i <= 3; $i++) :
-                            $labels = array('LIFE', 'LIFE', 'LIFE');
+                        $ticker_fallbacks = array(
+                            array('kicker' => 'Life',    'title' => 'Skinny Cheesesteaks: A Family Tradition', 'author' => 'Dorette Rota Jackson'),
+                            array('kicker' => 'Sports',  'title' => 'Eagles Playoff Preview 2026',              'author' => 'James Mitchell'),
+                            array('kicker' => 'Menu',    'title' => 'Where to Brunch in South Philly',          'author' => 'Robert Chen'),
+                        );
+                        foreach ($ticker_fallbacks as $ti => $t) :
                     ?>
-                        <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
-                        <article class="article-card with-vertical-label">
-                            <span class="vertical-label"><?php echo $labels[$i-1]; ?></span>
-                            <div class="article-image">
-                                <img src="https://placehold.co/400x300/cccccc/ffffff?text=LIFE+<?php echo $i; ?>" alt="Life Article <?php echo $i; ?>" loading="lazy">
+                        <div class="rh-ticker-item">
+                            <span class="rh-ticker-item__index"><?php echo str_pad($ti + 1, 2, '0', STR_PAD_LEFT); ?></span>
+                            <div>
+                                <span class="rh-eyebrow"><?php echo esc_html($t['kicker']); ?></span>
+                                <p class="rh-ticker-item__headline"><?php echo esc_html($t['title']); ?></p>
+                                <span class="rh-ticker-item__byline">By <?php echo esc_html($t['author']); ?></span>
                             </div>
-                            <div class="article-content">
-                                <div class="article-author-avatar">
-                                    <div style="width: 50px; height: 50px; border-radius: 50%; background: #ccc;"></div>
-                                </div>
-                                <div class="article-text">
-                                    <h4 class="article-title">Philadelphia Life Story <?php echo $i; ?></h4>
-                                    <div class="article-excerpt">Discover the vibrant stories that make Philadelphia unique and special...</div>
-                                </div>
-                            </div>
-                        </article>
-                        </a>
+                        </div>
                     <?php
-                        endfor;
+                        endforeach;
                     endif;
                     ?>
-                </div>
-            </section>
+                </div><!-- .rh-sidebar-block (ticker) -->
+            </div><!-- .rh-hot-list__sidebar -->
 
-            <!-- 2025 HOTSPOTS Section -->
-            <section class="hotspots-section">
-                <div class="section-header">
-                    <h2 class="section-title">PRH 2025 HOTSPOTS</h2>
-                </div>
-                
-                <h3 class="hotspots-decorative-title">Hot Spots</h3>
-                
-                <div class="hotspots-content">
-                    <div class="hotspots-text">
-                        <?php
-                        $hotspots_query = new WP_Query(array(
-                            'posts_per_page' => 1,
-                            'post_type' => array('post', 'department'),
-                            'tax_query' => array(
-                                array(
-                                    'taxonomy' => 'department_category',
-                                    'field' => 'slug',
-                                    'terms' => 'dept-2025-hotspots',
-                                ),
-                            ),
-                        ));
-                        $hotspots_thumb = '';
-                        if ($hotspots_query->have_posts()) :
-                            while ($hotspots_query->have_posts()) : $hotspots_query->the_post();
-                                $hotspots_thumb = get_the_post_thumbnail(null, 'rowhome-article-card', array('alt' => 'Philadelphia Hotspots', 'loading' => 'lazy'));
-                        ?>
-                            <h3><?php the_title(); ?></h3>
-                            <?php the_excerpt(); ?>
-                            <?php rowhome_magazine_article_meta(); ?>
-                        <?php
-                            endwhile;
-                            wp_reset_postdata();
-                        else :
-                        ?>
-                            <h3>Discover Philadelphia's Newest Hotspots</h3>
-                            <p>From trendy restaurants to hidden speakeasies, explore the latest openings and events taking the city by storm. Our curated guide brings you the best new venues, pop-ups, and cultural experiences happening right now.</p>
-                            <p>Whether you're looking for the perfect date night spot, a new weekend brunch destination, or the hottest entertainment venue, we've got you covered with insider tips and exclusive previews.</p>
-                            <p>Check back regularly as we update our list with the freshest additions to Philadelphia's vibrant scene.</p>
-                        <?php endif; ?>
-                    </div>
+        </div><!-- .rh-hot-list__grid -->
+    </div><!-- .rh-container -->
+</section><!-- .rh-hot-list -->
 
-                    <div class="hotspots-image">
-                        <?php if ($hotspots_thumb) : ?>
-                            <?php echo $hotspots_thumb; ?>
-                        <?php else : ?>
-                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/hero-2.jpg'); ?>" alt="Philadelphia Hotspots" loading="lazy">
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </section>
-            
-        </div>
-        
-        <!-- Shared Sidebar Ad Banner -->
-        <div class="shared-sidebar-ad">
-            <?php rowhome_magazine_display_adsense_ad('', 'auto', 'responsive', 'vertical-ad', true); ?>
-        </div>
-    </div>
+<!-- ================================================================
+     5. DEPARTMENT SPOTLIGHTS
+     3 tinted panels: Food (Menu dept) / Real Estate / Arts (Music & Art)
+     Each: image + h3 + dek + "Read All →"
+     Tints are data-driven via CSS custom properties.
+     Spec: §2.1 section 5
+     ================================================================ -->
+<section class="rh-dept-spotlights-section rh-section" aria-labelledby="rh-spotlights-heading">
+    <div class="rh-container">
+        <h2 id="rh-spotlights-heading" class="rh-section-header__title" style="text-align:center;margin-bottom:32px;">
+            Department Spotlights
+        </h2>
+        <div class="rh-dept-spotlights">
 
-    <!-- BUSINESS Section -->
-    <section class="business-section">
-        <div class="section-header">
-            <h2 class="section-title">PRH BUSINESS</h2>
-        </div>
-        
-        <div class="business-featured-layout">
-            <div class="business-title-section">
-                <h2 class="business-large-title">VICTOR<br>DELLA<br>BARBA</h2>
-                <p class="business-subtitle">LOCAL ARTIST TURNS <span class="highlight-text">IDEAS</span> INTO <span class="highlight-text">VISIONS</span></p>
-                <div class="business-logo">
-                    <img src="https://placehold.co/200x100/ffffff/000000?text=Victor+Co" alt="Business Logo" loading="lazy">
-                </div>
-            </div>
-            
-            <div class="business-images">
-                <div class="business-image-grid">
-                    <img src="https://placehold.co/350x250/4a90e2/ffffff?text=Business+Image+1" alt="Business Feature 1" loading="lazy">
-                    <img src="https://placehold.co/350x250/e74c3c/ffffff?text=Business+Image+2" alt="Business Feature 2" loading="lazy">
-                </div>
-            </div>
-        </div>
-        
-        <div class="business-text-content">
             <?php
-            $business_query = new WP_Query(array(
-                'posts_per_page' => 1,
-                'post_type' => array('post', 'department'),
-                'tax_query' => array(
-                    array(
-                        'taxonomy' => 'department_category',
-                        'field' => 'slug',
-                        'terms' => 'dept-business',
-                    ),
-                ),
-            ));
-            
-            if ($business_query->have_posts()) :
-                while ($business_query->have_posts()) : $business_query->the_post();
-                    the_excerpt();
-                endwhile;
-                wp_reset_postdata();
-            else :
-            ?>
-                <p>Philadelphia's business community continues to thrive with innovative entrepreneurs and established companies working together to build a stronger economic future. From tech startups in University City to manufacturing in the Northeast, our city's diverse business landscape offers opportunities for growth and collaboration.</p>
-                <p>Local business leaders are investing in their communities, creating jobs, and fostering innovation that puts Philadelphia on the map as a destination for business excellence.</p>
-            <?php endif; ?>
-        </div>
-    </section>
-
-    <!-- HEALTH Section -->
-    <section class="health-section">
-        <div class="section-header">
-            <h2 class="section-title">PRH HEALTH</h2>
-        </div>
-        
-        <div class="article-grid grid-2">
-            <?php
-            $health_query = new WP_Query(array(
-                'posts_per_page' => 2,
-                'post_type' => array('post', 'department'),
-                'tax_query' => array(
-                    array(
-                        'taxonomy' => 'department_category',
-                        'field' => 'slug',
-                        'terms' => 'dept-health',
-                    ),
-                ),
-            ));
-            
-            if ($health_query->have_posts()) :
-                while ($health_query->have_posts()) : $health_query->the_post();
-            ?>
-                <a href="<?php the_permalink(); ?>" class="article-card-link">
-                <article class="article-card with-vertical-label">
-                    <span class="vertical-label">HEALTH</span>
-                    <?php if (has_post_thumbnail()) : ?>
-                        <div class="article-image">
-                            <?php the_post_thumbnail('rowhome-article-card'); ?>
-                        </div>
-                    <?php else : ?>
-                        <div class="article-image">
-                            <img src="https://placehold.co/400x300/cccccc/333333?text=HEALTH" alt="<?php the_title_attribute(); ?>">
-                        </div>
-                    <?php endif; ?>
-                    <div class="article-content">
-                        <div class="article-author-avatar">
-                            <?php echo get_avatar(get_the_author_meta('ID'), 60); ?>
-                        </div>
-                        <div class="article-text">
-                            <h4 class="article-title"><?php the_title(); ?></h4>
-                            <div class="article-excerpt"><?php echo wp_trim_words(get_the_excerpt(), 20); ?></div>
-                        </div>
-                    </div>
-                </article>
-                </a>
-            <?php
-                endwhile;
-                wp_reset_postdata();
-            else :
-                for ($i = 1; $i <= 2; $i++) :
-            ?>
-                <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
-                <article class="article-card with-vertical-label">
-                    <span class="vertical-label">HEALTH</span>
-                    <div class="article-image">
-                        <img src="https://placehold.co/400x300/cccccc/ffffff?text=HEALTH+<?php echo $i; ?>" alt="Health Article <?php echo $i; ?>" loading="lazy">
-                    </div>
-                    <div class="article-content">
-                        <div class="article-author-avatar">
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: #ccc;"></div>
-                        </div>
-                        <div class="article-text">
-                            <h4 class="article-title">Philadelphia Health & Wellness Story <?php echo $i; ?></h4>
-                            <div class="article-excerpt">Discover the latest health trends and wellness advice from local experts helping our community stay healthy and active...</div>
-                        </div>
-                    </div>
-                </article>
-                </a>
-            <?php
-                endfor;
-            endif;
-            ?>
-        </div>
-    </section>
-
-    <!-- REAL ESTATE Section -->
-    <section class="real-estate-section">
-        <div class="section-header">
-            <h2 class="section-title">PRH REAL ESTATE</h2>
-        </div>
-        
-        <p class="section-tagline">River to River. One Neighborhood.</p>
-        
-        <div class="article-grid grid-4">
-            <?php
-            $realestate_query = new WP_Query(array(
-                'posts_per_page' => 4,
-                'post_type' => array('post', 'department'),
-                'tax_query' => array(
-                    array(
-                        'taxonomy' => 'department_category',
-                        'field' => 'slug',
-                        'terms' => 'dept-real-estate',
-                    ),
-                ),
-            ));
-            
-            if ($realestate_query->have_posts()) :
-                while ($realestate_query->have_posts()) : $realestate_query->the_post();
-            ?>
-                <a href="<?php the_permalink(); ?>" class="article-card-link">
-                <article class="article-card with-vertical-label real-estate-card">
-                    <span class="vertical-label">REAL ESTATE</span>
-                    <?php if (has_post_thumbnail()) : ?>
-                        <div class="article-image">
-                            <?php the_post_thumbnail('rowhome-article-card'); ?>
-                        </div>
-                    <?php else : ?>
-                        <div class="article-image">
-                            <img src="https://placehold.co/400x300/cccccc/333333?text=REAL+ESTATE" alt="<?php the_title_attribute(); ?>">
-                        </div>
-                    <?php endif; ?>
-                    <div class="article-content">
-                        <div class="article-author-avatar">
-                            <?php echo get_avatar(get_the_author_meta('ID'), 60); ?>
-                        </div>
-                        <div class="article-text">
-                            <h5 class="article-title"><?php the_title(); ?></h5>
-                            <p class="article-subtitle">by <?php $re_author = trim(get_the_author() ?? ''); echo esc_html($re_author !== '' ? $re_author : 'RowHome Staff'); ?></p>
-                            <div class="article-excerpt"><?php echo wp_trim_words(get_the_excerpt(), 15); ?></div>
-                        </div>
-                    </div>
-                </article>
-                </a>
-            <?php
-                endwhile;
-                wp_reset_postdata();
-            else :
-                for ($i = 1; $i <= 4; $i++) :
-            ?>
-                <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
-                <article class="article-card with-vertical-label real-estate-card">
-                    <span class="vertical-label">REAL ESTATE</span>
-                    <div class="article-image">
-                        <img src="https://placehold.co/400x300/cccccc/ffffff?text=REAL+ESTATE+<?php echo $i; ?>" alt="Real Estate <?php echo $i; ?>" loading="lazy">
-                    </div>
-                    <div class="article-content">
-                        <div class="article-author-avatar">
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: #ccc;"></div>
-                        </div>
-                        <div class="article-text">
-                            <h5 class="article-title">Philadelphia Property Listing <?php echo $i; ?></h5>
-                            <p class="article-subtitle">by Real Estate Agent</p>
-                            <div class="article-excerpt">Discover amazing properties in Philadelphia's most sought-after neighborhoods. From historic row homes to modern condos...</div>
-                        </div>
-                    </div>
-                </article>
-                </a>
-            <?php
-                endfor;
-            endif;
-            ?>
-        </div>
-    </section>
-
-</div>
-
-<!-- Web Banner Below Real Estate -->
-<?php rowhome_magazine_display_adsense_ad('', 'auto', 'responsive', '', true); ?>
-
-<div class="container">
-    
-    <!-- MENU Section -->
-    <section class="menu-section">
-        <div class="section-header">
-            <h2 class="section-title">PRH MENU</h2>
-        </div>
-        
-        <h3 class="menu-decorative-title">Hot Spots</h3>
-        
-        <div class="article-grid grid-4">
-            <?php
-            $menu_query = new WP_Query(array(
-                'posts_per_page' => 4,
-                'post_type' => array('post', 'department'),
-                'tax_query' => array(
-                    array(
-                        'taxonomy' => 'department_category',
-                        'field' => 'slug',
-                        'terms' => 'dept-menu',
-                    ),
-                ),
-            ));
-            
-            if ($menu_query->have_posts()) :
-                while ($menu_query->have_posts()) : $menu_query->the_post();
-            ?>
-                <a href="<?php the_permalink(); ?>" class="article-card-link">
-                <article class="article-card with-vertical-label menu-card">
-                    <span class="vertical-label vertical-label-green">MENU</span>
-                    <?php if (has_post_thumbnail()) : ?>
-                        <div class="article-image">
-                            <?php the_post_thumbnail('rowhome-article-card'); ?>
-                        </div>
-                    <?php else : ?>
-                        <div class="article-image">
-                            <img src="https://placehold.co/400x300/cccccc/333333?text=MENU" alt="<?php the_title_attribute(); ?>">
-                        </div>
-                    <?php endif; ?>
-                    <div class="article-content">
-                        <h5 class="article-title"><?php the_title(); ?></h5>
-                        <div class="article-excerpt"><?php echo wp_trim_words(get_the_excerpt(), 25); ?></div>
-                    </div>
-                </article>
-                </a>
-            <?php
-                endwhile;
-                wp_reset_postdata();
-            else :
-                for ($i = 1; $i <= 4; $i++) :
-                    $menu_titles = array(
-                        'Best New Restaurants in South Philly',
-                        'Hidden Gem Cafes You Need to Try',
-                        'Top Brunch Spots for Weekends',
-                        'Late Night Eats in Center City'
-                    );
-            ?>
-                <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
-                <article class="article-card with-vertical-label menu-card">
-                    <span class="vertical-label vertical-label-green">MENU</span>
-                    <div class="article-image">
-                        <img src="https://placehold.co/400x300/cccccc/ffffff?text=MENU+<?php echo $i; ?>" alt="Menu <?php echo $i; ?>" loading="lazy">
-                    </div>
-                    <div class="article-content">
-                        <h5 class="article-title"><?php echo esc_html($menu_titles[$i-1]); ?></h5>
-                        <div class="article-excerpt">Explore Philadelphia's vibrant culinary scene with our curated guide to the best dining experiences. From classic cheesesteaks to innovative fusion cuisine, discover the flavors that make our city unique. Each recommendation comes from local food lovers who know where to find the best meals in town.</div>
-                    </div>
-                </article>
-                </a>
-            <?php
-                endfor;
-            endif;
-            ?>
-        </div>
-    </section>
-    
-    <!-- BRIDES GUIDE Section -->
-    <section class="brides-guide-section">
-        <div class="section-header">
-            <h2 class="section-title">PRH BRIDES GUIDE</h2>
-        </div>
-        
-        <!-- Featured Content -->
-        <?php
-        $brides_featured_query = new WP_Query(array(
-            'posts_per_page' => 1,
-            'post_type' => array('post', 'department'),
-            'tax_query' => array(
+            $spotlights = array(
                 array(
-                    'taxonomy' => 'department_category',
-                    'field' => 'slug',
-                    'terms' => 'dept-brides-guide',
+                    'query'   => $spotlight_food_q,
+                    'class'   => 'rh-dept-spotlight--food',
+                    'dept'    => 'Menu',
+                    'slug'    => 'dept-menu',
+                    'fallback_title' => "Philadelphia's Hottest Restaurants",
+                    'fallback_dek'   => "From South Street to Fishtown, discover the dining experiences shaping the city's food scene this season.",
+                    'fallback_img'   => 'https://placehold.co/800x600/f8e7e0/0c0c0c?text=Menu',
                 ),
-            ),
-        ));
-        $brides_featured_thumb = '';
-        if ($brides_featured_query->have_posts()) :
-            while ($brides_featured_query->have_posts()) : $brides_featured_query->the_post();
-                $brides_featured_thumb = get_the_post_thumbnail(null, 'rowhome-article-card', array('alt' => 'Brides Guide Featured', 'loading' => 'lazy'));
-            endwhile;
-            wp_reset_postdata();
-        endif;
-        ?>
-        <div class="brides-featured-content">
-            <div class="brides-featured-image">
-                <?php if ($brides_featured_thumb) : ?>
-                    <?php echo $brides_featured_thumb; ?>
-                <?php else : ?>
-                    <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/about-hero.jpg'); ?>" alt="Brides Guide Featured" loading="lazy">
-                <?php endif; ?>
-            </div>
-            <div class="brides-featured-text">
-                <h3>Your Perfect Philadelphia Wedding</h3>
-                <h4>Everything You Need to Plan Your Special Day</h4>
-                <p>From stunning venues along the Schuylkill River to historic mansions in Fairmount Park, discover the perfect setting for your wedding celebration.</p>
-                <p>Our comprehensive guide features the city's top wedding vendors, including photographers, florists, caterers, and planners who specialize in creating unforgettable moments.</p>
-                <p>Whether you're planning an intimate ceremony or a grand celebration, find inspiration and resources to make your Philadelphia wedding dreams come true.</p>
-            </div>
-        </div>
-        
-        <!-- Grid with Sidebar -->
-        <div class="brides-grid-with-banner">
-            <div class="brides-image-grid">
-                <?php
-                $brides_query = new WP_Query(array(
-                    'posts_per_page' => 8,
-                    'post_type' => array('post', 'department'),
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'department_category',
-                            'field' => 'slug',
-                            'terms' => 'dept-brides-guide',
-                        ),
-                    ),
-                ));
-                
-                if ($brides_query->have_posts()) :
-                    $count = 0;
-                    while ($brides_query->have_posts()) : $brides_query->the_post();
-                        $count++;
-                        if ($count == 5) : ?>
-                            <div class="philly-logo-overlay">
-                                <div class="philly-logo">Philly</div>
-                            </div>
-                        <?php endif;
-                ?>
-                    <a href="<?php the_permalink(); ?>" class="article-card-link">
-                    <div class="brides-grid-image">
-                        <?php if (has_post_thumbnail()) : ?>
-                            <?php the_post_thumbnail('rowhome-small-card'); ?>
-                        <?php else : ?>
-                            <img src="https://placehold.co/300x300/cccccc/ffffff?text=Bride+<?php echo $count; ?>" alt="Bride <?php echo $count; ?>" loading="lazy">
-                        <?php endif; ?>
-                    </div>
-                    </a>
-                <?php
-                    endwhile;
+                array(
+                    'query'   => $spotlight_re_q,
+                    'class'   => 'rh-dept-spotlight--real-estate',
+                    'dept'    => 'Real Estate',
+                    'slug'    => 'dept-real-estate',
+                    'fallback_title' => 'The Row Home Market Is Booming',
+                    'fallback_dek'   => "Philadelphia's historic housing stock is seeing renewed interest. Here's what buyers and sellers need to know right now.",
+                    'fallback_img'   => 'https://placehold.co/800x600/e6e9e3/0c0c0c?text=Real+Estate',
+                ),
+                array(
+                    'query'   => $spotlight_arts_q,
+                    'class'   => 'rh-dept-spotlight--arts',
+                    'dept'    => 'Music & Art',
+                    'slug'    => 'dept-music-art',
+                    'fallback_title' => 'Local Artists Transforming the City',
+                    'fallback_dek'   => 'Murals, music venues, and gallery openings — the arts are alive across every Philadelphia neighborhood.',
+                    'fallback_img'   => 'https://placehold.co/800x600/eee4d8/0c0c0c?text=Music+%26+Art',
+                ),
+            );
+
+            foreach ($spotlights as $sp) :
+                $sp_title  = $sp['fallback_title'];
+                $sp_dek    = $sp['fallback_dek'];
+                $sp_url    = home_url('/');
+                $sp_img    = $sp['fallback_img'];
+
+                if ($sp['query']->have_posts()) {
+                    $sp['query']->the_post();
+                    $sp_title = get_the_title();
+                    $sp_dek   = wp_trim_words(get_the_excerpt(), 20);
+                    $sp_url   = get_permalink();
+                    $sp_img   = get_the_post_thumbnail_url(null, 'rowhome-article-card') ?: $sp['fallback_img'];
                     wp_reset_postdata();
-                else :
-                    for ($i = 1; $i <= 8; $i++) :
-                        if ($i == 5) : ?>
-                            <div class="philly-logo-overlay">
-                                <div class="philly-logo">Philly</div>
-                            </div>
-                        <?php endif; ?>
-                        <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
-                        <div class="brides-grid-image">
-                            <img src="https://placehold.co/300x300/cccccc/ffffff?text=Bride+<?php echo $i; ?>" alt="Bride <?php echo $i; ?>" loading="lazy">
-                        </div>
-                        </a>
-                    <?php endfor;
-                endif;
-                ?>
-            </div>
-            
-            <!-- Web Banner -->
-            <div class="brides-sidebar-banner">
-                <?php rowhome_magazine_display_adsense_ad('', 'auto', 'responsive', 'vertical-ad', true); ?>
-            </div>
-        </div>
-    </section>
-
-    <!-- MUSIC & ART Section -->
-    <section class="music-art-section">
-        <div class="section-header">
-            <h2 class="section-title">PRH <span style="color: #5f8a8b;">MUSIC &amp; ART</span></h2>
-        </div>
-        
-        <div class="music-art-layout">
-            <!-- Left Web Banner -->
-            <div class="music-art-banner-left">
-                <?php rowhome_magazine_display_adsense_ad('', 'auto', 'responsive', 'vertical-ad', true); ?>
-            </div>
-            
-            <!-- Right Cards Grid -->
-            <div class="music-art-cards">
-                <?php
-                $music_query = new WP_Query(array(
-                    'posts_per_page' => 3,
-                    'post_type' => array('post', 'department'),
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'department_category',
-                            'field' => 'slug',
-                            'terms' => 'dept-music-art',
-                        ),
-                    ),
-                ));
-                
-                if ($music_query->have_posts()) :
-                    $count = 0;
-                    while ($music_query->have_posts()) : $music_query->the_post();
-                        $count++;
-                        $label = ($count % 2 == 0) ? 'ART' : 'MUSIC';
-                ?>
-                    <a href="<?php the_permalink(); ?>" class="article-card-link">
-                    <article class="article-card with-vertical-label">
-                        <span class="vertical-label vertical-label-teal"><?php echo $label; ?></span>
-                        <?php if (has_post_thumbnail()) : ?>
-                            <div class="article-image">
-                                <?php the_post_thumbnail('rowhome-article-card'); ?>
-                            </div>
-                        <?php else : ?>
-                            <div class="article-image">
-                                <img src="https://placehold.co/400x300/cccccc/ffffff?text=<?php echo $label; ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
-                            </div>
-                        <?php endif; ?>
-                        <div class="article-content">
-                            <div class="article-author-avatar">
-                                <?php echo get_avatar(get_the_author_meta('ID'), 60); ?>
-                            </div>
-                            <div class="article-text">
-                                <h4 class="article-title"><?php the_title(); ?></h4>
-                                <div class="article-excerpt"><?php echo wp_trim_words(get_the_excerpt(), 15); ?></div>
-                            </div>
-                        </div>
-                    </article>
+                }
+            ?>
+                <div class="rh-dept-spotlight <?php echo esc_attr($sp['class']); ?>">
+                    <img src="<?php echo esc_url($sp_img); ?>"
+                         alt="<?php echo esc_attr($sp_title); ?>"
+                         class="rh-dept-spotlight__image rh-photo"
+                         loading="lazy">
+                    <h3 class="rh-dept-spotlight__title"><?php echo esc_html($sp_title); ?></h3>
+                    <p class="rh-dept-spotlight__dek"><?php echo esc_html($sp_dek); ?></p>
+                    <a href="<?php echo esc_url(home_url('/department_category/' . $sp['slug'])); ?>"
+                       class="rh-dept-spotlight__cta">
+                        Read All &rarr;
                     </a>
-                <?php
-                    endwhile;
-                    wp_reset_postdata();
-                else :
-                    $labels = array('MUSIC', 'ART', 'MUSIC');
-                    for ($i = 1; $i <= 3; $i++) :
-                ?>
-                    <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
-                    <article class="article-card with-vertical-label">
-                        <span class="vertical-label vertical-label-teal"><?php echo $labels[$i-1]; ?></span>
-                        <div class="article-image">
-                            <img src="https://placehold.co/400x300/cccccc/ffffff?text=<?php echo $labels[$i-1]; ?>+<?php echo $i; ?>" alt="<?php echo $labels[$i-1]; ?> Article <?php echo $i; ?>">
-                        </div>
-                        <div class="article-content">
-                            <div class="article-author-avatar">
-                                <div style="width: 60px; height: 60px; border-radius: 50%; background: #ccc;"></div>
-                            </div>
-                            <div class="article-text">
-                                <h4 class="article-title">Philadelphia <?php echo $labels[$i-1]; ?> Story <?php echo $i; ?></h4>
-                                <div class="article-excerpt">Discover the vibrant <?php echo strtolower($labels[$i-1]); ?> scene in Philadelphia with local artists and performers...</div>
-                            </div>
-                        </div>
-                    </article>
-                    </a>
-                <?php
-                    endfor;
-                endif;
-                ?>
-            </div>
-        </div>
-        
-        <!-- Section Tagline -->
-        <p class="section-tagline">River to River: One Neighborhood.</p>
-    </section>
-
-</div>
-
-<!-- Web Banner Below Music & Art -->
-<?php rowhome_magazine_display_adsense_ad('', 'auto', 'responsive', '', true); ?>
-
-<div class="container">
-    
-    <!-- WRITERS BLOCK Section -->
-    <section class="writers-block-section">
-        <div class="section-header">
-            <h2 class="section-title">PRH <span style="color: #999999;">WRITERS BLOCK</span></h2>
-        </div>
-        
-        <div class="writers-block-grid">
-            <?php
-            $writers_query = new WP_Query(array(
-                'posts_per_page' => 2,
-                'post_type' => array('post', 'department'),
-                'tax_query' => array(
-                    array(
-                        'taxonomy' => 'department_category',
-                        'field' => 'slug',
-                        'terms' => 'dept-writers-block',
-                    ),
-                ),
-            ));
-            
-            if ($writers_query->have_posts()) :
-                while ($writers_query->have_posts()) : $writers_query->the_post();
-            ?>
-                <a href="<?php the_permalink(); ?>" class="article-card-link">
-                <article class="writers-block-card">
-                    <div class="writers-block-image">
-                        <?php if (has_post_thumbnail()) : ?>
-                            <?php the_post_thumbnail('rowhome-small-card'); ?>
-                        <?php else : ?>
-                            <img src="https://placehold.co/300x250/cccccc/ffffff?text=Writers+Block" alt="<?php the_title_attribute(); ?>">
-                        <?php endif; ?>
-                    </div>
-                    <div class="writers-block-content">
-                        <h4 class="writers-block-title"><?php the_title(); ?></h4>
-                        <div class="writers-block-excerpt"><?php echo wp_trim_words(get_the_excerpt(), 30); ?></div>
-                        <div class="writers-block-meta"><?php rowhome_magazine_article_meta(); ?></div>
-                    </div>
-                </article>
-                </a>
-            <?php
-                endwhile;
-                wp_reset_postdata();
-            else :
-                $writer_articles = array(
-                    'The Hidden History of Philadelphia Row Homes',
-                    'A Love Letter to South Philly'
-                );
-                foreach ($writer_articles as $index => $title) :
-            ?>
-                <a href="<?php echo esc_url(home_url('/subscribe/')); ?>" class="article-card-link">
-                <article class="writers-block-card">
-                    <div class="writers-block-image">
-                        <img src="https://placehold.co/300x250/cccccc/ffffff?text=Writers+Block" alt="<?php echo esc_attr($title); ?>">
-                    </div>
-                    <div class="writers-block-content">
-                        <h4 class="writers-block-title"><?php echo esc_html($title); ?></h4>
-                        <div class="writers-block-excerpt">Philadelphia's row homes tell stories that span generations — from immigrant neighborhoods to artist enclaves. Each block holds a different chapter of the city's living history, waiting to be explored and celebrated.</div>
-                        <div class="writers-block-meta">by <span class="article-author">Contributing Writer</span> | November 26, 2025</div>
-                    </div>
-                </article>
-                </a>
-            <?php
-                endforeach;
-            endif;
-            ?>
-        </div>
-    </section>
-
-    <!-- MAGAZINE AD'S DIRECTORY Section -->
-    <section class="magazine-ads-section">
-        <div class="section-header">
-            <h2 class="section-title">PRH<span style="color: #c9302c;">MAGAZINE AD'S DIRECTORY</span></h2>
-        </div>
-        
-        <div class="magazine-ads-grid">
-            <?php
-            // Query for ad directory items
-            $ads_query = new WP_Query(array(
-                'posts_per_page' => 8,
-                'post_type' => array('post', 'department'),
-                'tax_query' => array(
-                    array(
-                        'taxonomy' => 'department_category',
-                        'field' => 'slug',
-                        'terms' => 'magazine-ads',
-                    ),
-                ),
-            ));
-            
-            if ($ads_query->have_posts()) :
-                while ($ads_query->have_posts()) : $ads_query->the_post();
-            ?>
-                <a href="<?php the_permalink(); ?>" class="article-card-link">
-                <div class="magazine-ad-item">
-                    <?php if (has_post_thumbnail()) : ?>
-                        <?php the_post_thumbnail('rowhome-article-card'); ?>
-                    <?php else : ?>
-                        <img src="https://placehold.co/300x380/ffffff/000000?text=<?php echo urlencode(get_the_title()); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
-                    <?php endif; ?>
                 </div>
-                </a>
-            <?php
-                endwhile;
-                wp_reset_postdata();
-            else :
-                $ad_names = array(
-                    "D'Olivieri Jewelers",
-                    "Dimitri's",
-                    "Sciapode",
-                    "The Birthplace of Freedom",
-                    "Cescaphe",
-                    "Rivers Casino",
-                    "The Cutting Point",
-                    "Event Venue"
-                );
-                foreach ($ad_names as $ad_name) :
+            <?php endforeach; ?>
+
+        </div><!-- .rh-dept-spotlights -->
+    </div><!-- .rh-container -->
+</section><!-- .rh-dept-spotlights-section -->
+
+<!-- ================================================================
+     6. ALL DEPARTMENTS
+     Centered h2 + 21-item 3-col index grid (number / name / arrow)
+     Spec: §2.1 section 6
+     ================================================================ -->
+<section class="rh-all-depts rh-section" aria-labelledby="rh-all-depts-heading">
+    <div class="rh-container">
+        <h2 id="rh-all-depts-heading" class="rh-all-depts__heading">All Departments</h2>
+
+        <div class="rh-all-depts__grid">
+            <?php foreach ($all_departments as $idx => $dept) :
+                $dept_num  = str_pad($idx + 1, 2, '0', STR_PAD_LEFT);
+                $dept_slug = $dept['slug'];
+                $dept_url  = home_url('/department_category/' . $dept_slug);
             ?>
-                <a href="<?php echo esc_url(home_url('/advertise/')); ?>" class="article-card-link">
-                <div class="magazine-ad-item">
-                    <img src="https://placehold.co/300x380/ffffff/000000?text=<?php echo urlencode($ad_name); ?>" alt="<?php echo esc_attr($ad_name); ?>" loading="lazy">
-                </div>
+                <a href="<?php echo esc_url($dept_url); ?>" class="rh-dept-index-item">
+                    <span class="rh-dept-index-item__num"><?php echo esc_html($dept_num); ?></span>
+                    <span class="rh-dept-index-item__name"><?php echo esc_html($dept['name']); ?></span>
+                    <span class="rh-dept-index-item__arrow" aria-hidden="true">&rarr;</span>
                 </a>
-            <?php
-                endforeach;
-            endif;
-            ?>
-        </div>
-    </section>
+            <?php endforeach; ?>
+        </div><!-- .rh-all-depts__grid -->
+    </div><!-- .rh-container -->
+</section><!-- .rh-all-depts -->
 
-</div>
-
-<?php
-get_footer();
-?>
-
+<?php get_footer('homepage'); ?>

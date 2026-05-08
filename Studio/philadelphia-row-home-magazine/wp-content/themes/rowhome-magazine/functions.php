@@ -101,6 +101,9 @@ function rowhome_magazine_scripts() {
     // Enqueue Direction B component styles (SIR-775)
     wp_enqueue_style('rowhome-direction-b', get_template_directory_uri() . '/assets/css/direction-b.css', array('rowhome-tokens', 'rowhome-magazine-style'), '2.0.0');
 
+    // Enqueue Direction B homepage styles — CoverMasthead + sections (SIR-777)
+    wp_enqueue_style('rowhome-direction-b-homepage', get_template_directory_uri() . '/assets/css/direction-b-homepage.css', array('rowhome-direction-b'), '2.0.0');
+
     // Enqueue load-more and copy-link JS on all pages
     wp_enqueue_script('rowhome-load-more', get_template_directory_uri() . '/assets/js/load-more.js', array(), '1.0.0', true);
 
