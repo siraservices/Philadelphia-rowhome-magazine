@@ -924,7 +924,7 @@
 }
 
 .rh-article-hero__headline {
-    font-family: "Antic Didone", "Times New Roman", serif;
+    font-family: var(--rh-display);
     font-size: clamp(32px, 5vw, 72px);
     line-height: .96;
     letter-spacing: -.02em;
@@ -937,7 +937,7 @@
 }
 
 .rh-article-hero__dek {
-    font-family: "Crimson Pro", Georgia, serif;
+    font-family: var(--rh-body);
     font-size: 20px;
     line-height: 1.4;
     color: rgba(255,255,255,.88);
@@ -976,7 +976,7 @@
 }
 
 .rh-article-meta-strip__label {
-    font-family: "Archivo", system-ui, sans-serif;
+    font-family: var(--rh-ui);
     font-size: 10px;
     font-weight: 600;
     letter-spacing: .12em;
@@ -1035,7 +1035,7 @@
 }
 
 .rh-article-toc__link {
-    font-family: "Archivo", system-ui, sans-serif;
+    font-family: var(--rh-ui);
     font-size: 12px;
     font-weight: 500;
     color: var(--rh-mute);
@@ -1097,7 +1097,7 @@
 .rh-article-tags a {
     display: inline-block;
     padding: 4px 9px;
-    font-family: "Archivo", system-ui, sans-serif;
+    font-family: var(--rh-ui);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: .12em;
@@ -1140,7 +1140,7 @@
 }
 
 .rh-article-nav__title {
-    font-family: "Antic Didone", "Times New Roman", serif;
+    font-family: var(--rh-display);
     font-size: 16px;
     font-weight: 700;
     line-height: 1.2;
@@ -1176,7 +1176,7 @@
 }
 
 .rh-article-stat-card__value {
-    font-family: "Antic Didone", "Times New Roman", serif;
+    font-family: var(--rh-display);
     font-size: 22px;
     font-weight: 700;
     color: var(--rh-accent);
@@ -1450,5 +1450,94 @@
     }
     .rh-article-nav {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ===========================
+   Print stylesheet — SIR-779
+   =========================== */
+
+@media print {
+    /* Hide ads */
+    .rh-ad,
+    .rh-sponsor-strip,
+    .rh-article-footer-ad,
+    .rh-native-ad__strip,
+    .rh-native-ad__body {
+        display: none !important;
+    }
+
+    /* Hide navigation, sidebars, share buttons */
+    .rh-header,
+    .rh-footer,
+    .rh-cover-masthead__nav,
+    .rh-article-rail--left,
+    .rh-article-rail--right,
+    .rh-article-share,
+    .skip-link {
+        display: none !important;
+    }
+
+    /* Expand prose to full width */
+    .rh-article-body {
+        display: block;
+    }
+
+    .rh-prose {
+        max-width: 100%;
+    }
+
+    .rh-container {
+        max-width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* Prevent page breaks inside figures */
+    figure,
+    .rh-prose figure,
+    .rh-fullbleed-frame,
+    .rh-pictorial-tile-spread__item {
+        break-inside: avoid;
+    }
+
+    /* Clean hero for print */
+    .rh-article-hero__overlay {
+        display: none;
+    }
+
+    .rh-article-hero__headline {
+        color: #000;
+        text-shadow: none;
+    }
+
+    .rh-article-hero__dek {
+        color: #333;
+        text-shadow: none;
+    }
+
+    /* Remove background colors / grain for ink savings */
+    body,
+    .rh-article-main,
+    .rh-pictorial-main {
+        background: #fff !important;
+    }
+
+    .rh-grain::after {
+        display: none !important;
+    }
+
+    /* Force black text for readability */
+    .rh-prose,
+    .rh-prose p,
+    .rh-prose h2 {
+        color: #000;
+    }
+
+    /* Links: show URL */
+    .rh-prose a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 12px;
+        color: #666;
     }
 }

@@ -219,7 +219,7 @@ $share_title    = rawurlencode(get_the_title());
 
             <!-- Sidebar ad (300×250) -->
             <div class="rh-sidebar-block">
-                <div class="rh-ad rh-ad--half">Advertisement</div>
+                <div class="rh-ad rh-ad--half" aria-label="<?php esc_attr_e('Advertisement', 'rowhome-magazine'); ?>">Advertisement</div>
             </div>
 
             <!-- Stat cards -->
@@ -277,7 +277,7 @@ $share_title    = rawurlencode(get_the_title());
 
             <!-- Second sidebar ad -->
             <div class="rh-sidebar-block">
-                <div class="rh-ad rh-ad--half">Advertisement</div>
+                <div class="rh-ad rh-ad--half" aria-label="<?php esc_attr_e('Advertisement', 'rowhome-magazine'); ?>">Advertisement</div>
             </div>
 
         </aside><!-- .rh-article-rail--right -->
@@ -288,7 +288,7 @@ $share_title    = rawurlencode(get_the_title());
 <!-- Footer banner ad (728×90) above RHFooter -->
 <div class="rh-article-footer-ad">
     <div class="rh-container">
-        <div class="rh-ad rh-ad--banner">Advertisement</div>
+        <div class="rh-ad rh-ad--banner" aria-label="<?php esc_attr_e('Advertisement', 'rowhome-magazine'); ?>">Advertisement</div>
     </div>
 </div>
 

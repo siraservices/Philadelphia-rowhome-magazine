@@ -20,6 +20,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&family=Crimson+Pro:ital,wght@0,300..800;1,300..800&family=Archivo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <?php
+    // Preload cover story hero image for performance (LCP optimization)
+    $sticky_ids = get_option('sticky_posts');
+    $preload_q = !empty($sticky_ids)
+        ? new WP_Query(array('posts_per_page' => 1, 'post__in' => $sticky_ids, 'post_type' => array('post', 'department'), 'ignore_sticky_posts' => 0))
+        : new WP_Query(array('posts_per_page' => 1, 'post_type' => array('post', 'department')));
+    if ($preload_q->have_posts()) {
+        $preload_q->the_post();
+        $cover_preload_url = get_the_post_thumbnail_url(null, 'rowhome-hero');
+        if ($cover_preload_url) {
+            printf('<link rel="preload" as="image" href="%s">', esc_url($cover_preload_url));
+        }
+        wp_reset_postdata();
+    }
+    ?>
     <?php wp_head(); ?>
 </head>
 

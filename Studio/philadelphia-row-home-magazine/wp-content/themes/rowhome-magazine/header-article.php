@@ -19,6 +19,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Antic+Didone&family=Crimson+Pro:ital,wght@0,300..800;1,300..800&family=Archivo:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <?php
+    // Preload hero image for performance (LCP optimization)
+    if (is_singular() && has_post_thumbnail()) {
+        $hero_preload_url = get_the_post_thumbnail_url(null, 'rowhome-hero');
+        if ($hero_preload_url) {
+            printf(
+                '<link rel="preload" as="image" href="%s">',
+                esc_url($hero_preload_url)
+            );
+        }
+    }
+    ?>
     <?php wp_head(); ?>
 </head>
 
