@@ -80,11 +80,11 @@ add_action('after_setup_theme', 'rowhome_magazine_content_width', 0);
  * Enqueue scripts and styles
  */
 function rowhome_magazine_scripts() {
-    // Enqueue Google Fonts
-    wp_enqueue_style('rowhome-google-fonts', 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:wght@400;700;900&display=swap', array(), null);
-    
-    // Enqueue main stylesheet
-    wp_enqueue_style('rowhome-magazine-style', get_stylesheet_uri(), array(), '1.2.0');
+    // Enqueue Direction B design tokens
+    wp_enqueue_style('rowhome-tokens', get_template_directory_uri() . '/assets/css/tokens.css', array(), '2.0.0');
+
+    // Enqueue main stylesheet (depends on tokens)
+    wp_enqueue_style('rowhome-magazine-style', get_stylesheet_uri(), array('rowhome-tokens'), '2.0.0');
     
     // Enqueue custom JavaScript
     wp_enqueue_script('rowhome-magazine-scripts', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), '1.0.0', true);
@@ -98,8 +98,16 @@ function rowhome_magazine_scripts() {
     // Enqueue template styles
     wp_enqueue_style('rowhome-templates-style', get_template_directory_uri() . '/assets/css/templates.css', array('rowhome-magazine-style'), '1.0.0');
 
+    // Enqueue Direction B component styles (SIR-775)
+    wp_enqueue_style('rowhome-direction-b', get_template_directory_uri() . '/assets/css/direction-b.css', array('rowhome-tokens', 'rowhome-magazine-style'), '2.0.0');
+
     // Enqueue load-more and copy-link JS on all pages
     wp_enqueue_script('rowhome-load-more', get_template_directory_uri() . '/assets/js/load-more.js', array(), '1.0.0', true);
+
+    // Enqueue article TOC + copy-link JS on single posts (Direction B) — SIR-776
+    if (is_singular('post')) {
+        wp_enqueue_script('rowhome-article-toc', get_template_directory_uri() . '/assets/js/article-toc.js', array(), '2.0.0', true);
+    }
 
     // Enqueue gallery lightbox JS only on pictorial single pages
     if (is_singular('pictorial')) {
