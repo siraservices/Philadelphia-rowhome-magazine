@@ -1,300 +1,339 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import HeroSection from '@/components/HeroSection'
-import ArticleCard from '@/components/ArticleCard'
-import AdPlaceholder from '@/components/AdPlaceholder'
-import { getFeaturedArticles, getLatestArticles, mockEvents } from '@/lib/mockData'
+import { mockArticles, mockEvents } from '@/lib/mockData'
 import Link from 'next/link'
 import Image from 'next/image'
-import { CalendarIcon, MapPinIcon } from '@heroicons/react/24/outline'
-import { format } from 'date-fns'
+
+const coverArticle = mockArticles[0]
+const coverLines   = mockArticles.slice(1, 5)
+const contentRows  = mockArticles.slice(0, 6)
+const hotList      = mockArticles.slice(0, 3)
+const mostRead     = [mockArticles[3], mockArticles[4], mockArticles[5]]
+
+const navSections = [
+  { name: 'Life',        href: '/life' },
+  { name: 'Business',   href: '/business' },
+  { name: 'Arts',       href: '/arts' },
+  { name: 'Lifestyle',  href: '/lifestyle' },
+  { name: 'Sports',     href: '/sports' },
+  { name: 'Environment',href: '/environment' },
+]
+
+const allDepartments = [
+  { name: 'Health',        slug: 'health' },
+  { name: 'Fashion',       slug: 'fashion' },
+  { name: 'Brides Guide',  slug: 'brides-guide' },
+  { name: 'Community',     slug: 'community' },
+  { name: 'Writers Block', slug: 'writers-block' },
+  { name: 'Real Estate',   slug: 'real-estate' },
+  { name: 'Tech',          slug: 'tech' },
+  { name: 'Education',     slug: 'education' },
+  { name: 'Politics',      slug: 'politics' },
+  { name: 'Music & Art',   slug: 'music-art' },
+  { name: 'Film',          slug: 'film' },
+  { name: 'Flashback',     slug: 'flashback' },
+  { name: 'History',       slug: 'history' },
+  { name: 'Menu',          slug: 'menu' },
+  { name: 'Travel',        slug: 'travel' },
+  { name: '2025 Hotspots', slug: '2025-hotspots' },
+  { name: 'Events',        slug: 'events' },
+  { name: 'Sports',        slug: 'sports' },
+  { name: 'Environment',   slug: 'environment' },
+  { name: 'Games',         slug: 'games' },
+  { name: 'People',        slug: 'people' },
+]
+
+const spotlights = [
+  {
+    dept:  'Menu',
+    class: 'rh-dept-spotlight--food',
+    href:  '/menu',
+    title: "Philadelphia's Hottest Restaurants",
+    dek:   "From South Street to Fishtown, discover the dining experiences shaping the city's food scene this season.",
+    img:   mockArticles[0].featuredImage,
+  },
+  {
+    dept:  'Real Estate',
+    class: 'rh-dept-spotlight--real-estate',
+    href:  '/real-estate',
+    title: 'The Row Home Market Is Booming',
+    dek:   "Philadelphia's historic housing stock is seeing renewed interest. Here's what buyers and sellers need to know.",
+    img:   mockArticles[2].featuredImage,
+  },
+  {
+    dept:  'Music & Art',
+    class: 'rh-dept-spotlight--arts',
+    href:  '/arts',
+    title: 'Local Artists Transforming the City',
+    dek:   'Murals, music venues, and gallery openings — the arts are alive across every Philadelphia neighborhood.',
+    img:   mockArticles[3].featuredImage,
+  },
+]
 
 export default function HomePage() {
-  const featuredArticles = getFeaturedArticles()
-  const latestArticles = getLatestArticles(6)
-  const upcomingEvents = mockEvents.slice(0, 3)
-
   return (
-    <div className="min-h-screen bg-white">
+    <div style={{ background: 'var(--rh-bg)' }}>
       <Header />
-      
-      {/* Hero Section */}
-      <HeroSection articles={featuredArticles} />
 
-      {/* Advertisement: Sidebar (Desktop) / Banner (Mobile) */}
-      <div className="container-magazine py-8">
-        <div className="flex justify-end">
-          {/* Desktop Sidebar Ad */}
-          <div className="hidden lg:block">
-            <AdPlaceholder 
-              position="sidebar-top" 
-              size="300x250" 
-              style="banner"
-            />
-          </div>
-          {/* Mobile Banner Ad */}
-          <div className="lg:hidden w-full">
-            <AdPlaceholder 
-              position="mobile-banner-top" 
-              size="320x50" 
-              style="banner"
-            />
-          </div>
+      {/* ============================================================
+          1. COVER MASTHEAD
+          ============================================================ */}
+      <div className="rh-cover-masthead" role="banner" aria-label="Cover">
+        <Image
+          src={coverArticle.featuredImage}
+          alt={coverArticle.title}
+          fill
+          className="rh-cover-masthead__bg rh-photo"
+          style={{ objectFit: 'cover' }}
+          priority
+        />
+
+        <div className="rh-cover-masthead__gradient" aria-hidden="true" />
+
+        {/* Dateline */}
+        <div className="rh-cover-masthead__dateline">
+          <span>Issue 03 · Feb 2026 · $7.95</span>
+          <Link href="/subscribe" className="rh-cover-masthead__dateline-link">
+            Subscribe · $1/wk
+          </Link>
         </div>
+
+        {/* Wordmark */}
+        <div className="rh-cover-masthead__wordmark">
+          <Link href="/" className="rh-cover-masthead__wordmark-link">
+            <span className="rh-cover-masthead__wordmark-text">
+              Row<em>Home</em>
+            </span>
+          </Link>
+          <span className="rh-cover-masthead__tagline-text">
+            River to River. One Neighborhood.
+          </span>
+        </div>
+
+        {/* Cover lines (left) */}
+        <div className="rh-cover-masthead__lines" aria-label="Inside this issue">
+          <span className="rh-cover-masthead__lines-eyebrow">Inside</span>
+          {coverLines.map((article, i) => (
+            <div key={article.id} className="rh-cover-masthead__line-item">
+              <Link href={`/articles/${article.slug}`} className="rh-cover-masthead__line-link">
+                {article.title}
+              </Link>
+              <span className="rh-cover-masthead__line-page">p.&nbsp;{30 + i * 12}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Cover headline (right) */}
+        <div className="rh-cover-masthead__headline">
+          <span className="rh-cover-masthead__hed-tag">
+            {coverArticle.category.name} · The Cover Story
+          </span>
+          <Link href={`/articles/${coverArticle.slug}`} className="rh-cover-masthead__hed-link">
+            <h1 className="rh-cover-masthead__hed-title">{coverArticle.title}</h1>
+          </Link>
+        </div>
+
+        {/* Bottom nav strip */}
+        <nav className="rh-cover-masthead__nav" aria-label="Section navigation">
+          <div className="rh-cover-masthead__nav-sections">
+            {navSections.map((s) => (
+              <Link key={s.name} href={s.href} className="rh-cover-masthead__nav-link">
+                {s.name}
+              </Link>
+            ))}
+          </div>
+          <span className="rh-cover-masthead__nav-hint">↓ Scroll for the issue</span>
+        </nav>
       </div>
 
-      <main>
-        {/* Latest Articles Section */}
-        <section className="py-16 bg-white">
-          <div className="container-magazine">
-            <div className="flex items-center justify-between mb-12">
-              <h2 className="text-3xl md:text-4xl font-serif font-bold">
-                Latest Stories
-              </h2>
-              <Link
-                href="/articles"
-                className="text-primary-red hover:text-red-700 font-medium transition-colors"
-              >
-                View All Articles →
-              </Link>
-            </div>
+      <main id="main" tabIndex={-1}>
 
-            {/* Article Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {latestArticles.map((article) => (
-                <ArticleCard
-                  key={article.id}
-                  article={article}
-                  layout="grid"
-                  showExcerpt={true}
-                  showAuthor={true}
-                  showDate={true}
-                  showCategory={true}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* ============================================================
+            2. IN THIS ISSUE
+            ============================================================ */}
+        <section className="rh-in-this-issue rh-section" aria-labelledby="rh-in-this-issue-heading">
+          <div className="rh-container">
+            <div className="rh-in-this-issue__inner">
+              <div>
+                <h2 id="rh-in-this-issue-heading" className="rh-in-this-issue__issue-label">
+                  In This Issue
+                </h2>
+                <p className="rh-in-this-issue__issue-meta">Issue 03 · Feb 2026</p>
+              </div>
 
-        {/* Advertisement: In-stream after Latest Stories */}
-        <div className="container-magazine py-8">
-          <AdPlaceholder 
-            position="in-stream-1" 
-            size="responsive" 
-            style="native"
-            className="w-full"
-          />
-        </div>
-
-        {/* Featured Categories Section */}
-        <section className="py-16 bg-background-light">
-          <div className="container-magazine">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-center mb-12">
-              Explore Philadelphia
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Food & Dining */}
-              <Link
-                href="/menu"
-                className="group relative h-64 overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow"
-              >
-                <Image
-                  src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400&h=300&fit=crop"
-                  alt="Philadelphia Food Scene"
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="text-xl font-serif font-bold mb-2">Food & Dining</h3>
-                  <p className="text-sm text-gray-200">Discover the flavors that make Philadelphia unique</p>
-                </div>
-              </Link>
-
-              {/* Real Estate */}
-              <Link
-                href="/real-estate"
-                className="group relative h-64 overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow"
-              >
-                <Image
-                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop"
-                  alt="Philadelphia Real Estate"
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="text-xl font-serif font-bold mb-2">Real Estate</h3>
-                  <p className="text-sm text-gray-200">Navigate the city's evolving neighborhoods</p>
-                </div>
-              </Link>
-
-              {/* Arts & Culture */}
-              <Link
-                href="/arts"
-                className="group relative h-64 overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow"
-              >
-                <Image
-                  src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop"
-                  alt="Philadelphia Arts"
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="text-xl font-serif font-bold mb-2">Arts & Culture</h3>
-                  <p className="text-sm text-gray-200">Experience the creative spirit of the city</p>
-                </div>
-              </Link>
-
-              {/* Lifestyle */}
-              <Link
-                href="/life"
-                className="group relative h-64 overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow"
-              >
-                <Image
-                  src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop"
-                  alt="Philadelphia Lifestyle"
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-30 transition-all" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <h3 className="text-xl font-serif font-bold mb-2">Life</h3>
-                  <p className="text-sm text-gray-200">Live well in the City of Brotherly Love</p>
-                </div>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Advertisement: Mid-page Banner */}
-        <div className="container-magazine py-8">
-          <div className="hidden md:block">
-            <AdPlaceholder 
-              position="mid-page-banner" 
-              size="728x90" 
-              style="banner"
-            />
-          </div>
-          <div className="md:hidden">
-            <AdPlaceholder 
-              position="mid-page-banner-mobile" 
-              size="320x50" 
-              style="banner"
-            />
-          </div>
-        </div>
-
-        {/* Upcoming Events Section */}
-        <section className="py-16 bg-white">
-          <div className="container-magazine">
-            <div className="flex items-center justify-between mb-12">
-              <h2 className="text-3xl md:text-4xl font-serif font-bold">
-                Upcoming Events
-              </h2>
-              <Link
-                href="/events"
-                className="text-primary-red hover:text-red-700 font-medium transition-colors"
-              >
-                View All Events →
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {upcomingEvents.map((event) => (
-                <article key={event.id} className="bg-white border border-gray-200 hover:shadow-lg transition-shadow">
-                  {event.image && (
-                    <div className="relative h-48 overflow-hidden">
-                      <Image
-                        src={event.image}
-                        alt={event.title}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <div className="flex items-center space-x-4 text-sm text-text-muted mb-3">
-                      <div className="flex items-center space-x-1">
-                        <CalendarIcon className="h-4 w-4" />
-                        <span>{format(new Date(event.date), 'MMM d, yyyy')}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <MapPinIcon className="h-4 w-4" />
-                        <span>{event.location}</span>
-                      </div>
-                    </div>
-                    <h3 className="text-xl font-serif font-bold mb-3 hover:text-primary-red transition-colors">
-                      <Link href={`/events/${event.id}`}>
-                        {event.title}
-                      </Link>
-                    </h3>
-                    <p className="text-text-light mb-4 line-clamp-3">
-                      {event.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-primary-red">
-                        {event.category}
+              <div className="rh-in-this-issue__grid">
+                {contentRows.map((article, idx) => (
+                  <Link key={article.id} href={`/articles/${article.slug}`} className="rh-contents-row-link">
+                    <div className="rh-contents-row">
+                      <span className="rh-contents-row__number">
+                        {String(idx + 1).padStart(2, '0')}
                       </span>
-                      {event.ticketUrl && (
-                        <Link
-                          href={event.ticketUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm font-medium text-primary-red hover:text-red-700 transition-colors"
-                        >
-                          Get Tickets →
-                        </Link>
-                      )}
+                      <div className="rh-contents-row__body">
+                        <span className="rh-eyebrow">{article.category.name}</span>
+                        <p className="rh-contents-row__headline">{article.title}</p>
+                        <span className="rh-byline">By {article.author.name}</span>
+                      </div>
+                      <span className="rh-contents-row__page">p.&nbsp;{18 + (idx + 1) * 12}</span>
                     </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================================
+            3. SPONSOR STRIP
+            ============================================================ */}
+        <div className="rh-sponsor-strip" aria-label="Advertisement">
+          <div className="rh-ad rh-ad--leader">
+            Advertisement · 970 × 90
+          </div>
+        </div>
+
+        {/* ============================================================
+            4. THE HOT LIST
+            ============================================================ */}
+        <section className="rh-hot-list rh-section" aria-labelledby="rh-hot-list-heading">
+          <div className="rh-container">
+            <div className="rh-section-header rh-section-header--ruled">
+              <h2 id="rh-hot-list-heading" className="rh-section-header__title">The Hot List</h2>
+            </div>
+
+            <div className="rh-hot-list__grid">
+              {/* Hero card */}
+              <Link href={`/articles/${hotList[0].slug}`} className="rh-story-card-link">
+                <article className="rh-story-card rh-story-card--xl">
+                  <div className="rh-story-card__image">
+                    <span className="rh-tag rh-story-card__tag">{hotList[0].category.name}</span>
+                    <Image
+                      src={hotList[0].featuredImage}
+                      alt={hotList[0].title}
+                      width={800}
+                      height={1000}
+                      className="rh-photo"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '4/5' }}
+                    />
+                  </div>
+                  <div className="rh-story-card__body">
+                    <span className="rh-eyebrow">{hotList[0].category.name}</span>
+                    <h3 className="rh-story-card__headline">{hotList[0].title}</h3>
+                    <span className="rh-byline">By {hotList[0].author.name}</span>
                   </div>
                 </article>
+              </Link>
+
+              {/* Stacked 2 cards */}
+              <div className="rh-hot-list__stacked">
+                {hotList.slice(1, 3).map((article) => (
+                  <Link key={article.id} href={`/articles/${article.slug}`} className="rh-story-card-link">
+                    <article className="rh-story-card rh-story-card--m">
+                      <div className="rh-story-card__image">
+                        <span className="rh-tag rh-story-card__tag">{article.category.name}</span>
+                        <Image
+                          src={article.featuredImage}
+                          alt={article.title}
+                          width={800}
+                          height={450}
+                          className="rh-photo"
+                          style={{ width: '100%', objectFit: 'cover', aspectRatio: '16/9' }}
+                        />
+                      </div>
+                      <div className="rh-story-card__body">
+                        <span className="rh-eyebrow">{article.category.name}</span>
+                        <h3 className="rh-story-card__headline">{article.title}</h3>
+                        <span className="rh-byline">By {article.author.name}</span>
+                      </div>
+                    </article>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Sidebar */}
+              <div className="rh-hot-list__sidebar rh-sidebar">
+                <div className="rh-sidebar-block">
+                  <div className="rh-ad rh-ad--rect">Advertisement · 300 × 300</div>
+                </div>
+                <div className="rh-sidebar-block">
+                  <div className="rh-sidebar-block__label">Most Read</div>
+                  {mostRead.map((article, i) => (
+                    <Link key={article.id} href={`/articles/${article.slug}`} className="rh-ticker-item-link">
+                      <div className="rh-ticker-item">
+                        <span className="rh-ticker-item__index">{String(i + 1).padStart(2, '0')}</span>
+                        <div>
+                          <span className="rh-eyebrow">{article.category.name}</span>
+                          <p className="rh-ticker-item__headline">{article.title}</p>
+                          <span className="rh-ticker-item__byline">By {article.author.name}</span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ============================================================
+            5. DEPARTMENT SPOTLIGHTS
+            ============================================================ */}
+        <section className="rh-dept-spotlights-section rh-section" aria-labelledby="rh-spotlights-heading">
+          <div className="rh-container">
+            <h2
+              id="rh-spotlights-heading"
+              className="rh-section-header__title"
+              style={{ textAlign: 'center', marginBottom: '32px' }}
+            >
+              Department Spotlights
+            </h2>
+            <div className="rh-dept-spotlights">
+              {spotlights.map((sp) => (
+                <div key={sp.dept} className={`rh-dept-spotlight ${sp.class}`}>
+                  <Image
+                    src={sp.img}
+                    alt={sp.title}
+                    width={800}
+                    height={600}
+                    className="rh-dept-spotlight__image rh-photo"
+                    style={{ objectFit: 'cover' }}
+                  />
+                  <h3 className="rh-dept-spotlight__title">{sp.title}</h3>
+                  <p className="rh-dept-spotlight__dek">{sp.dek}</p>
+                  <Link href={sp.href} className="rh-dept-spotlight__cta">
+                    Read All →
+                  </Link>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* Advertisement: In-stream after Events */}
-        <div className="container-magazine py-8">
-          <AdPlaceholder 
-            position="in-stream-2" 
-            size="responsive" 
-            style="native"
-            className="w-full"
-          />
-        </div>
-
-        {/* Newsletter Section */}
-        <section className="py-16 bg-background-teal text-white">
-          <div className="container-magazine text-center">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">
-              Stay in the Loop
+        {/* ============================================================
+            6. ALL DEPARTMENTS
+            ============================================================ */}
+        <section className="rh-all-depts rh-section" aria-labelledby="rh-all-depts-heading">
+          <div className="rh-container">
+            <h2 id="rh-all-depts-heading" className="rh-all-depts__heading">
+              All Departments
             </h2>
-            <p className="text-lg mb-8 max-w-2xl mx-auto">
-              Get the latest Philadelphia stories, event updates, and neighborhood insights 
-              delivered straight to your inbox every week.
-            </p>
-            <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className="flex-1 px-4 py-3 text-black focus:outline-none focus:ring-2 focus:ring-white"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-primary-red hover:bg-red-700 text-white px-8 py-3 font-medium transition-colors"
-              >
-                Subscribe
-              </button>
-            </form>
-            <p className="text-sm mt-4 opacity-90">
-              Join 10,000+ Philadelphians who trust us to keep them informed.
-            </p>
+            <div className="rh-all-depts__grid">
+              {allDepartments.map((dept, idx) => (
+                <Link
+                  key={dept.slug}
+                  href={`/category/${dept.slug}`}
+                  className="rh-dept-index-item"
+                >
+                  <span className="rh-dept-index-item__num">
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <span className="rh-dept-index-item__name">{dept.name}</span>
+                  <span className="rh-dept-index-item__arrow" aria-hidden="true">→</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
+
       </main>
 
       <Footer />

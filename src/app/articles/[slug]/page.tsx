@@ -1,281 +1,209 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { format } from 'date-fns'
-import { 
-  CalendarIcon, 
-  ClockIcon, 
-  ShareIcon, 
-  UserIcon,
-  TagIcon 
-} from '@heroicons/react/24/outline'
-import { 
-  FacebookIcon, 
-  TwitterIcon, 
-  LinkedinIcon,
-  Share2Icon 
-} from 'lucide-react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import ArticleCard from '@/components/ArticleCard'
 import { mockArticles, getLatestArticles } from '@/lib/mockData'
 
 interface ArticlePageProps {
-  params: {
-    slug: string
-  }
+  params: { slug: string }
 }
 
-// Generate static params for all articles
 export function generateStaticParams() {
-  return mockArticles.map((article) => ({
-    slug: article.slug,
-  }))
+  return mockArticles.map((article) => ({ slug: article.slug }))
 }
 
 export default function ArticlePage({ params }: ArticlePageProps) {
-  const article = mockArticles.find(a => a.slug === params.slug)
-  
-  if (!article) {
-    notFound()
-  }
+  const article = mockArticles.find((a) => a.slug === params.slug)
+  if (!article) notFound()
 
-  const relatedArticles = getLatestArticles(3).filter(a => a.id !== article.id)
+  const relatedArticles = getLatestArticles(4).filter((a) => a.id !== article.id).slice(0, 4)
+
+  const shareUrl   = encodeURIComponent(`https://philadelphia-rowhome-magazine.vercel.app/articles/${article.slug}`)
+  const shareTitle = encodeURIComponent(article.title)
 
   return (
-    <div className="min-h-screen bg-white">
+    <div style={{ background: 'var(--rh-bg)' }}>
       <Header />
-      
-      <main>
-        {/* Article Header */}
-        <article className="py-12">
-          <div className="container-magazine max-w-4xl">
-            {/* Breadcrumbs */}
-            <nav className="flex items-center space-x-2 text-sm text-text-muted mb-8">
-              <Link href="/" className="hover:text-text-dark transition-colors">
-                Home
-              </Link>
-              <span>/</span>
-              <Link 
-                href={`/category/${article.category.slug}`}
-                className="hover:text-text-dark transition-colors"
-              >
-                {article.category.name}
-              </Link>
-              <span>/</span>
-              <span className="text-text-dark">{article.title}</span>
-            </nav>
 
-            {/* Category Badge */}
-            <Link
-              href={`/category/${article.category.slug}`}
-              className="inline-block category-badge mb-6 hover:bg-red-700 transition-colors"
-            >
-              {article.category.name}
-            </Link>
+      {/* ── Hero — 21:9 full-bleed ── */}
+      <div className={`rh-article-hero${article.featuredImage ? '' : ' rh-article-hero--no-image'}`}>
+        {article.featuredImage && (
+          <div className="rh-article-hero__media">
+            <Image
+              src={article.featuredImage}
+              alt={article.title}
+              fill
+              className="rh-article-hero__img rh-photo"
+              style={{ objectFit: 'cover' }}
+              priority
+            />
+            <div className="rh-article-hero__overlay" aria-hidden="true" />
+          </div>
+        )}
+        <div className="rh-article-hero__caption">
+          <div className="rh-container">
+            <span className="rh-eyebrow rh-article-hero__eyebrow">{article.category.name}</span>
+            <h1 className="rh-article-hero__headline">{article.title}</h1>
+            {article.excerpt && (
+              <p className="rh-article-hero__dek">{article.excerpt}</p>
+            )}
+          </div>
+        </div>
+      </div>
 
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold leading-tight mb-6">
-              {article.title}
-            </h1>
+      {/* ── Meta strip ── */}
+      <div className="rh-article-meta-strip">
+        <div className="rh-container">
+          <div className="rh-article-meta-strip__inner">
+            <div className="rh-article-meta-strip__col">
+              <span className="rh-article-meta-strip__label">By</span>
+              <span className="rh-byline">{article.author.name}</span>
+            </div>
+            <div className="rh-article-meta-strip__col rh-article-meta-strip__col--center">
+              <time className="rh-byline" dateTime={article.publishedAt}>
+                {new Date(article.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </time>
+            </div>
+            <div className="rh-article-meta-strip__col rh-article-meta-strip__col--right">
+              <span className="rh-byline">{article.readTime} min read</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Excerpt */}
-            <p className="text-xl text-text-light leading-relaxed mb-8 max-w-3xl">
-              {article.excerpt}
-            </p>
+      {/* ── Body 3-col grid ── */}
+      <div className="rh-container">
+        <div className="rh-article-body">
 
-            {/* Author and Meta */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-8 border-b border-gray-200">
-              <div className="flex items-center space-x-4 mb-4 md:mb-0">
-                <Link
-                  href={`/authors/${article.author.id}`}
-                  className="flex items-center space-x-3 hover:text-primary-red transition-colors"
-                >
-                  {article.author.avatar ? (
-                    <Image
-                      src={article.author.avatar}
-                      alt={article.author.name}
-                      width={48}
-                      height={48}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                      <UserIcon className="h-6 w-6 text-gray-500" />
-                    </div>
-                  )}
-                  <div>
-                    <div className="font-medium">{article.author.name}</div>
-                    {article.author.bio && (
-                      <div className="text-sm text-text-muted">{article.author.bio}</div>
-                    )}
-                  </div>
-                </Link>
-              </div>
-
-              <div className="flex items-center space-x-6 text-sm text-text-muted">
-                <div className="flex items-center space-x-1">
-                  <CalendarIcon className="h-4 w-4" />
-                  <time dateTime={article.publishedAt}>
-                    {format(new Date(article.publishedAt), 'MMMM d, yyyy')}
-                  </time>
+          {/* Left rail: share */}
+          <aside className="rh-article-rail rh-article-rail--left" aria-label="Share">
+            <div className="rh-article-rail__inner">
+              <div className="rh-article-share">
+                <div className="rh-sidebar-block__label">Share</div>
+                <div className="rh-article-share__buttons">
+                  <a
+                    href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="rh-article-share__btn"
+                    aria-label="Share on Facebook"
+                  >
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Facebook
+                  </a>
+                  <a
+                    href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="rh-article-share__btn"
+                    aria-label="Share on X"
+                  >
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    X / Twitter
+                  </a>
+                  <a
+                    href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${shareTitle}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="rh-article-share__btn"
+                    aria-label="Share on LinkedIn"
+                  >
+                    <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    LinkedIn
+                  </a>
                 </div>
-                <div className="flex items-center space-x-1">
-                  <ClockIcon className="h-4 w-4" />
-                  <span>{article.readTime} min read</span>
-                </div>
               </div>
             </div>
+          </aside>
 
-            {/* Featured Image */}
-            <div className="relative mb-8">
-              <Image
-                src={article.featuredImage}
-                alt={article.imageAlt}
-                width={1200}
-                height={800}
-                className="w-full h-auto rounded-lg"
-                priority
-              />
-              {article.imageCredit && (
-                <p className="text-sm text-text-muted mt-2 italic">
-                  {article.imageCredit}
-                </p>
-              )}
-            </div>
-
-            {/* Share Buttons */}
-            <div className="flex items-center justify-between mb-8 p-4 bg-background-light rounded-lg">
-              <span className="font-medium text-text-dark">Share this article:</span>
-              <div className="flex items-center space-x-3">
-                <button className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors">
-                  <FacebookIcon className="h-5 w-5" />
-                </button>
-                <button className="p-2 bg-blue-400 hover:bg-blue-500 text-white rounded transition-colors">
-                  <TwitterIcon className="h-5 w-5" />
-                </button>
-                <button className="p-2 bg-blue-700 hover:bg-blue-800 text-white rounded transition-colors">
-                  <LinkedinIcon className="h-5 w-5" />
-                </button>
-                <button className="p-2 bg-red-600 hover:bg-red-700 text-white rounded transition-colors">
-                  <Share2Icon className="h-5 w-5" />
-                </button>
-                <button className="p-2 bg-gray-600 hover:bg-gray-700 text-white rounded transition-colors">
-                  <ShareIcon className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Article Content */}
-            <div className="prose prose-lg max-w-none">
-              <p className="lead">
-                This is where the full article content would be displayed. In a real application, 
-                this would be rendered from a rich text editor or markdown content. The content 
-                would include paragraphs, headings, images, quotes, and other rich media elements.
-              </p>
-              
-              <h2>A Sample Heading</h2>
-              
+          {/* Center: prose */}
+          <div className="rh-article-center">
+            <div className="rh-prose">
+              <p>{article.excerpt}</p>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
-                nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                Philadelphia continues to be a city of contrasts — old neighborhoods giving way to new energy,
+                classic traditions reimagined for contemporary life. In this feature, we dive deep into the story
+                behind the story, uncovering what makes this piece of the city tick.
               </p>
-              
-              <blockquote className="border-l-4 border-primary-red pl-6 italic text-xl my-8">
-                "Philadelphia is a city where tradition meets innovation, where every neighborhood 
-                tells a unique story."
+              <h2>The Heart of the Matter</h2>
+              <p>
+                Every great Philadelphia story starts with people. The residents, the block captains, the shop
+                owners who have watched neighborhoods transform over decades. This is no exception.
+              </p>
+              <blockquote>
+                "This is what makes Philadelphia different from any other city — the sense that every street
+                corner has a history, and every history is worth telling."
               </blockquote>
-              
               <p>
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore 
-                eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
+                {article.content !== 'Full article content would go here...'
+                  ? article.content
+                  : 'The full article explores the layers of this story in depth, speaking to residents, historians, and community leaders who have shaped this part of the city.'}
               </p>
-              
-              <h3>Another Section</h3>
-              
+              <h2>Looking Ahead</h2>
               <p>
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium 
-                doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
-                veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+                As Philadelphia continues to evolve, the question isn&rsquo;t whether these stories will change —
+                they always do. The question is whether we document them faithfully enough for the next generation
+                of Philadelphians to understand where they came from.
+              </p>
+              <p>
+                RowHome Magazine will continue to bring these stories to life, issue after issue, neighborhood
+                after neighborhood. River to river.
               </p>
             </div>
 
             {/* Tags */}
-            {article.tags.length > 0 && (
-              <div className="mt-12 pt-8 border-t border-gray-200">
-                <div className="flex items-center space-x-2 mb-4">
-                  <TagIcon className="h-5 w-5 text-text-muted" />
-                  <span className="font-medium text-text-dark">Tags:</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {article.tags.map((tag) => (
-                    <Link
-                      key={tag}
-                      href={`/tag/${tag}`}
-                      className="px-3 py-1 bg-background-light hover:bg-gray-300 text-text-dark text-sm rounded-full transition-colors"
-                    >
-                      #{tag}
-                    </Link>
-                  ))}
-                </div>
+            {article.tags && article.tags.length > 0 && (
+              <div style={{ marginTop: '32px', paddingTop: '20px', borderTop: 'var(--rh-hairline)', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {article.tags.map((tag) => (
+                  <Link
+                    key={tag}
+                    href={`/category/${tag}`}
+                    className="rh-tag"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {tag}
+                  </Link>
+                ))}
               </div>
             )}
           </div>
-        </article>
 
-        {/* Related Articles */}
-        {relatedArticles.length > 0 && (
-          <section className="py-16 bg-background-light">
-            <div className="container-magazine">
-              <h2 className="text-3xl font-serif font-bold mb-12 text-center">
-                Related Articles
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {relatedArticles.map((relatedArticle) => (
-                  <ArticleCard
-                    key={relatedArticle.id}
-                    article={relatedArticle}
-                    layout="grid"
-                    showExcerpt={true}
-                    showAuthor={true}
-                    showDate={true}
-                    showCategory={true}
-                  />
-                ))}
+          {/* Right rail: ads + related */}
+          <aside className="rh-article-rail rh-article-rail--right rh-sidebar" aria-label="Sidebar">
+            <div className="rh-sidebar-block">
+              <div className="rh-ad rh-ad--half" aria-label="Advertisement">Advertisement</div>
+            </div>
+
+            <div className="rh-sidebar-block">
+              <div className="rh-sidebar-block__label">Article Stats</div>
+              <div className="rh-article-stat-card">
+                <span className="rh-article-stat-card__value">{article.readTime}</span>
+                <span className="rh-article-stat-card__label rh-byline">min read</span>
               </div>
             </div>
-          </section>
-        )}
 
-        {/* Newsletter CTA */}
-        <section className="py-16 bg-primary-black text-white">
-          <div className="container-magazine text-center">
-            <h2 className="text-3xl font-serif font-bold mb-4">
-              Don't Miss Our Latest Stories
-            </h2>
-            <p className="text-lg mb-8 text-gray-300 max-w-2xl mx-auto">
-              Subscribe to Philadelphia RowHome Magazine and get the best local stories 
-              delivered to your inbox every week.
-            </p>
-            <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className="flex-1 px-4 py-3 text-black focus:outline-none focus:ring-2 focus:ring-primary-red"
-                required
-              />
-              <button
-                type="submit"
-                className="btn-primary"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </section>
-      </main>
+            {relatedArticles.length > 0 && (
+              <div className="rh-sidebar-block">
+                <div className="rh-sidebar-block__label">Related</div>
+                {relatedArticles.map((rel, i) => (
+                  <Link key={rel.id} href={`/articles/${rel.slug}`} className="rh-ticker-item-link">
+                    <div className="rh-ticker-item">
+                      <span className="rh-ticker-item__index">{String(i + 1).padStart(2, '0')}</span>
+                      <div>
+                        <span className="rh-eyebrow">{rel.category.name}</span>
+                        <p className="rh-ticker-item__headline">{rel.title}</p>
+                        <span className="rh-ticker-item__byline">{rel.author.name}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <div className="rh-sidebar-block">
+              <div className="rh-ad rh-ad--half" aria-label="Advertisement">Advertisement</div>
+            </div>
+          </aside>
+        </div>
+      </div>
 
       <Footer />
     </div>

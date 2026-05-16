@@ -2,165 +2,349 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
-import { UserIcon } from '@heroicons/react/24/solid'
 
-const mainNavigation = [
-  { name: 'Events', href: '/events' },
-  { name: 'In the Magazine', href: '/magazine' },
-  { name: 'Neighborhood', href: '/neighborhood' },
-  { name: 'Discover', href: '/discover' },
-]
-
-const secondaryNavigation = [
-  { name: 'LIFE', href: '/life' },
-  { name: 'BUSINESS', href: '/business' },
-  { name: 'HEALTH', href: '/health' },
-  { name: 'REAL ESTATE', href: '/real-estate' },
-  { name: 'MENU', href: '/menu' },
-  { name: 'ARTS', href: '/arts' },
-  { name: 'WEDDINGS', href: '/weddings' },
+const departments = [
+  { name: 'People',      href: '/people',      children: [] },
+  { name: 'Life',        href: '/life',         children: ['Health', 'Fashion', 'Brides Guide', 'Community', 'Writers Block'] },
+  { name: 'Business',    href: '/business',     children: ['Real Estate', 'Tech', 'Education', 'Politics'] },
+  { name: 'Arts',        href: '/arts',         children: ['Music & Art', 'Film', 'Flashback', 'History'] },
+  { name: 'Lifestyle',   href: '/lifestyle',    children: ['Menu', 'Travel', 'Events'] },
+  { name: 'Sports',      href: '/sports',       children: [] },
+  { name: 'Environment', href: '/environment',  children: [] },
+  { name: 'Games',       href: '/games',        children: [] },
 ]
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
 
   return (
-    <header className="bg-black text-white">
-      {/* Top Bar */}
-      <div className="border-b border-gray-800">
-        <div className="container-magazine flex items-center justify-between py-2">
-          <div className="flex items-center space-x-4">
-            <span className="text-xs text-gray-400">Philadelphia's Premier Lifestyle Magazine</span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setSearchOpen(!searchOpen)}
-              className="text-gray-400 hover:text-white transition-colors"
-              aria-label="Search"
-            >
-              <MagnifyingGlassIcon className="h-4 w-4" />
-            </button>
-            <Link
-              href="/subscribe"
-              className="text-xs text-gray-400 hover:text-white transition-colors"
-            >
-              Subscribe
-            </Link>
-            <Link
-              href="/login"
-              className="flex items-center space-x-1 text-xs text-gray-400 hover:text-white transition-colors"
-            >
-              <UserIcon className="h-4 w-4" />
-              <span>Login</span>
-            </Link>
-          </div>
-        </div>
-      </div>
+    <header className="site-header" style={{
+      background: 'var(--rh-bg)',
+      borderBottom: '1px solid color-mix(in srgb, var(--rh-rule) 14%, transparent)',
+      position: 'sticky',
+      top: 0,
+      zIndex: 100,
+    }}>
 
-      {/* Search Bar */}
-      {searchOpen && (
-        <div className="border-b border-gray-800 bg-gray-900">
-          <div className="container-magazine py-4">
-            <div className="relative max-w-md">
-              <input
-                type="text"
-                placeholder="Search articles, events, and more..."
-                className="w-full bg-black border border-gray-600 rounded-none px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-white"
-              />
-              <button className="absolute right-2 top-2 text-gray-400 hover:text-white">
-                <MagnifyingGlassIcon className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Main header bar: search | logo | actions */}
+      <div className="rh-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '72px', gap: '24px' }}>
 
-      {/* Main Navigation */}
-      <div className="container-magazine">
-        <div className="flex items-center justify-between py-4">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <div className="text-2xl font-bold tracking-wider">
-              <span className="text-white">ROW</span>
-              <span className="text-primary-red">HOME</span>
-            </div>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {mainNavigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="nav-link text-white hover:text-primary-red"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Mobile Menu Button */}
+        {/* Left: Search */}
+        <div style={{ flex: '0 0 auto' }}>
           <button
             type="button"
-            className="md:hidden text-white"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Search"
+            onClick={() => setSearchOpen(!searchOpen)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: 'var(--rh-ink)', display: 'flex', alignItems: 'center' }}
           >
-            {mobileMenuOpen ? (
-              <XMarkIcon className="h-6 w-6" />
-            ) : (
-              <Bars3Icon className="h-6 w-6" />
-            )}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
           </button>
         </div>
 
-        {/* Secondary Navigation */}
-        <div className="hidden lg:flex border-t border-gray-800 py-3">
-          <nav className="flex items-center space-x-6">
-            {secondaryNavigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="nav-link text-sm text-gray-300 hover:text-white"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+        {/* Center: Logo */}
+        <div style={{ flex: 1, textAlign: 'center' }}>
+          <Link href="/" style={{ textDecoration: 'none', display: 'inline-block' }}>
+            <span style={{
+              fontFamily: 'var(--rh-display)',
+              fontSize: 'clamp(28px, 4vw, 44px)',
+              lineHeight: 1,
+              color: 'var(--rh-ink)',
+              letterSpacing: '.01em',
+            }}>
+              Row<em>Home</em>
+            </span>
+            <span style={{ display: 'block', fontFamily: 'var(--rh-ui)', fontSize: '9px', letterSpacing: '.22em', textTransform: 'uppercase', color: 'var(--rh-mute)', marginTop: '2px' }}>
+              River to River. One Neighborhood.
+            </span>
+          </Link>
+        </div>
+
+        {/* Right: Subscribe + hamburger */}
+        <div style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <Link
+            href="/subscribe"
+            style={{
+              fontFamily: 'var(--rh-ui)',
+              fontSize: '10px',
+              fontWeight: 700,
+              letterSpacing: '.14em',
+              textTransform: 'uppercase',
+              padding: '8px 14px',
+              background: 'var(--rh-ink)',
+              color: '#fff',
+              textDecoration: 'none',
+              whiteSpace: 'nowrap',
+              display: 'none',
+            }}
+            className="header-subscribe-btn"
+          >
+            Subscribe · $1/wk
+          </Link>
+
+          <button
+            type="button"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: 'var(--rh-ink)', display: 'flex', flexDirection: 'column', gap: '5px' }}
+          >
+            {mobileMenuOpen ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                <path d="M3 12h18M3 6h18M3 18h18"/>
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-gray-800 bg-gray-900">
-          <div className="px-4 py-6 space-y-4">
-            {mainNavigation.map((item) => (
+      {/* Department nav bar */}
+      <nav
+        aria-label="Department Navigation"
+        style={{
+          borderTop: '1px solid color-mix(in srgb, var(--rh-rule) 12%, transparent)',
+          background: 'var(--rh-bg)',
+          overflowX: 'auto',
+          scrollbarWidth: 'none',
+        }}
+        className="dept-nav-bar"
+      >
+        <div className="rh-container" style={{ display: 'flex', alignItems: 'center', gap: '0', whiteSpace: 'nowrap', height: '40px' }}>
+          {departments.map((dept) => (
+            <div
+              key={dept.name}
+              style={{ position: 'relative' }}
+              onMouseEnter={() => dept.children.length ? setActiveDropdown(dept.name) : undefined}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
               <Link
-                key={item.name}
-                href={item.href}
-                className="block nav-link text-white hover:text-primary-red py-2"
-                onClick={() => setMobileMenuOpen(false)}
+                href={dept.href}
+                style={{
+                  fontFamily: 'var(--rh-ui)',
+                  fontSize: '10.5px',
+                  fontWeight: 600,
+                  letterSpacing: '.16em',
+                  textTransform: 'uppercase',
+                  color: 'var(--rh-ink)',
+                  textDecoration: 'none',
+                  padding: '0 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  height: '40px',
+                  gap: '5px',
+                  transition: 'color .15s',
+                }}
+                className="dept-nav-link"
               >
-                {item.name}
+                {dept.name}
+                {dept.children.length > 0 && (
+                  <svg width="8" height="5" viewBox="0 0 10 6" fill="currentColor" aria-hidden="true" style={{ opacity: .6 }}>
+                    <path d="M5 6L0 0h10L5 6z"/>
+                  </svg>
+                )}
               </Link>
-            ))}
-            <div className="border-t border-gray-700 pt-4 mt-4">
-              <div className="text-xs text-gray-400 mb-2">Categories</div>
-              {secondaryNavigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className="block nav-link text-sm text-gray-300 hover:text-white py-1"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
+
+              {dept.children.length > 0 && activeDropdown === dept.name && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  background: 'var(--rh-paper)',
+                  border: '1px solid color-mix(in srgb, var(--rh-rule) 14%, transparent)',
+                  boxShadow: '0 8px 24px rgba(0,0,0,.1)',
+                  minWidth: '160px',
+                  zIndex: 200,
+                  padding: '8px 0',
+                }}>
+                  {dept.children.map((child) => (
+                    <Link
+                      key={child}
+                      href={`/category/${child.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                      style={{
+                        display: 'block',
+                        fontFamily: 'var(--rh-ui)',
+                        fontSize: '11px',
+                        fontWeight: 500,
+                        letterSpacing: '.1em',
+                        textTransform: 'uppercase',
+                        color: 'var(--rh-ink)',
+                        padding: '9px 18px',
+                        textDecoration: 'none',
+                        transition: 'color .15s',
+                      }}
+                      className="dept-dropdown-item"
+                    >
+                      {child}
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
+          ))}
+        </div>
+      </nav>
+
+      {/* Search overlay */}
+      {searchOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,.94)',
+            zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}
+          onClick={(e) => { if (e.target === e.currentTarget) setSearchOpen(false) }}
+        >
+          <div style={{ position: 'relative', width: '90%', maxWidth: '600px' }}>
+            <button
+              onClick={() => setSearchOpen(false)}
+              style={{ position: 'absolute', top: '-48px', right: 0, background: 'none', border: 'none', color: '#fff', fontSize: '2.5rem', cursor: 'pointer', lineHeight: 1 }}
+              aria-label="Close search"
+            >×</button>
+            <form style={{ display: 'flex', gap: '10px' }}>
+              <input
+                type="search"
+                placeholder="Search articles..."
+                autoFocus
+                style={{ flex: 1, padding: '18px 20px', fontSize: '1.25rem', border: 'none', borderRadius: '2px', fontFamily: 'var(--rh-body)' }}
+              />
+              <button
+                type="submit"
+                style={{ padding: '18px 28px', background: 'var(--rh-accent)', border: 'none', borderRadius: '2px', cursor: 'pointer', color: '#fff' }}
+                aria-label="Submit search"
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+              </button>
+            </form>
           </div>
         </div>
       )}
+
+      {/* Mobile menu drawer */}
+      {mobileMenuOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'var(--rh-bg)', zIndex: 300, overflowY: 'auto',
+          paddingTop: '80px',
+        }}>
+          <button
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close menu"
+            style={{ position: 'absolute', top: '20px', right: '20px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--rh-ink)' }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+
+          <div style={{ padding: '0 var(--rh-gutter) 40px' }}>
+            <div style={{ marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid color-mix(in srgb, var(--rh-rule) 14%, transparent)' }}>
+              <Link
+                href="/subscribe"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  display: 'block',
+                  fontFamily: 'var(--rh-ui)',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  letterSpacing: '.14em',
+                  textTransform: 'uppercase',
+                  padding: '12px 20px',
+                  background: 'var(--rh-ink)',
+                  color: '#fff',
+                  textDecoration: 'none',
+                  textAlign: 'center',
+                  marginBottom: '12px',
+                }}
+              >
+                Subscribe · $1/Week
+              </Link>
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  display: 'block',
+                  fontFamily: 'var(--rh-ui)',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  letterSpacing: '.14em',
+                  textTransform: 'uppercase',
+                  textAlign: 'center',
+                  color: 'var(--rh-ink)',
+                  textDecoration: 'none',
+                  padding: '8px',
+                }}
+              >
+                Log In
+              </Link>
+            </div>
+
+            {departments.map((dept) => (
+              <div key={dept.name} style={{ borderBottom: '1px solid color-mix(in srgb, var(--rh-rule) 10%, transparent)' }}>
+                <Link
+                  href={dept.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    display: 'block',
+                    fontFamily: 'var(--rh-ui)',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    letterSpacing: '.16em',
+                    textTransform: 'uppercase',
+                    color: 'var(--rh-ink)',
+                    textDecoration: 'none',
+                    padding: '14px 0',
+                  }}
+                >
+                  {dept.name}
+                </Link>
+                {dept.children.length > 0 && (
+                  <div style={{ paddingBottom: '8px', paddingLeft: '16px' }}>
+                    {dept.children.map((child) => (
+                      <Link
+                        key={child}
+                        href={`/category/${child.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                        onClick={() => setMobileMenuOpen(false)}
+                        style={{
+                          display: 'block',
+                          fontFamily: 'var(--rh-ui)',
+                          fontSize: '11px',
+                          fontWeight: 500,
+                          letterSpacing: '.1em',
+                          textTransform: 'uppercase',
+                          color: 'var(--rh-ink-2)',
+                          textDecoration: 'none',
+                          padding: '8px 0',
+                        }}
+                      >
+                        {child}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @media (min-width: 640px) {
+          .header-subscribe-btn { display: flex !important; }
+        }
+        .dept-nav-bar::-webkit-scrollbar { display: none; }
+        .dept-nav-link:hover { color: var(--rh-accent) !important; }
+        .dept-dropdown-item:hover { color: var(--rh-accent) !important; }
+      `}</style>
     </header>
   )
 }

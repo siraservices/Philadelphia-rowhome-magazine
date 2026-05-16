@@ -1,17 +1,25 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { Antic_Didone, Crimson_Pro, Archivo } from 'next/font/google'
 import '../styles/globals.css'
 
-const inter = Inter({
+const anticDidone = Antic_Didone({
+  weight: '400',
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-inter',
+  variable: '--font-antic-didone',
 })
 
-const playfair = Playfair_Display({
+const crimsonPro = Crimson_Pro({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-playfair',
+  variable: '--font-crimson-pro',
+  style: ['normal', 'italic'],
+})
+
+const archivo = Archivo({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-archivo',
 })
 
 export const metadata: Metadata = {
@@ -24,11 +32,11 @@ export const metadata: Metadata = {
   authors: [{ name: 'Philadelphia RowHome Magazine' }],
   creator: 'Philadelphia RowHome Magazine',
   publisher: 'Philadelphia RowHome Magazine',
-  metadataBase: new URL('https://philadelphiarowhome.com'),
+  metadataBase: new URL('https://philadelphia-rowhome-magazine.vercel.app'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://philadelphiarowhome.com',
+    url: 'https://philadelphia-rowhome-magazine.vercel.app',
     siteName: 'Philadelphia RowHome Magazine',
     title: 'Philadelphia RowHome Magazine | Local Stories, Culture & Community',
     description: 'Philadelphia RowHome Magazine features local stories, culture, food, real estate, and community events in Philadelphia neighborhoods.',
@@ -59,9 +67,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'verification_token',
-  },
 }
 
 export const viewport: Viewport = {
@@ -69,8 +74,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+    { media: '(prefers-color-scheme: light)', color: '#fefdfa' },
+    { media: '(prefers-color-scheme: dark)', color: '#0c0c0c' },
   ],
 }
 
@@ -80,11 +85,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="font-sans antialiased">
-        <div id="root">
-          {children}
-        </div>
+    <html
+      lang="en"
+      className={`${anticDidone.variable} ${crimsonPro.variable} ${archivo.variable}`}
+    >
+      <body>
+        {children}
       </body>
     </html>
   )
