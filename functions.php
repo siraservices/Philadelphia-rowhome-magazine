@@ -767,66 +767,101 @@ add_filter('body_class', 'rowhome_magazine_template_body_classes');
  * Pages: About, Contact, Privacy Policy, Terms of Use, Advertise With Us.
  */
 function rowhome_magazine_create_required_pages() {
-    // Versioned so the slug rename (privacy -> privacy-policy, terms -> terms-of-use) runs once on existing sites.
-    if ( (int) get_option( 'rowhome_pages_version', 0 ) >= 2 ) {
+    // Versioned: v3 also untangles WordPress's default "Privacy Policy" drafts that
+    // squat on the privacy-policy slug (they produced privacy-policy-2 on the live site).
+    if ( (int) get_option( 'rowhome_pages_version', 0 ) >= 3 ) {
         return;
     }
 
     $pages = array(
-        array( 'title' => 'About',          'slug' => 'about',          'template' => 'template-about.php',     'legacy' => array() ),
-        array( 'title' => 'Contact',        'slug' => 'contact',        'template' => 'template-contact.php',   'legacy' => array() ),
-        array( 'title' => 'Privacy Policy', 'slug' => 'privacy-policy', 'template' => 'template-privacy.php',   'legacy' => array( 'privacy' ) ),
-        array( 'title' => 'Terms of Use',   'slug' => 'terms-of-use',   'template' => 'template-terms.php',     'legacy' => array( 'terms' ) ),
-        array( 'title' => 'Advertise With Us', 'slug' => 'advertise',   'template' => 'template-advertise.php', 'legacy' => array() ),
+        array( 'title' => 'About',             'slug' => 'about',          'template' => 'template-about.php',     'legacy' => array() ),
+        array( 'title' => 'Contact',           'slug' => 'contact',        'template' => 'template-contact.php',   'legacy' => array() ),
+        array( 'title' => 'Privacy Policy',    'slug' => 'privacy-policy', 'template' => 'template-privacy.php',   'legacy' => array( 'privacy' ) ),
+        array( 'title' => 'Terms of Use',      'slug' => 'terms-of-use',   'template' => 'template-terms.php',     'legacy' => array( 'terms' ) ),
+        array( 'title' => 'Advertise With Us', 'slug' => 'advertise',      'template' => 'template-advertise.php', 'legacy' => array() ),
     );
 
-    foreach ( $pages as $page ) {
-        $existing = get_page_by_path( $page['slug'] );
+    $find = function ( $slug, $status ) {
+        $found = get_posts( array(
+            'post_type'      => 'page',
+            'name'           => $slug,
+            'post_status'    => $status,
+            'posts_per_page' => 1,
+            'orderby'        => 'ID',
+            'order'          => 'ASC',
+        ) );
+        return $found ? $found[0] : null;
+    };
 
-        // Rename a legacy-slug page instead of creating a duplicate.
-        if ( ! $existing ) {
+    foreach ( $pages as $page ) {
+        $keeper = $find( $page['slug'], 'publish' );
+
+        // No published page at the target slug: promote the theme's legacy page.
+        if ( ! $keeper ) {
             foreach ( $page['legacy'] as $old_slug ) {
-                $legacy = get_page_by_path( $old_slug );
+                $legacy = $find( $old_slug, 'publish' );
                 if ( $legacy ) {
-                    wp_update_post( array( 'ID' => $legacy->ID, 'post_name' => $page['slug'] ) );
-                    $existing = $legacy;
+                    $keeper = $legacy;
                     break;
                 }
             }
         }
 
-        if ( $existing ) {
-            // Make sure the theme template is assigned and the page is live
-            // (WordPress ships a draft "Privacy Policy" page with this slug).
-            if ( $page['template'] && get_post_meta( $existing->ID, '_wp_page_template', true ) !== $page['template'] ) {
-                update_post_meta( $existing->ID, '_wp_page_template', $page['template'] );
-            }
-            if ( $existing->post_status !== 'publish' ) {
-                wp_update_post( array( 'ID' => $existing->ID, 'post_status' => 'publish' ) );
+        // Still nothing: use any-status page at the target slug (e.g. WP's default draft).
+        if ( ! $keeper ) {
+            $keeper = $find( $page['slug'], 'any' );
+        }
+
+        if ( ! $keeper ) {
+            $page_id = wp_insert_post( array(
+                'post_title'   => $page['title'],
+                'post_name'    => $page['slug'],
+                'post_status'  => 'publish',
+                'post_type'    => 'page',
+                'post_content' => '',
+            ) );
+            if ( $page_id && ! is_wp_error( $page_id ) ) {
+                update_post_meta( $page_id, '_wp_page_template', $page['template'] );
             }
             continue;
         }
 
-        $page_id = wp_insert_post( array(
-            'post_title'   => $page['title'],
-            'post_name'    => $page['slug'],
-            'post_status'  => 'publish',
-            'post_type'    => 'page',
-            'post_content' => '',
+        // Move squatters off the target slug (and the "-2" WordPress generated) so the
+        // keeper can own it. Drafts stay drafts; anything else is parked as a draft.
+        $squatters = get_posts( array(
+            'post_type'      => 'page',
+            'post_status'    => 'any',
+            'posts_per_page' => 20,
+            'post__not_in'   => array( $keeper->ID ),
+            'post_name__in'  => array( $page['slug'], $page['slug'] . '-2' ),
         ) );
+        foreach ( $squatters as $sq ) {
+            wp_update_post( array(
+                'ID'          => $sq->ID,
+                'post_name'   => $page['slug'] . '-old-' . $sq->ID,
+                'post_status' => 'draft',
+            ) );
+        }
 
-        if ( $page_id && ! is_wp_error( $page_id ) && $page['template'] ) {
-            update_post_meta( $page_id, '_wp_page_template', $page['template'] );
+        $update = array( 'ID' => $keeper->ID );
+        if ( $keeper->post_name !== $page['slug'] ) {
+            $update['post_name'] = $page['slug'];
+        }
+        if ( $keeper->post_status !== 'publish' ) {
+            $update['post_status'] = 'publish';
+        }
+        if ( count( $update ) > 1 ) {
+            wp_update_post( $update );
+        }
+        if ( $page['template'] && get_post_meta( $keeper->ID, '_wp_page_template', true ) !== $page['template'] ) {
+            update_post_meta( $keeper->ID, '_wp_page_template', $page['template'] );
+        }
+        if ( $page['slug'] === 'privacy-policy' ) {
+            update_option( 'wp_page_for_privacy_policy', $keeper->ID );
         }
     }
 
-    // Settings -> Privacy: point WordPress at the Privacy Policy page if not set.
-    $privacy = get_page_by_path( 'privacy-policy' );
-    if ( $privacy && ! (int) get_option( 'wp_page_for_privacy_policy' ) ) {
-        update_option( 'wp_page_for_privacy_policy', $privacy->ID );
-    }
-
-    update_option( 'rowhome_pages_version', 2 );
+    update_option( 'rowhome_pages_version', 3 );
 }
 add_action( 'admin_init', 'rowhome_magazine_create_required_pages' );
 
