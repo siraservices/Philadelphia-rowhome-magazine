@@ -22,7 +22,7 @@
     --rh-re-green:      #a9c4b0;  /* Real Estate ribbon (sage) */
     --rh-placeholder:   #c9c9c9;  /* Gray image placeholder */
     --rh-placeholder-2: #9b9b9b;  /* Gray text bars in placeholders */
-    --rh-dropcap:       #9a9a9a;  /* Alfa Slab One drop caps */
+    --rh-dropcap-color: #9a9a9a;  /* Alfa Slab One drop caps */
     --rh-sticker:       #f6d33c;  /* Hot Spots sticker yellow */
     --rh-header-bg:     #000000;
     --rh-footer-bg:     #000000;
@@ -182,7 +182,7 @@ body {
     line-height: .78;
     float: left;
     margin: .08em .12em 0 0;
-    color: var(--rh-dropcap);
+    color: var(--rh-dropcap-color);
 }
 
 /* ===========================

@@ -99,7 +99,7 @@ body.rh-discover-open { overflow: hidden; }
 /* Search overlay (kept from v1, restyled) */
 .search-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 1100; display: none; align-items: center; justify-content: center; }
 .search-overlay-content { width: min(720px, 90vw); position: relative; }
-.search-close { position: absolute; right: 0; top: -56px; background: none; border: 0; color: #fff; font-size: 36px; cursor: pointer; }
+.search-close { position: absolute; right: 0; top: -56px; background: none; border: 0; color: #fff; font-family: var(--rh-display); font-size: 36px; line-height: 1; cursor: pointer; }
 .search-form { display: flex; border-bottom: 2px solid #fff; }
 .search-form label { flex: 1; }
 .search-field { width: 100%; background: transparent; border: 0; color: #fff; font-family: var(--rh-display); font-size: 32px; padding: 12px 0; outline: none; }
@@ -485,3 +485,22 @@ body.rh-discover-open { overflow: hidden; }
 .legal-page-intro { margin-bottom: 14px; }
 .legal-nav-box ul, .legal-related-links ul { margin: 0 0 24px; padding-left: 20px; }
 .legal-nav-box h3, .legal-related-links h3 { margin-bottom: 8px; }
+
+/* ---------- Section landing: featured placeholder --------------------- */
+.section-featured__image .rh-ph { height: 100%; aspect-ratio: auto; }
+
+/* ---------- Newsletter forms (subscribe page, section sidebar) -------- */
+.subscribe-plan__form { display: flex; flex-direction: column; gap: 10px; }
+.subscribe-plan__input { width: 100%; padding: 12px 14px; border: 1px solid #cfcfcf; font-family: var(--rh-body); font-size: 16px; background: #fff; }
+.subscribe-plan__input:focus { outline: 2px solid var(--rh-accent); outline-offset: 1px; border-color: var(--rh-accent); }
+.subscribe-plan__msg, .newsletter-widget__msg { font-family: var(--rh-body); font-size: 15px; margin-top: 8px; }
+
+/* ---------- Issues page ------------------------------------------------ */
+.issues-latest__cover a { display: block; }
+.issues-archive__more { font-family: var(--rh-body); font-size: 17px; color: #444; margin: 28px 0 0; }
+.issues-archive__more a { color: var(--rh-accent); text-decoration: underline; }
+
+/* Section sidebar ad + subscribe cards */
+.section-sidebar .rh-ad--rect { height: auto; min-height: 320px; margin-bottom: 36px; }
+.subscribe-plan { display: flex; flex-direction: column; }
+.subscribe-plan__benefits { flex: 1; }

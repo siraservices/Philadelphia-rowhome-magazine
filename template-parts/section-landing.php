@@ -16,6 +16,15 @@ if ( $section_term === null ) {
     $section_term = ( $qo instanceof WP_Term && $qo->taxonomy === 'department_category' ) ? $qo : false;
 }
 $section_name        = $section_term ? $section_term->name : ( is_page() ? get_the_title() : get_the_archive_title() );
+// Prefer the canonical section name (Omar's list) over a legacy term name such as "2025 Hotspots".
+if ( $section_term && function_exists( 'rowhome_sections' ) ) {
+    foreach ( rowhome_sections() as $rh_s ) {
+        if ( $rh_s['slug'] === $section_term->slug ) {
+            $section_name = $rh_s['name'];
+            break;
+        }
+    }
+}
 $section_description = $section_term ? $section_term->description : ( is_page() ? get_the_excerpt() : '' );
 
 // Map parent sections to their sub-department slugs (matches header navigation structure)
@@ -128,7 +137,7 @@ wp_reset_postdata();
                             if ($feat_thumb_url) : ?>
                                 <img src="<?php echo esc_url($feat_thumb_url); ?>" alt="<?php the_title_attribute(); ?>" loading="eager">
                             <?php else : ?>
-                                <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/placeholder.jpg'); ?>" alt="<?php the_title_attribute(); ?>" loading="eager">
+                                <?php echo rowhome_placeholder_html( get_the_title(), '16/10' ); ?>
                             <?php endif; ?>
                         </div>
                         <div class="section-featured__content">
@@ -201,7 +210,7 @@ wp_reset_postdata();
 
             <!-- Ad Slot -->
             <div class="sidebar-widget">
-                <?php get_template_part('template-parts/ad-slot', null, array('position' => 'sidebar', 'class' => 'ad-slot--sidebar')); ?>
+                <?php rowhome_ad( 'rect', 'section-sidebar' ); ?>
             </div>
 
             <!-- Popular in Section -->
@@ -258,9 +267,10 @@ wp_reset_postdata();
                 <p class="newsletter-widget__text">
                     <?php printf(esc_html__('Get the latest %s articles delivered to your inbox.', 'rowhome-magazine'), esc_html($section_name)); ?>
                 </p>
-                <form class="newsletter-widget__form" id="sectionNewsletterForm">
+                <form class="newsletter-widget__form js-newsletter-form" action="#" method="post">
                     <input type="email" name="email" class="newsletter-widget__input" placeholder="<?php esc_attr_e('Your email address', 'rowhome-magazine'); ?>" required aria-label="<?php esc_attr_e('Email address', 'rowhome-magazine'); ?>">
-                    <button type="submit" class="newsletter-widget__submit"><?php esc_html_e('Subscribe', 'rowhome-magazine'); ?></button>
+                    <button type="submit" class="newsletter-widget__submit js-newsletter-submit"><?php esc_html_e('Subscribe', 'rowhome-magazine'); ?></button>
+                    <div class="newsletter-widget__msg js-newsletter-msg" role="status" aria-live="polite" style="display:none;"></div>
                 </form>
             </div>
 

@@ -159,12 +159,19 @@
 
     /**
      * Newsletter Form Submission
+     * Binds the footer form (#newsletterForm) and any .js-newsletter-form
+     * (subscribe page, section sidebar) to the newsletter_subscribe AJAX action.
      */
     function initNewsletter() {
-        const form = document.getElementById('newsletterForm');
-        const messageDiv = document.getElementById('newsletterMessage');
+        if (typeof rowhomeAjax === 'undefined') return;
 
-        if (form) {
+        const forms = document.querySelectorAll('#newsletterForm, form.js-newsletter-form');
+
+        forms.forEach(function(form) {
+            const messageDiv = form.querySelector('.js-newsletter-msg') || document.getElementById('newsletterMessage');
+            const submitBtn  = form.querySelector('.footer-newsletter-submit, .js-newsletter-submit, button[type="submit"]');
+            if (!submitBtn) return;
+
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
 
@@ -172,50 +179,38 @@
                 formData.append('action', 'newsletter_subscribe');
                 formData.append('nonce', rowhomeAjax.nonce);
 
-                // Show loading state
-                const submitBtn = form.querySelector('.footer-newsletter-submit');
                 const originalText = submitBtn.textContent;
                 submitBtn.textContent = 'Subscribing...';
                 submitBtn.disabled = true;
 
-                // Send AJAX request
-                fetch(rowhomeAjax.ajaxurl, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
+                const show = function(text, ok) {
+                    if (!messageDiv) return;
                     messageDiv.style.display = 'block';
-                    
-                    if (data.success) {
-                        messageDiv.style.color = '#28a745';
-                        messageDiv.textContent = data.data.message;
-                        form.reset();
-                    } else {
-                        messageDiv.style.color = '#dc3545';
-                        messageDiv.textContent = data.data.message;
-                    }
+                    messageDiv.style.color = ok ? '#1f7a3a' : '#c62828';
+                    messageDiv.textContent = text;
+                    setTimeout(function() { messageDiv.style.display = 'none'; }, 6000);
+                };
 
-                    // Reset button
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-
-                    // Hide message after 5 seconds
-                    setTimeout(() => {
-                        messageDiv.style.display = 'none';
-                    }, 5000);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    messageDiv.style.display = 'block';
-                    messageDiv.style.color = '#dc3545';
-                    messageDiv.textContent = 'An error occurred. Please try again.';
-                    
-                    submitBtn.textContent = originalText;
-                    submitBtn.disabled = false;
-                });
+                fetch(rowhomeAjax.ajaxurl, { method: 'POST', body: formData })
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) {
+                        if (data.success) {
+                            show(data.data.message, true);
+                            form.reset();
+                        } else {
+                            show((data.data && data.data.message) || 'Something went wrong. Please try again.', false);
+                        }
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    })
+                    .catch(function(error) {
+                        console.error('Newsletter error:', error);
+                        show('An error occurred. Please try again.', false);
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    });
             });
-        }
+        });
     }
 
     /**

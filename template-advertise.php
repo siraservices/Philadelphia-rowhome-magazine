@@ -35,22 +35,22 @@ get_header();
                 <div class="advertise-stats-grid">
                     <div class="advertise-stat-card">
                         <div class="advertise-stat-number">20,000+</div>
-                        <div class="advertise-stat-label">Monthly Readers</div>
+                        <div class="advertise-stat-label">Readers</div>
                         <div class="advertise-stat-desc">Across print and digital channels</div>
                     </div>
                     <div class="advertise-stat-card">
-                        <div class="advertise-stat-number">6</div>
+                        <div class="advertise-stat-number">4</div>
                         <div class="advertise-stat-label">Print Issues Per Year</div>
-                        <div class="advertise-stat-desc">Distributed throughout Greater Philadelphia</div>
+                        <div class="advertise-stat-desc">Winter, Spring, Summer, and Fall editions</div>
                     </div>
                     <div class="advertise-stat-card">
-                        <div class="advertise-stat-number">14+</div>
+                        <div class="advertise-stat-number">20+</div>
                         <div class="advertise-stat-label">Years Publishing</div>
                         <div class="advertise-stat-desc">A trusted, established Philadelphia voice</div>
                     </div>
                     <div class="advertise-stat-card">
-                        <div class="advertise-stat-number">22</div>
-                        <div class="advertise-stat-label">Editorial Departments</div>
+                        <div class="advertise-stat-number">25</div>
+                        <div class="advertise-stat-label">Editorial Sections</div>
                         <div class="advertise-stat-desc">Covering every facet of Philadelphia life</div>
                     </div>
                 </div>
@@ -195,7 +195,7 @@ get_header();
                     <div class="advertise-why-item">
                         <div class="advertise-why-icon">&#9670;</div>
                         <h3>Trusted Editorial Brand</h3>
-                        <p>For over 14 years, readers have turned to RowHome for reliable, thoughtful coverage of Philadelphia life. Advertising alongside our content carries the credibility of an established local brand.</p>
+                        <p>Since 2004, readers have turned to RowHome for reliable, thoughtful coverage of Philadelphia life. Advertising alongside our content carries the credibility of an established local brand.</p>
                     </div>
                     <div class="advertise-why-item">
                         <div class="advertise-why-icon">&#9670;</div>

@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 // Theme version — bump to bust caches on deploy.
 if (!defined('ROWHOME_THEME_VERSION')) {
-    define('ROWHOME_THEME_VERSION', '2.1.0');
+    define('ROWHOME_THEME_VERSION', '2.1.1');
 }
 
 // Homepage + shared helpers (cards, ribbons, departments, ads).
@@ -387,6 +387,61 @@ function rowhome_magazine_newsletter_subscribe() {
 }
 add_action('wp_ajax_newsletter_subscribe', 'rowhome_magazine_newsletter_subscribe');
 add_action('wp_ajax_nopriv_newsletter_subscribe', 'rowhome_magazine_newsletter_subscribe');
+
+/**
+ * Newsletter subscribers: Tools → Newsletter Subscribers (list + CSV export).
+ * Signups are stored in the rowhome_newsletter_subscribers option until a
+ * mailing service (Mailchimp) is connected.
+ */
+function rowhome_magazine_subscribers_menu() {
+    add_management_page(
+        'Newsletter Subscribers',
+        'Newsletter Subscribers',
+        'manage_options',
+        'rowhome-subscribers',
+        'rowhome_magazine_subscribers_page'
+    );
+}
+add_action('admin_menu', 'rowhome_magazine_subscribers_menu');
+
+function rowhome_magazine_subscribers_export() {
+    if (!isset($_GET['page'], $_GET['rowhome_export']) || $_GET['page'] !== 'rowhome-subscribers') {
+        return;
+    }
+    if (!current_user_can('manage_options') || !check_admin_referer('rowhome_subscribers_export')) {
+        wp_die('Not allowed.');
+    }
+    $subscribers = (array) get_option('rowhome_newsletter_subscribers', array());
+    nocache_headers();
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="rowhome-newsletter-subscribers-' . gmdate('Y-m-d') . '.csv"');
+    $out = fopen('php://output', 'w');
+    fputcsv($out, array('email'));
+    foreach ($subscribers as $email) {
+        fputcsv($out, array($email));
+    }
+    fclose($out);
+    exit;
+}
+add_action('admin_init', 'rowhome_magazine_subscribers_export');
+
+function rowhome_magazine_subscribers_page() {
+    $subscribers = array_reverse((array) get_option('rowhome_newsletter_subscribers', array()));
+    $export_url  = wp_nonce_url(admin_url('tools.php?page=rowhome-subscribers&rowhome_export=1'), 'rowhome_subscribers_export');
+    echo '<div class="wrap"><h1>Newsletter Subscribers</h1>';
+    echo '<p>' . count($subscribers) . ' email address' . (count($subscribers) === 1 ? '' : 'es') . ' collected from the site\'s newsletter forms (newest first).</p>';
+    if ($subscribers) {
+        echo '<p><a class="button button-primary" href="' . esc_url($export_url) . '">Download CSV</a></p>';
+        echo '<table class="widefat striped" style="max-width:600px"><thead><tr><th>Email</th></tr></thead><tbody>';
+        foreach ($subscribers as $email) {
+            echo '<tr><td>' . esc_html($email) . '</td></tr>';
+        }
+        echo '</tbody></table>';
+    } else {
+        echo '<p>No signups yet.</p>';
+    }
+    echo '</div>';
+}
 
 /**
  * Load More Posts AJAX Handler
