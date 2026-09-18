@@ -6,7 +6,7 @@
  *   1. Title slate — eyebrow + 120px italic headline + 22px dek
  *   2. FullbleedFrame ×3 — alternating caption left / right / left
  *   3. Two-up tile spread — 2×2 grid, black bg, 1:1 crops
- *   4. Pull quote — centered 60px italic Antic Didone
+ *   4. Pull quote — centered 60px italic display serif
  *   5. FullbleedFrame ×2 — right / left captions
  *   6. End slate — eyebrow, heading, outline CTA
  *
@@ -177,7 +177,7 @@ $caption_sides = array('left', 'right', 'left', 'right', 'left');
 </section>
 
 <!-- ======================================================
-     4. Pull quote — centered, 60px italic Antic Didone
+     4. Pull quote — centered, 60px italic display serif
      ====================================================== -->
 <?php if ($pullquote) : ?>
 <div class="rh-pictorial-pullquote">

@@ -28,3 +28,6 @@ package-lock.json
 # Windows
 Desktop.ini
 
+
+# Local design references (Omar wireframe + brand source files) — not deployed
+design-ref/

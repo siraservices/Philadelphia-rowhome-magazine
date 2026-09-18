@@ -4,7 +4,7 @@ Theme URI: https://rowhomemag.com
 Author: RowHome Magazine LLC
 Author URI: https://rowhomemag.com
 Description: A modern, magazine-style WordPress theme for Philadelphia RowHome Magazine featuring department-based navigation, article grids, and responsive design.
-Version: 1.0.0
+Version: 2.1.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: rowhome-magazine
@@ -44,9 +44,9 @@ html {
 }
 
 body {
-    font-family: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-    color: #333333;
-    background-color: #f5f5f5;
+    font-family: var(--rh-body);
+    color: var(--rh-ink);
+    background-color: var(--rh-bg);
     line-height: 1.6;
     overflow-x: clip;
     -webkit-font-smoothing: antialiased;
@@ -54,10 +54,10 @@ body {
 }
 
 #page {
-    max-width: 1400px;
+    max-width: none;
     margin: 0 auto;
-    background-color: #ffffff;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    background-color: var(--rh-bg);
+    box-shadow: none;
 }
 
 img {
@@ -66,11 +66,6 @@ img {
     display: block;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
-}
-
-/* Lazy loading optimization */
-img[loading="lazy"] {
-    content-visibility: auto;
 }
 
 /* Loading placeholder for images */
@@ -94,25 +89,11 @@ img:not([src]):not([srcset]) {
     -webkit-backface-visibility: hidden;
 }
 
-/* Smooth image loading */
-img {
-    opacity: 0;
-    animation: fadeIn 0.3s ease-in forwards;
-}
-
-@keyframes fadeIn {
-    to { opacity: 1; }
-}
-
 a {
     text-decoration: none;
     color: inherit;
     transition: all 0.3s ease;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
-}
-
-a:hover {
-    opacity: 0.8;
 }
 
 /* Touch-friendly targets */
@@ -131,7 +112,7 @@ a:hover {
    Typography
    =========================== */
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-weight: 700;
     line-height: 1.2;
     margin-bottom: 0.75rem;
@@ -223,7 +204,7 @@ section {
 }
 
 .subscribe-btn {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     background-color: #FF0000;
     color: #ffffff;
     padding: 6px 16px;
@@ -324,7 +305,7 @@ section {
     font-size: 0.85rem;
     width: 120px;
     outline: none;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
 }
 
 .header-search-input::placeholder {
@@ -354,7 +335,7 @@ section {
     background-color: #5f8a8b;
     color: #ffffff;
     padding: 10px 18px;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-weight: 600;
     font-size: 0.85rem;
     text-transform: uppercase;
@@ -376,7 +357,7 @@ section {
     background-color: #ffffff;
     color: #333333;
     padding: 10px 18px;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-weight: 600;
     font-size: 0.85rem;
     text-transform: uppercase;
@@ -399,7 +380,7 @@ section {
     background-color: transparent;
     color: #666666;
     padding: 10px 12px;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-weight: 600;
     font-size: 0.85rem;
     text-transform: uppercase;
@@ -455,7 +436,7 @@ section {
     border-radius: 50%;
     background-color: #5f8a8b;
     color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-weight: 700;
     font-size: 0.85rem;
     display: flex;
@@ -488,7 +469,7 @@ section {
 
 .user-dropdown-name {
     display: block;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-weight: 700;
     font-size: 0.9rem;
     color: #333;
@@ -505,7 +486,7 @@ section {
 .user-dropdown-item {
     display: block;
     padding: 10px 16px;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.9rem;
     color: #333;
     text-decoration: none;
@@ -548,7 +529,7 @@ section {
 }
 
 .mobile-user-name {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-weight: 600;
     font-size: 0.85rem;
     color: #333;
@@ -570,7 +551,7 @@ section {
     font-weight: 900;
     letter-spacing: 2px;
     color: #ffffff;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
 }
 
 .logo-tagline {
@@ -624,7 +605,7 @@ section {
     gap: 5px;
     padding: 12px 16px;
     color: #ffffff;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-weight: 400;
     font-size: 0.9rem;
     text-transform: none;
@@ -691,7 +672,7 @@ section {
 }
 
 .dropdown-section-title {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.85rem;
     font-weight: 400;
     font-style: italic;
@@ -706,7 +687,7 @@ section {
 .dropdown-item {
     padding: 8px 0;
     color: #333333;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.9rem;
     font-weight: 400;
     text-decoration: none;
@@ -760,7 +741,7 @@ section {
 }
 
 .people-section-title {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.85rem;
     font-weight: 400;
     font-style: italic;
@@ -833,7 +814,7 @@ section {
 }
 
 .people-name {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.75rem;
     font-weight: 400;
     color: #333333;
@@ -851,7 +832,7 @@ section {
 
 /* Topics Section */
 .topics-section-title {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.85rem;
     font-weight: 400;
     font-style: italic;
@@ -872,7 +853,7 @@ section {
 .topic-button {
     padding: 8px 0;
     color: #333333;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.9rem;
     font-weight: 400;
     text-decoration: none;
@@ -889,7 +870,7 @@ section {
 
 /* Featured Section */
 .featured-section-title {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.85rem;
     font-weight: 400;
     font-style: italic;
@@ -975,7 +956,7 @@ section {
 }
 
 .featured-card-title {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.9rem;
     font-weight: 400;
     color: #333333;
@@ -1140,7 +1121,7 @@ section {
 }
 
 .carousel-title {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: clamp(1.5rem, 4vw, 2.5rem);
     font-weight: 900;
     text-transform: uppercase;
@@ -1220,7 +1201,7 @@ section {
 }
 
 .section-title {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: clamp(1.1rem, 2.5vw, 1.8rem);
     font-weight: 900;
     text-transform: uppercase;
@@ -1291,7 +1272,7 @@ section {
 }
 
 .business-large-title {
-    font-family: 'Instrument Serif', 'Didot', 'Bodoni MT', serif;
+    font-family: var(--rh-display);
     font-size: clamp(2.5rem, 8vw, 5.5rem);
     font-weight: 300;
     line-height: 0.9;
@@ -1301,7 +1282,7 @@ section {
 }
 
 .business-subtitle {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.9rem;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -1601,7 +1582,7 @@ section {
     writing-mode: vertical-rl;
     text-orientation: mixed;
     padding: 15px 8px;
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-weight: 700;
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -1684,7 +1665,7 @@ section {
 }
 
 .article-title {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: 8px;
@@ -1692,7 +1673,7 @@ section {
 }
 
 .article-excerpt {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.85rem;
     color: #666666;
     margin-bottom: 10px;
@@ -1842,7 +1823,7 @@ section {
 }
 
 .writers-block-title {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: 12px;
@@ -1967,7 +1948,7 @@ section {
 }
 
 .footer-newsletter h3 {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 1.3rem;
     font-weight: 400;
     margin-bottom: 20px;
@@ -2035,7 +2016,7 @@ section {
 }
 
 .footer-staff-names {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 1.8rem;
     font-weight: 300;
     color: #ffffff;
@@ -2044,7 +2025,7 @@ section {
 }
 
 .footer-staff-subtitle {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 0.85rem;
     color: #cccccc;
     line-height: 1.6;
@@ -2873,7 +2854,7 @@ button:focus:not(:focus-visible) {
         padding: 14px 16px;
         color: #ffffff;
         text-decoration: none;
-        font-family: 'Montserrat', sans-serif;
+        font-family: var(--rh-ui);
         font-size: 0.85rem;
         font-weight: 600;
         letter-spacing: 0.05em;
@@ -3009,7 +2990,7 @@ button:focus:not(:focus-visible) {
     margin-bottom: 10px;
 }
 .legal-page-title {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 700;
     margin-bottom: 10px;

@@ -1,34 +1,46 @@
 /*
- * RowHome Magazine — Direction B Design Tokens
- * Contract: every component reads from these tokens.
- * SIR-775: Front-end refinement
+ * RowHome Magazine — Design Tokens
+ * Source of truth: Omar's wireframe (website_Home) + brand fonts.
+ * Every component reads from these tokens.
  */
 
 :root {
     /* ===========================
-       1.1 Color — palette "paper" (Direction B)
+       1.1 Color — white paper, black ink, RowHome red
        =========================== */
-    --rh-bg:        #fefdfa;  /* Page canvas */
-    --rh-paper:     #ffffff;  /* Cards, surfaces */
-    --rh-ink:       #0c0c0c;  /* Headlines, body */
-    --rh-ink-2:     #2d2d2d;  /* Long-form prose */
-    --rh-mute:      #7a7a7a;  /* Bylines, captions */
-    --rh-rule:      #0c0c0c;  /* Hairlines (use opacity) */
-    --rh-accent:    #d11f1f;  /* Tag chips, drop caps, hot CTAs */
-    --rh-accent-2:  #8a1313;  /* Hover, deep accent */
-    --rh-tag:       #0c0c0c;  /* Default tag bg */
+    --rh-bg:            #ffffff;  /* Page canvas */
+    --rh-paper:         #ffffff;  /* Cards, surfaces */
+    --rh-ink:           #000000;  /* Headlines, body, rules */
+    --rh-ink-2:         #222222;  /* Long-form prose */
+    --rh-mute:          #7a7a7a;  /* Bylines, captions */
+    --rh-rule:          #000000;  /* Section rules */
+    --rh-accent:        #e8172b;  /* PRH red — ribbons, rules, badges */
+    --rh-accent-2:      #b5121f;  /* Hover, deep accent */
+    --rh-tag:           #e8172b;  /* Default ribbon bg */
+    --rh-ad-bg:         #5f8c8f;  /* Teal ad placeholders */
+    --rh-menu-green:    #2e8b3a;  /* PRH Menu rule + ribbon */
+    --rh-re-green:      #a9c4b0;  /* Real Estate ribbon (sage) */
+    --rh-placeholder:   #c9c9c9;  /* Gray image placeholder */
+    --rh-placeholder-2: #9b9b9b;  /* Gray text bars in placeholders */
+    --rh-dropcap:       #9a9a9a;  /* Alfa Slab One drop caps */
+    --rh-sticker:       #f6d33c;  /* Hot Spots sticker yellow */
+    --rh-header-bg:     #000000;
+    --rh-footer-bg:     #000000;
+    --rh-on-dark:       #ffffff;
 
-    /* Department-spotlight tints */
-    --rh-tint-food:         #f8e7e0;
-    --rh-tint-real-estate:  #e6e9e3;
-    --rh-tint-arts:         #eee4d8;
+    /* Legacy Direction B tint names (article template still reads them) */
+    --rh-tint-food:         #f4f4f4;
+    --rh-tint-real-estate:  #f4f4f4;
+    --rh-tint-arts:         #f4f4f4;
 
     /* ===========================
-       1.2 Typography
+       1.2 Typography — Omar's stack
+       display: Bodoni Moda · ui: Hind Guntur · body: Crimson Pro · dropcap: Alfa Slab One
        =========================== */
-    --rh-display: "Antic Didone", "Times New Roman", serif;
+    --rh-display: "Bodoni Moda", "Bodoni 72", Didot, "Times New Roman", serif;
+    --rh-ui:      "Hind Guntur", "Helvetica Neue", Arial, sans-serif;
     --rh-body:    "Crimson Pro", Georgia, serif;
-    --rh-ui:      "Archivo", system-ui, sans-serif;
+    --rh-dropcap: "Alfa Slab One", "Rockwell", Georgia, serif;
 
     /* Type scale — sizes */
     --rh-display-mast:  200px;
@@ -40,9 +52,9 @@
     --rh-display-6:     26px;
     --rh-display-7:     22px;
     --rh-body-lg:       22px;
-    --rh-body:          18px;
+    --rh-body-size:     18px;
     --rh-body-sm:       14px;
-    --rh-eyebrow:       10px;
+    --rh-eyebrow:       11px;
     --rh-byline:        11px;
 
     /* Type scale — line-heights */
@@ -62,27 +74,34 @@
        1.3 Spacing & Layout
        =========================== */
     --rh-gutter:         40px;
-    --rh-section-gap:    56px;
+    --rh-section-gap:    48px;
     --rh-grid-columns:   12;
     --rh-grid-gap:       32px;
-    --rh-max-width:      1280px;
+    --rh-max-width:      1380px;
     --rh-card-gap-row:   28px;
-    --rh-card-gap-col:   56px;
+    --rh-card-gap-col:   40px;
+    --rh-header-h:       96px;
 
     /* ===========================
        1.4 Misc
        =========================== */
-    --rh-grain-opacity:   0.30;
-    --rh-image-filter:    contrast(1.02) saturate(.95);
+    --rh-image-filter:    none;
     --rh-card-border:     1px solid color-mix(in srgb, var(--rh-rule) 18%, transparent);
     --rh-hairline:        1px solid var(--rh-rule);
+    --rh-dotted:          2px dotted #333333;
 }
 
 /* ===========================
-   Type-feature flags (site-wide)
+   Base
    =========================== */
+html {
+    background: var(--rh-bg);
+}
 body {
-    font-feature-settings: "kern", "liga", "onum";
+    background: var(--rh-bg);
+    color: var(--rh-ink);
+    font-family: var(--rh-body);
+    font-feature-settings: "kern", "liga";
 }
 
 /* ===========================
@@ -125,11 +144,11 @@ body {
     text-transform: uppercase;
     background: var(--rh-tag);
     color: #fff;
-    border-radius: 0; /* sharp corners — part of the look */
+    border-radius: 0;
 }
 
 /* ===========================
-   Utility: Section double rule
+   Utility: Rules
    =========================== */
 .rh-double-rule {
     height: 4px;
@@ -137,48 +156,33 @@ body {
     border-bottom: 1px solid var(--rh-rule);
     background: transparent;
 }
-
-/* ===========================
-   Utility: Hairline
-   =========================== */
 .rh-hairline {
     border: 0;
     border-top: var(--rh-hairline);
 }
 
-/* ===========================
-   Card: Boxed variant (chosen default)
-   =========================== */
-.rh-card {
-    background: var(--rh-paper);
-    padding: 16px;
-    border: var(--rh-card-border);
-}
-
-/* ===========================
-   Newsprint grain overlay
-   =========================== */
-.rh-grain {
-    position: relative;
-}
+/* Grain overlay removed — white paper, no texture */
 .rh-grain::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: var(--rh-grain-opacity);
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
-    background-repeat: repeat;
-    background-size: 300px 300px;
-    z-index: 1;
+    content: none;
 }
 
-/* ===========================
-   Image filter for hero/card photos
-   =========================== */
 .rh-photo {
     filter: var(--rh-image-filter);
+}
+
+/* ===========================
+   Drop cap — Alfa Slab One, light gray (single posts)
+   =========================== */
+.rh-has-dropcap > p:first-of-type::first-letter,
+.rh-article-body > p:first-of-type::first-letter,
+.single-post .entry-content > p:first-of-type::first-letter {
+    font-family: var(--rh-dropcap);
+    font-weight: 400;
+    font-size: 4.6em;
+    line-height: .78;
+    float: left;
+    margin: .08em .12em 0 0;
+    color: var(--rh-dropcap);
 }
 
 /* ===========================
@@ -186,28 +190,4 @@ body {
    =========================== */
 .rh-density-subtle .rh-ad-extra {
     display: none;
-}
-.rh-density-aggressive .rh-ad-extra2 {
-    display: block;
-}
-.rh-ad-extra2 {
-    display: none;
-}
-
-/* ===========================
-   Layout container (Direction B)
-   =========================== */
-.rh-container {
-    max-width: var(--rh-max-width);
-    margin: 0 auto;
-    padding-left: var(--rh-gutter);
-    padding-right: var(--rh-gutter);
-}
-
-/* ===========================
-   Section spacing
-   =========================== */
-.rh-section {
-    padding-top: var(--rh-section-gap);
-    padding-bottom: var(--rh-section-gap);
 }

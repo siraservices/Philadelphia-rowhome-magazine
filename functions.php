@@ -11,6 +11,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Theme version — bump to bust caches on deploy.
+if (!defined('ROWHOME_THEME_VERSION')) {
+    define('ROWHOME_THEME_VERSION', '2.1.0');
+}
+
+// Homepage + shared helpers (cards, ribbons, departments, ads).
+require_once get_template_directory() . '/inc/homepage-helpers.php';
+
 /**
  * Theme Setup
  */
@@ -80,44 +88,49 @@ add_action('after_setup_theme', 'rowhome_magazine_content_width', 0);
  * Enqueue scripts and styles
  */
 function rowhome_magazine_scripts() {
-    // Enqueue Direction B design tokens
-    wp_enqueue_style('rowhome-tokens', get_template_directory_uri() . '/assets/css/tokens.css', array(), '2.0.0');
+    // Google Fonts — Omar's stack: Alfa Slab One (drop caps), Bodoni Moda (titles),
+    // Hind Guntur (headers/nav/labels), Crimson Pro (body).
+    wp_enqueue_style('rowhome-google-fonts', 'https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Hind+Guntur:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,300..800;1,300..800&display=swap', array(), null);
 
-    // Enqueue main stylesheet (depends on tokens)
-    wp_enqueue_style('rowhome-magazine-style', get_stylesheet_uri(), array('rowhome-tokens'), '2.0.0');
-    
-    // Enqueue custom JavaScript
-    wp_enqueue_script('rowhome-magazine-scripts', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), '1.0.0', true);
-    
-    // Localize script for AJAX
+    // Design tokens (fonts, palette) — everything reads from these.
+    wp_enqueue_style('rowhome-tokens', get_template_directory_uri() . '/assets/css/tokens.css', array('rowhome-google-fonts'), ROWHOME_THEME_VERSION);
+
+    // Legacy base stylesheet (article/section/page templates still use it).
+    wp_enqueue_style('rowhome-magazine-style', get_stylesheet_uri(), array('rowhome-tokens'), ROWHOME_THEME_VERSION);
+
+    // Page templates (About, Contact, Subscribe, Issues, Section…).
+    wp_enqueue_style('rowhome-templates-style', get_template_directory_uri() . '/assets/css/templates.css', array('rowhome-magazine-style'), ROWHOME_THEME_VERSION);
+
+    // Direction B article/pictorial layout — kept ONLY on single post + pictorial
+    // pages until those templates are rebuilt. Fonts/colors come from tokens.
+    if (is_singular(array('post', 'pictorial'))) {
+        wp_enqueue_style('rowhome-direction-b', get_template_directory_uri() . '/assets/css/direction-b.css', array('rowhome-tokens', 'rowhome-magazine-style'), ROWHOME_THEME_VERSION);
+    }
+
+    // Site chrome + homepage (wireframe) — loads last so it wins.
+    wp_enqueue_style('rowhome-site', get_template_directory_uri() . '/assets/css/site.css', array('rowhome-tokens', 'rowhome-magazine-style', 'rowhome-templates-style'), ROWHOME_THEME_VERSION);
+
+    // Scripts
+    wp_enqueue_script('rowhome-magazine-scripts', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), ROWHOME_THEME_VERSION, true);
     wp_localize_script('rowhome-magazine-scripts', 'rowhomeAjax', array(
         'ajaxurl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('rowhome-nonce')
     ));
-    
-    // Enqueue template styles
-    wp_enqueue_style('rowhome-templates-style', get_template_directory_uri() . '/assets/css/templates.css', array('rowhome-magazine-style'), '1.0.0');
+    wp_enqueue_script('rowhome-header', get_template_directory_uri() . '/assets/js/header.js', array(), ROWHOME_THEME_VERSION, true);
 
-    // Enqueue Direction B component styles (SIR-775)
-    wp_enqueue_style('rowhome-direction-b', get_template_directory_uri() . '/assets/css/direction-b.css', array('rowhome-tokens', 'rowhome-magazine-style'), '2.0.0');
+    // Load-more (section pages)
+    wp_enqueue_script('rowhome-load-more', get_template_directory_uri() . '/assets/js/load-more.js', array(), ROWHOME_THEME_VERSION, true);
 
-    // Enqueue Direction B homepage styles — CoverMasthead + sections (SIR-777)
-    wp_enqueue_style('rowhome-direction-b-homepage', get_template_directory_uri() . '/assets/css/direction-b-homepage.css', array('rowhome-direction-b'), '2.0.0');
-
-    // Enqueue load-more and copy-link JS on all pages
-    wp_enqueue_script('rowhome-load-more', get_template_directory_uri() . '/assets/js/load-more.js', array(), '1.0.0', true);
-
-    // Enqueue article TOC + copy-link JS on single posts (Direction B) — SIR-776
+    // Article TOC + copy-link JS on single posts
     if (is_singular('post')) {
-        wp_enqueue_script('rowhome-article-toc', get_template_directory_uri() . '/assets/js/article-toc.js', array(), '2.0.0', true);
+        wp_enqueue_script('rowhome-article-toc', get_template_directory_uri() . '/assets/js/article-toc.js', array(), ROWHOME_THEME_VERSION, true);
     }
 
-    // Enqueue gallery lightbox JS only on pictorial single pages
+    // Gallery lightbox only on pictorial single pages
     if (is_singular('pictorial')) {
-        wp_enqueue_script('rowhome-gallery-lightbox', get_template_directory_uri() . '/assets/js/gallery-lightbox.js', array(), '1.0.0', true);
+        wp_enqueue_script('rowhome-gallery-lightbox', get_template_directory_uri() . '/assets/js/gallery-lightbox.js', array(), ROWHOME_THEME_VERSION, true);
     }
 
-    // Enqueue comment reply script
     if (is_singular() && comments_open() && get_option('thread_comments')) {
         wp_enqueue_script('comment-reply');
     }
@@ -299,6 +312,17 @@ add_filter('excerpt_more', 'rowhome_magazine_excerpt_more');
  * Add custom body classes
  */
 function rowhome_magazine_body_classes($classes) {
+    if (is_singular('post')) {
+        $classes[] = 'rh-direction-b';
+        $classes[] = 'rh-article-page';
+    }
+    if (is_singular('pictorial')) {
+        $classes[] = 'rh-direction-b';
+        $classes[] = 'rh-pictorial-page';
+    }
+    if (is_front_page()) {
+        $classes[] = 'rh-homepage';
+    }
     // Add class if sidebar is active
     if (is_active_sidebar('sidebar-1')) {
         $classes[] = 'has-sidebar';

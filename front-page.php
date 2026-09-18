@@ -1,627 +1,351 @@
 <?php
 /**
- * Direction B — Homepage
+ * Homepage — 15 sections in the order of Omar's wireframe (website_Home).
  *
- * Sections (top to bottom):
- *   1. CoverMasthead  — full-bleed 980px, mix-blend-mode:difference wordmark
- *   2. In This Issue  — left heading, right 2-col 6-item ContentsRow grid
- *   3. Sponsor strip  — 970×90 leaderboard (hidden for rh-density-subtle)
- *   4. The Hot List   — section header w/ rules, 3-col grid + sidebar
- *   5. Dept Spotlights — 3 tinted panels (Food / Real Estate / Arts)
- *   6. All Departments — centered h2 + 21-item 3-col index grid
+ * Content comes from department_category (dept-*) queries; every block
+ * falls back to gray wireframe placeholders when a department is empty.
+ * Card markup lives in inc/homepage-helpers.php.
  *
  * @package RowHome_Magazine
- * @since 2.0.0
- * @see SIR-777, SIR-775 §2.1
+ * @since 2.1.0
  */
 
-get_header('homepage');
+get_header();
 
-/* ================================================================
-   DATA QUERIES
-   ================================================================ */
-
-// ── Cover story: sticky post first, fall back to latest ──────────
-$sticky_ids = get_option('sticky_posts');
-if (!empty($sticky_ids)) {
-    $cover_q = new WP_Query(array(
-        'posts_per_page'      => 1,
-        'post_type'           => array('post', 'department'),
-        'post__in'            => $sticky_ids,
-        'orderby'             => 'date',
-        'order'               => 'DESC',
-        'ignore_sticky_posts' => 0,
-    ));
-    if (!$cover_q->have_posts()) {
-        $cover_q = new WP_Query(array(
-            'posts_per_page' => 1,
-            'post_type'      => array('post', 'department'),
-        ));
-    }
-} else {
-    $cover_q = new WP_Query(array(
-        'posts_per_page' => 1,
-        'post_type'      => array('post', 'department'),
-    ));
-}
-
-$cover_id    = 0;
-$cover_title = 'Philadelphia at Its Best';
-$cover_url   = home_url('/');
-$cover_image = '';
-$cover_kicker = '';
-
-if ($cover_q->have_posts()) {
-    $cover_q->the_post();
-    $cover_id    = get_the_ID();
-    $cover_title = get_the_title();
-    $cover_url   = get_permalink();
-    $cover_image = get_the_post_thumbnail_url(null, 'rowhome-hero');
-    $cover_terms = get_the_terms($cover_id, 'department_category');
-    if ($cover_terms && !is_wp_error($cover_terms)) {
-        $cover_kicker = $cover_terms[0]->name . ' · The Cover Story';
-    } else {
-        $cover_kicker = 'Feature · The Cover Story';
-    }
-    wp_reset_postdata();
-}
-
-// ── Cover lines: 4 posts after the cover story ───────────────────
-$exclude = $cover_id ? array($cover_id) : array();
-$lines_q = new WP_Query(array(
-    'posts_per_page' => 4,
-    'post_type'      => array('post', 'department'),
-    'post__not_in'   => $exclude,
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-));
-
-// ── In This Issue: 6 most recent posts ───────────────────────────
-$contents_q = new WP_Query(array(
-    'posts_per_page' => 6,
-    'post_type'      => array('post', 'department'),
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-));
-
-// ── Hot List: 3 posts for hero + stacked cards ───────────────────
-$hot_q = new WP_Query(array(
-    'posts_per_page' => 3,
-    'post_type'      => array('post', 'department'),
-    'post__not_in'   => $exclude,
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-));
-
-// ── Ticker: 3 most-read posts by comment count ───────────────────
-$ticker_q = new WP_Query(array(
-    'posts_per_page' => 3,
-    'post_type'      => array('post', 'department'),
-    'orderby'        => 'comment_count',
-    'order'          => 'DESC',
-));
-
-// ── Department Spotlights ─────────────────────────────────────────
-function rh_dept_spotlight_query($slugs) {
-    return new WP_Query(array(
-        'posts_per_page' => 1,
-        'post_type'      => array('post', 'department'),
-        'tax_query'      => array(array(
-            'taxonomy' => 'department_category',
-            'field'    => 'slug',
-            'terms'    => $slugs,
-            'operator' => 'IN',
-        )),
-    ));
-}
-$spotlight_food_q = rh_dept_spotlight_query(array('dept-menu', 'menu'));
-$spotlight_re_q   = rh_dept_spotlight_query(array('dept-real-estate', 'real-estate'));
-$spotlight_arts_q = rh_dept_spotlight_query(array('dept-music-art', 'music-art'));
-
-// ── All 21 Departments ────────────────────────────────────────────
-$all_departments = array(
-    array('name' => 'Health',        'slug' => 'dept-health'),
-    array('name' => 'Fashion',       'slug' => 'dept-fashion'),
-    array('name' => 'Brides Guide',  'slug' => 'dept-brides-guide'),
-    array('name' => 'Community',     'slug' => 'dept-community'),
-    array('name' => 'Writers Block', 'slug' => 'dept-writers-block'),
-    array('name' => 'Real Estate',   'slug' => 'dept-real-estate'),
-    array('name' => 'Tech',          'slug' => 'dept-tech'),
-    array('name' => 'Education',     'slug' => 'dept-education'),
-    array('name' => 'Politics',      'slug' => 'dept-politics'),
-    array('name' => 'Music & Art',   'slug' => 'dept-music-art'),
-    array('name' => 'Film',          'slug' => 'dept-film'),
-    array('name' => 'Flashback',     'slug' => 'dept-flashback'),
-    array('name' => 'History',       'slug' => 'dept-history'),
-    array('name' => 'Menu',          'slug' => 'dept-menu'),
-    array('name' => 'Travel',        'slug' => 'dept-travel'),
-    array('name' => '2025 Hotspots', 'slug' => 'dept-2025-hotspots'),
-    array('name' => 'Events',        'slug' => 'dept-events'),
-    array('name' => 'Sports',        'slug' => 'dept-sports'),
-    array('name' => 'Environment',   'slug' => 'dept-environment'),
-    array('name' => 'Games',         'slug' => 'dept-games'),
-    array('name' => 'People',        'slug' => 'dept-people'),
-);
-
-// Navigation sections (bottom strip + per-spec 6 umbrella labels)
-$nav_sections = array(
-    'Life'        => home_url('/life'),
-    'Business'    => home_url('/business'),
-    'Arts'        => home_url('/arts'),
-    'Lifestyle'   => home_url('/lifestyle'),
-    'Sports'      => home_url('/sports'),
-    'Environment' => home_url('/environment'),
-);
-
-/* ================================================================
-   PAGE BODY
-   ================================================================ */
+$img_dir   = get_template_directory_uri() . '/assets/images/';
+$cover     = rowhome_cover_post();
+$cover_id  = $cover ? $cover->ID : 0;
+$exclude   = $cover_id ? array( $cover_id ) : array();
 ?>
 
-<!-- ================================================================
-     1. COVER MASTHEAD
-     Full-bleed 980px. CoverMasthead replaces site header on homepage.
-     All foreground text: mix-blend-mode:difference + color:#fff
-     Spec: §3.1
-     ================================================================ -->
-<div class="rh-cover-masthead" role="banner" aria-label="<?php esc_attr_e('Cover', 'rowhome-magazine'); ?>">
+<main id="main" class="rh-home">
 
-    <?php if ($cover_image) : ?>
-        <img
-            src="<?php echo esc_url($cover_image); ?>"
-            alt="<?php echo esc_attr($cover_title); ?>"
-            class="rh-cover-masthead__bg rh-photo"
-            loading="eager"
-            fetchpriority="high"
-        >
-    <?php else : ?>
-        <!-- Solid ink fallback when no cover image available -->
-        <div class="rh-cover-masthead__bg rh-cover-masthead__bg--ink"></div>
-    <?php endif; ?>
-
-    <!-- 60% black gradient — always on for low-contrast photo fallback -->
-    <div class="rh-cover-masthead__gradient" aria-hidden="true"></div>
-
-    <!-- Dateline strip (top) -->
-    <div class="rh-cover-masthead__dateline">
-        <span>Issue 03 &middot; Feb 2026 &middot; $7.95</span>
-        <a href="<?php echo esc_url(home_url('/subscribe')); ?>" class="rh-cover-masthead__dateline-link">Subscribe &middot; $1/wk</a>
-    </div>
-
-    <!-- Wordmark (centered, top:60) -->
-    <div class="rh-cover-masthead__wordmark">
-        <a href="<?php echo esc_url(home_url('/')); ?>" rel="home" class="rh-cover-masthead__wordmark-link">
-            <span class="rh-cover-masthead__wordmark-text">Row<em>Home</em></span>
-        </a>
-        <span class="rh-cover-masthead__tagline-text">River to River. One Neighborhood.</span>
-    </div>
-
-    <!-- Cover lines (left, top:380) — 4 teaser rows from recent posts -->
-    <div class="rh-cover-masthead__lines" aria-label="<?php esc_attr_e('Inside this issue', 'rowhome-magazine'); ?>">
-        <span class="rh-cover-masthead__lines-eyebrow">Inside</span>
-        <?php
-        if ($lines_q->have_posts()) :
-            $line_num = 0;
-            while ($lines_q->have_posts()) : $lines_q->the_post();
-                $line_num++;
-                $line_page = 18 + ($line_num * 12);
-        ?>
-            <div class="rh-cover-masthead__line-item">
-                <a href="<?php the_permalink(); ?>" class="rh-cover-masthead__line-link">
-                    <?php the_title(); ?>
-                </a>
-                <span class="rh-cover-masthead__line-page">p.&nbsp;<?php echo $line_page; ?></span>
-            </div>
-        <?php
-            endwhile;
-            wp_reset_postdata();
-        else :
-            // Static fallback cover lines
-            $fallback_lines = array(
-                array('title' => 'The Best Row Homes in Fishtown', 'page' => 30),
-                array('title' => "South Philly's Hidden Restaurant Scene", 'page' => 42),
-                array('title' => 'How Local Art Is Reshaping the City', 'page' => 56),
-                array('title' => 'The 2025 Real Estate Outlook', 'page' => 68),
-            );
-            foreach ($fallback_lines as $line) :
-        ?>
-            <div class="rh-cover-masthead__line-item">
-                <span class="rh-cover-masthead__line-link"><?php echo esc_html($line['title']); ?></span>
-                <span class="rh-cover-masthead__line-page">p.&nbsp;<?php echo $line['page']; ?></span>
-            </div>
-        <?php
-            endforeach;
-        endif;
-        ?>
-    </div>
-
-    <!-- Cover headline (right, bottom:80) — the cover story -->
-    <div class="rh-cover-masthead__headline">
-        <?php if ($cover_kicker) : ?>
-            <span class="rh-cover-masthead__hed-tag"><?php echo esc_html($cover_kicker); ?></span>
-        <?php endif; ?>
-        <a href="<?php echo esc_url($cover_url); ?>" class="rh-cover-masthead__hed-link">
-            <h1 class="rh-cover-masthead__hed-title"><?php echo esc_html($cover_title); ?></h1>
-        </a>
-    </div>
-
-    <!-- Bottom nav strip with backdrop blur -->
-    <nav class="rh-cover-masthead__nav" aria-label="<?php esc_attr_e('Section navigation', 'rowhome-magazine'); ?>">
-        <div class="rh-cover-masthead__nav-sections">
-            <?php foreach ($nav_sections as $label => $url) : ?>
-                <a href="<?php echo esc_url($url); ?>" class="rh-cover-masthead__nav-link">
-                    <?php echo esc_html($label); ?>
-                </a>
-            <?php endforeach; ?>
-        </div>
-        <span class="rh-cover-masthead__nav-hint">&#8595; Scroll for the issue</span>
-    </nav>
-</div><!-- .rh-cover-masthead -->
-
-<main id="main" class="rh-homepage-main" tabindex="-1">
-
-<!-- ================================================================
-     2. IN THIS ISSUE
-     Left col: heading. Right col: 2-col grid of 6 ContentsRow items.
-     Spec: §2.1 section 2, §3.3
-     ================================================================ -->
-<section class="rh-in-this-issue rh-section" aria-labelledby="rh-in-this-issue-heading">
+    <!-- 1. Leaderboard ad -->
     <div class="rh-container">
-        <div class="rh-in-this-issue__inner">
-
-            <!-- Left: heading (sticky) -->
-            <div class="rh-in-this-issue__left">
-                <h2 id="rh-in-this-issue-heading" class="rh-in-this-issue__issue-label">In This Issue</h2>
-                <p class="rh-in-this-issue__issue-meta">Issue 03 &middot; Feb 2026</p>
-            </div>
-
-            <!-- Right: 2-col ContentsRow grid -->
-            <div class="rh-in-this-issue__grid">
-                <?php
-                if ($contents_q->have_posts()) :
-                    $row_num = 0;
-                    while ($contents_q->have_posts()) : $contents_q->the_post();
-                        $row_num++;
-                        $row_page   = 18 + ($row_num * 12);
-                        $row_terms  = get_the_terms(get_the_ID(), 'department_category');
-                        $row_kicker = ($row_terms && !is_wp_error($row_terms)) ? $row_terms[0]->name : 'Feature';
-                ?>
-                    <a href="<?php the_permalink(); ?>" class="rh-contents-row-link">
-                        <div class="rh-contents-row">
-                            <span class="rh-contents-row__number"><?php echo str_pad($row_num, 2, '0', STR_PAD_LEFT); ?></span>
-                            <div class="rh-contents-row__body">
-                                <span class="rh-eyebrow"><?php echo esc_html($row_kicker); ?></span>
-                                <p class="rh-contents-row__headline"><?php the_title(); ?></p>
-                                <span class="rh-byline">By <?php the_author(); ?></span>
-                            </div>
-                            <span class="rh-contents-row__page">p.&nbsp;<?php echo $row_page; ?></span>
-                        </div>
-                    </a>
-                <?php
-                    endwhile;
-                    wp_reset_postdata();
-                else :
-                    // Static fallback for 6 contents rows
-                    $fallback_contents = array(
-                        array('kicker' => 'Life',        'title' => 'Skinny Cheesesteaks: A Family Tradition',  'author' => 'Dorette Rota Jackson'),
-                        array('kicker' => 'Real Estate', 'title' => 'The Row Home Resurgence of Fishtown',       'author' => 'Maria Gonzalez'),
-                        array('kicker' => 'Music & Art', 'title' => "Philadelphia's Mural Arts at 40",           'author' => 'Anthony Panvini'),
-                        array('kicker' => 'Menu',        'title' => 'Best New Restaurants of the Year',          'author' => 'Robert Chen'),
-                        array('kicker' => 'Sports',      'title' => "Eagles' Road to the Postseason",            'author' => 'James Mitchell'),
-                        array('kicker' => 'Community',   'title' => 'Neighbors Building the City They Love',     'author' => 'Lisa Tran'),
-                    );
-                    foreach ($fallback_contents as $idx => $item) :
-                        $row_num  = $idx + 1;
-                        $row_page = 18 + ($row_num * 12);
-                ?>
-                    <div class="rh-contents-row">
-                        <span class="rh-contents-row__number"><?php echo str_pad($row_num, 2, '0', STR_PAD_LEFT); ?></span>
-                        <div class="rh-contents-row__body">
-                            <span class="rh-eyebrow"><?php echo esc_html($item['kicker']); ?></span>
-                            <p class="rh-contents-row__headline"><?php echo esc_html($item['title']); ?></p>
-                            <span class="rh-byline">By <?php echo esc_html($item['author']); ?></span>
-                        </div>
-                        <span class="rh-contents-row__page">p.&nbsp;<?php echo $row_page; ?></span>
-                    </div>
-                <?php
-                    endforeach;
-                endif;
-                ?>
-            </div><!-- .rh-in-this-issue__grid -->
-        </div><!-- .rh-in-this-issue__inner -->
-    </div><!-- .rh-container -->
-</section><!-- .rh-in-this-issue -->
-
-<!-- ================================================================
-     3. SPONSOR STRIP
-     970×90 leaderboard. Hidden when .rh-density-subtle on root.
-     Spec: §2.1 section 3, §3.7
-     ================================================================ -->
-<div class="rh-sponsor-strip" aria-label="<?php esc_attr_e('Advertisement', 'rowhome-magazine'); ?>">
-    <div class="rh-ad rh-ad--leader" aria-label="Advertisement · 970 × 90">
-        Advertisement &middot; 970 &times; 90
+        <?php rowhome_ad( 'leader' ); ?>
     </div>
-</div>
 
-<!-- ================================================================
-     4. THE HOT LIST
-     Section header w/ rule lines.
-     3-col grid: hero StoryCard (xl) | 2 stacked StoryCards (m) | sidebar
-     Sidebar: 300×300 ad + 3 TickerItems (most read)
-     Spec: §2.1 section 4, §3.4, §3.5
-     ================================================================ -->
-<section class="rh-hot-list rh-section" aria-labelledby="rh-hot-list-heading">
+    <!-- 2. Tagline divider -->
     <div class="rh-container">
+        <?php rowhome_tagline_divider(); ?>
+    </div>
 
-        <!-- Section header with rule lines -->
-        <div class="rh-section-header rh-section-header--ruled">
-            <h2 id="rh-hot-list-heading" class="rh-section-header__title">The Hot List</h2>
-        </div>
-
-        <div class="rh-hot-list__grid">
-
-            <!-- Col 1: Hero StoryCard (xl) -->
-            <?php
-            $hot_posts = array();
-            if ($hot_q->have_posts()) :
-                while ($hot_q->have_posts()) : $hot_q->the_post();
-                    $hot_posts[] = array(
-                        'id'      => get_the_ID(),
-                        'title'   => get_the_title(),
-                        'url'     => get_permalink(),
-                        'image'   => get_the_post_thumbnail_url(null, 'rowhome-article-card'),
-                        'author'  => get_the_author(),
-                        'kicker'  => '',
-                    );
-                    $ht = get_the_terms(get_the_ID(), 'department_category');
-                    if ($ht && !is_wp_error($ht)) {
-                        $hot_posts[count($hot_posts) - 1]['kicker'] = $ht[0]->name;
-                    }
-                endwhile;
-                wp_reset_postdata();
-            endif;
-
-            // Fallback posts for empty installs
-            if (empty($hot_posts)) {
-                $hot_posts = array(
-                    array('id' => 0, 'title' => "Philadelphia's Best Neighborhoods for Row Home Buyers", 'url' => home_url('/'), 'image' => '', 'author' => 'Maria Gonzalez',    'kicker' => 'Real Estate'),
-                    array('id' => 0, 'title' => 'Top Cheesesteak Spots Ranked by Locals',                'url' => home_url('/'), 'image' => '', 'author' => 'Robert Chen',       'kicker' => 'Menu'),
-                    array('id' => 0, 'title' => 'Eagles Pre-Season Predictions from the Experts',        'url' => home_url('/'), 'image' => '', 'author' => 'James Mitchell',     'kicker' => 'Sports'),
-                );
-            }
-
-            $hero = $hot_posts[0];
-            $hero_img = $hero['image'] ?: 'https://placehold.co/800x600/0c0c0c/fefdfa?text=Hot+List';
-            ?>
-            <a href="<?php echo esc_url($hero['url']); ?>" class="rh-story-card-link">
-                <article class="rh-story-card rh-story-card--xl">
-                    <div class="rh-story-card__image">
-                        <?php if ($hero['kicker']) : ?>
-                            <span class="rh-tag rh-story-card__tag"><?php echo esc_html($hero['kicker']); ?></span>
-                        <?php endif; ?>
-                        <img src="<?php echo esc_url($hero_img); ?>"
-                             alt="<?php echo esc_attr($hero['title']); ?>"
-                             loading="lazy"
-                             class="rh-photo">
-                    </div>
-                    <div class="rh-story-card__body">
-                        <?php if ($hero['kicker']) : ?>
-                            <span class="rh-eyebrow"><?php echo esc_html($hero['kicker']); ?></span>
-                        <?php endif; ?>
-                        <h3 class="rh-story-card__headline"><?php echo esc_html($hero['title']); ?></h3>
-                        <span class="rh-byline">By <?php echo esc_html($hero['author']); ?></span>
-                    </div>
-                </article>
+    <!-- 3. Hero — featured / sticky post -->
+    <?php
+    $hero_img   = $cover ? get_the_post_thumbnail_url( $cover, 'rowhome-hero' ) : '';
+    if ( ! $hero_img ) {
+        $hero_img = $img_dir . 'hero-1.jpg';
+    }
+    $hero_title = $cover ? get_the_title( $cover ) : 'Skinny Joey&rsquo;s Cheesesteaks';
+    $hero_kick  = $cover ? wp_trim_words( get_the_excerpt( $cover ), 8, '' ) : 'A tribute to family traditions';
+    $hero_url   = $cover ? get_permalink( $cover ) : home_url( '/subscribe/' );
+    $hero_photo = $cover ? get_post_meta( $cover_id, '_rowhome_photographer', true ) : '';
+    if ( ! $hero_photo && $cover ) {
+        $hero_photo = get_post_meta( $cover_id, '_pictorial_photographer', true );
+    }
+    ?>
+    <section class="rh-hero<?php echo $cover ? '' : ' rh-hero--placeholder'; ?>" aria-label="Featured story">
+        <div class="rh-container">
+            <a class="rh-hero__link" href="<?php echo esc_url( $hero_url ); ?>">
+                <div class="rh-hero__media" style="background-image:url('<?php echo esc_url( $hero_img ); ?>')">
+                    <img class="rh-hero__img" src="<?php echo esc_url( $hero_img ); ?>" alt="" loading="eager" fetchpriority="high">
+                </div>
+                <div class="rh-hero__overlay">
+                    <h1 class="rh-hero__title"><?php echo wp_kses_post( $hero_title ); ?></h1>
+                    <?php if ( $hero_kick ) : ?>
+                        <p class="rh-hero__kicker"><?php echo esc_html( $hero_kick ); ?></p>
+                    <?php endif; ?>
+                    <p class="rh-hero__byline">
+                        <span><?php echo $cover ? rowhome_byline_text( $cover ) : 'by RowHome Staff'; ?></span>
+                        <?php if ( $hero_photo ) : ?><span>photos by <?php echo esc_html( $hero_photo ); ?></span><?php endif; ?>
+                    </p>
+                </div>
             </a>
+            <div class="rh-hero__bar"><?php rowhome_philly_badge( 'rh-philly--hero' ); ?></div>
+        </div>
+    </section>
 
-            <!-- Col 2: 2 stacked StoryCards (m) -->
-            <div class="rh-hot-list__stacked">
-                <?php
-                $stacked = array_slice($hot_posts, 1, 2);
-                if (count($stacked) < 2) {
-                    // Pad with extra fallback items
-                    $stacked_fallbacks = array(
-                        array('title' => 'Center City Dining Guide 2026', 'url' => home_url('/'), 'image' => '', 'author' => 'Lisa Tran', 'kicker' => 'Menu'),
-                        array('title' => 'Art Galleries Worth the Trip This Month', 'url' => home_url('/'), 'image' => '', 'author' => 'Anthony Panvini', 'kicker' => 'Arts'),
-                    );
-                    $stacked = array_pad($stacked, 2, null);
-                    for ($i = 0; $i < 2; $i++) {
-                        if (is_null($stacked[$i])) {
-                            $stacked[$i] = $stacked_fallbacks[$i];
+    <div class="rh-container">
+
+        <!-- 4 + 5. LIFE and 2025 HOTSPOTS share a skyscraper ad -->
+        <div class="rh-with-sky">
+            <div class="rh-with-sky__main">
+
+                <!-- 4. PRH LIFE -->
+                <section class="rh-section rh-life" aria-labelledby="sec-life">
+                    <?php rowhome_section_header( 'LIFE', array( 'link' => rowhome_dept_url( 'dept-life' ) ) ); ?>
+                    <div class="rh-grid rh-grid--3 rh-grid--dotted">
+                        <?php
+                        // Flashback first (its ribbon reflects the real category), then Life.
+                        $life_posts = rowhome_dept_posts( 'dept-flashback', 1, $exclude );
+                        $life_more  = rowhome_dept_posts( 'dept-life', 3, array_merge( $exclude, wp_list_pluck( $life_posts, 'ID' ) ) );
+                        $life_posts = array_slice( array_merge( $life_posts, $life_more ), 0, 3 );
+                        for ( $i = 0; $i < 3; $i++ ) {
+                            $p = isset( $life_posts[ $i ] ) ? $life_posts[ $i ] : null;
+                            rowhome_card( array(
+                                'post'   => $p,
+                                'ribbon' => ( $p ? '' : ( $i === 0 ? 'FLASHBACK' : 'LIFE' ) ),
+                                'prefer' => array( 'dept-flashback', 'dept-life' ),
+                                'words'  => 16,
+                            ) );
                         }
-                    }
+                        ?>
+                    </div>
+                </section>
+
+                <!-- 5. PRH 2025 HOTSPOTS -->
+                <section class="rh-section rh-hotspots" aria-labelledby="sec-hotspots">
+                    <?php
+                    rowhome_section_header( '2025 HOTSPOTS', array(
+                        'link'  => rowhome_dept_url( 'dept-2025-hotspots' ),
+                        'extra' => '<span class="rh-script rh-script--red">Hot Spots</span>',
+                    ) );
+                    $hs = rowhome_dept_posts( 'dept-2025-hotspots', 1, $exclude );
+                    $hs = $hs ? $hs[0] : null;
+                    ?>
+                    <div class="rh-hotspots__layout">
+                        <div class="rh-hotspots__text">
+                            <?php if ( $hs ) : ?>
+                                <h3 class="rh-feature-title"><a href="<?php echo esc_url( get_permalink( $hs ) ); ?>"><?php echo esc_html( get_the_title( $hs ) ); ?></a></h3>
+                                <p class="rh-card__byline"><?php echo rowhome_byline_text( $hs ); ?></p>
+                                <div class="rh-prose"><?php echo wpautop( esc_html( wp_trim_words( get_the_excerpt( $hs ), 90, '&hellip;' ) ) ); ?></div>
+                            <?php else : ?>
+                                <?php echo rowhome_text_bars_html( 3, 'rh-bars--title rh-bars--lg' ); ?>
+                                <?php echo rowhome_text_bars_html( 12, 'rh-bars--excerpt' ); ?>
+                            <?php endif; ?>
+                        </div>
+                        <div class="rh-hotspots__image">
+                            <?php echo rowhome_post_image_html( $hs, 'rowhome-article-card', 'Hot Spots', '7/8' ); ?>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+            <aside class="rh-with-sky__ad" aria-label="Advertisement">
+                <?php rowhome_ad( 'sky' ); ?>
+            </aside>
+        </div>
+
+        <!-- 6. PRH BUSINESS — profile feature -->
+        <section class="rh-section rh-business" aria-labelledby="sec-business">
+            <?php
+            rowhome_section_header( 'BUSINESS', array( 'link' => rowhome_dept_url( 'dept-business' ) ) );
+            $biz = rowhome_dept_posts( 'dept-business', 1, $exclude );
+            $biz = $biz ? $biz[0] : null;
+            if ( $biz ) {
+                $biz_name  = get_the_title( $biz );
+                $biz_sub   = get_post_meta( $biz->ID, '_rowhome_subtitle', true );
+                if ( ! $biz_sub ) {
+                    $biz_sub = wp_trim_words( get_the_excerpt( $biz ), 7, '' );
                 }
-                foreach ($stacked as $card) :
-                    if (!$card) continue;
-                    $card_img = !empty($card['image']) ? $card['image'] : 'https://placehold.co/800x600/0c0c0c/fefdfa?text=Story';
+                $biz_url   = get_permalink( $biz );
+                $biz_body  = wp_trim_words( get_the_excerpt( $biz ), 80, '&hellip;' );
+                $biz_by    = rowhome_byline_text( $biz );
+            } else {
+                $biz_name  = 'Victor Della Barba';
+                $biz_sub   = 'Local artist turns <strong>ideas</strong> into <strong>visions</strong>';
+                $biz_url   = home_url( '/subscribe/' );
+                $biz_body  = '';
+                $biz_by    = 'by RowHome Staff';
+            }
+            // Stack the name one word per line (max 3 lines).
+            $name_words = preg_split( '/\s+/', trim( wp_strip_all_tags( $biz_name ) ) );
+            if ( count( $name_words ) > 3 ) {
+                $name_words = array( $name_words[0], $name_words[1], implode( ' ', array_slice( $name_words, 2 ) ) );
+            }
+            ?>
+            <div class="rh-business__layout">
+                <div class="rh-business__profile">
+                    <h3 class="rh-business__name">
+                        <a href="<?php echo esc_url( $biz_url ); ?>">
+                            <?php foreach ( $name_words as $w ) : ?><span><?php echo esc_html( $w ); ?></span><?php endforeach; ?>
+                        </a>
+                    </h3>
+                    <p class="rh-business__sub"><?php echo wp_kses( $biz_sub, array( 'strong' => array(), 'b' => array() ) ); ?></p>
+                    <p class="rh-business__by"><span><?php echo $biz_by; ?></span></p>
+                    <div class="rh-business__logo">
+                        <?php echo rowhome_avatar_html( $biz, 96 ); ?>
+                    </div>
+                </div>
+                <div class="rh-business__content">
+                    <div class="rh-business__images">
+                        <?php
+                        if ( $biz && has_post_thumbnail( $biz ) ) {
+                            echo rowhome_post_image_html( $biz, 'rowhome-article-card', $biz_name, '3/2' );
+                        } else {
+                            echo '<div class="rh-img-wrap" style="--rh-ph-ratio:3/2"><img class="rh-img" src="' . esc_url( $img_dir . 'hero-3.jpg' ) . '" alt="" loading="lazy"></div>';
+                        }
+                        echo '<div class="rh-img-wrap" style="--rh-ph-ratio:3/2"><img class="rh-img" src="' . esc_url( $img_dir . 'hero-2.jpg' ) . '" alt="" loading="lazy"></div>';
+                        ?>
+                    </div>
+                    <?php if ( $biz_body ) : ?>
+                        <div class="rh-prose"><p><?php echo esc_html( $biz_body ); ?></p></div>
+                    <?php else : ?>
+                        <?php echo rowhome_text_bars_html( 8, 'rh-bars--excerpt' ); ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. PRH HEALTH — 2 wide cards -->
+        <section class="rh-section rh-health" aria-labelledby="sec-health">
+            <?php rowhome_section_header( 'HEALTH', array( 'link' => rowhome_dept_url( 'dept-health' ) ) ); ?>
+            <div class="rh-grid rh-grid--2 rh-grid--dotted">
+                <?php rowhome_cards_for( 'dept-health', 2, array( 'ribbon' => 'HEALTH', 'ratio' => '16/9', 'words' => 26 ), $exclude ); ?>
+            </div>
+        </section>
+
+        <!-- 8. PRH REAL ESTATE — 4 cards -->
+        <section class="rh-section rh-realestate" aria-labelledby="sec-realestate">
+            <?php rowhome_section_header( 'REAL ESTATE', array( 'link' => rowhome_dept_url( 'dept-real-estate' ) ) ); ?>
+            <div class="rh-grid rh-grid--4 rh-grid--dotted">
+                <?php rowhome_cards_for( 'dept-real-estate', 4, array( 'ribbon' => 'REAL ESTATE', 'ribbon_class' => 'rh-ribbon--sage', 'class' => 'rh-card--centered', 'words' => 14 ), $exclude ); ?>
+            </div>
+        </section>
+
+        <!-- 9. Tagline + leaderboard -->
+        <?php rowhome_tagline_divider(); ?>
+        <?php rowhome_ad( 'leader' ); ?>
+
+        <!-- 10. PRH MENU -->
+        <section class="rh-section rh-menu" aria-labelledby="sec-menu">
+            <?php
+            rowhome_section_header( 'MENU', array(
+                'link'  => rowhome_dept_url( 'dept-menu' ),
+                'rule'  => 'green',
+                'extra' => rowhome_hotspots_sticker( 'rh-sticker--rule' ),
+            ) );
+            $menu_posts = rowhome_dept_posts( 'dept-menu', 5, $exclude );
+            $menu_lead  = isset( $menu_posts[0] ) ? $menu_posts[0] : null;
+            ?>
+            <div class="rh-menu__lead">
+                <a class="rh-menu__lead-link" href="<?php echo esc_url( $menu_lead ? get_permalink( $menu_lead ) : home_url( '/subscribe/' ) ); ?>">
+                    <div class="rh-menu__lead-text">
+                        <?php if ( $menu_lead ) : ?>
+                            <h3 class="rh-feature-title"><?php echo esc_html( get_the_title( $menu_lead ) ); ?></h3>
+                            <p class="rh-card__byline"><?php echo rowhome_byline_text( $menu_lead ); ?></p>
+                            <p class="rh-card__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt( $menu_lead ), 40, '&hellip;' ) ); ?></p>
+                        <?php else : ?>
+                            <?php echo rowhome_text_bars_html( 3, 'rh-bars--title rh-bars--lg rh-bars--center' ); ?>
+                            <?php echo rowhome_text_bars_html( 4, 'rh-bars--excerpt rh-bars--center' ); ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="rh-menu__lead-icon" aria-hidden="true">
+                        <?php echo rowhome_post_image_html( $menu_lead, 'rowhome-small-card', 'Menu', '1/1' ); ?>
+                    </div>
+                </a>
+            </div>
+            <div class="rh-grid rh-grid--4 rh-grid--dotted rh-menu__grid">
+                <?php
+                for ( $i = 1; $i <= 4; $i++ ) {
+                    $p = isset( $menu_posts[ $i ] ) ? $menu_posts[ $i ] : null;
+                    rowhome_card( array(
+                        'post'         => $p,
+                        'ribbon'       => 'MENU',
+                        'ribbon_class' => 'rh-ribbon--green',
+                        'sticker'      => rowhome_hotspots_sticker( 'rh-sticker--card' ),
+                        'class'        => 'rh-card--centered',
+                        'words'        => 14,
+                    ) );
+                }
                 ?>
-                    <a href="<?php echo esc_url($card['url']); ?>" class="rh-story-card-link">
-                        <article class="rh-story-card rh-story-card--m">
-                            <div class="rh-story-card__image">
-                                <?php if (!empty($card['kicker'])) : ?>
-                                    <span class="rh-tag rh-story-card__tag"><?php echo esc_html($card['kicker']); ?></span>
-                                <?php endif; ?>
-                                <img src="<?php echo esc_url($card_img); ?>"
-                                     alt="<?php echo esc_attr($card['title']); ?>"
-                                     loading="lazy"
-                                     class="rh-photo">
-                            </div>
-                            <div class="rh-story-card__body">
-                                <?php if (!empty($card['kicker'])) : ?>
-                                    <span class="rh-eyebrow"><?php echo esc_html($card['kicker']); ?></span>
-                                <?php endif; ?>
-                                <h3 class="rh-story-card__headline"><?php echo esc_html($card['title']); ?></h3>
-                                <span class="rh-byline">By <?php echo esc_html($card['author']); ?></span>
-                            </div>
-                        </article>
+            </div>
+        </section>
+
+        <!-- 11. PRH BRIDES GUIDE -->
+        <section class="rh-section rh-brides" aria-labelledby="sec-brides">
+            <?php
+            rowhome_section_header( 'BRIDES GUIDE', array( 'link' => rowhome_dept_url( 'dept-brides-guide' ) ) );
+            $brides = rowhome_dept_posts( 'dept-brides-guide', 9, $exclude );
+            $b_lead = isset( $brides[0] ) ? $brides[0] : null;
+            ?>
+            <div class="rh-brides__lead">
+                <a class="rh-brides__lead-link" href="<?php echo esc_url( $b_lead ? get_permalink( $b_lead ) : home_url( '/subscribe/' ) ); ?>">
+                    <div class="rh-brides__lead-img">
+                        <?php echo rowhome_post_image_html( $b_lead, 'rowhome-article-card', 'Brides Guide', '1/1' ); ?>
+                    </div>
+                    <div class="rh-brides__lead-text">
+                        <?php if ( $b_lead ) : ?>
+                            <h3 class="rh-feature-title"><?php echo esc_html( get_the_title( $b_lead ) ); ?></h3>
+                            <p class="rh-card__byline"><?php echo rowhome_byline_text( $b_lead ); ?></p>
+                            <p class="rh-card__excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt( $b_lead ), 50, '&hellip;' ) ); ?></p>
+                        <?php else : ?>
+                            <?php echo rowhome_text_bars_html( 3, 'rh-bars--title rh-bars--lg rh-bars--right' ); ?>
+                            <?php echo rowhome_text_bars_html( 4, 'rh-bars--excerpt' ); ?>
+                        <?php endif; ?>
+                    </div>
+                </a>
+                <div class="rh-brides__badge"><?php rowhome_philly_badge(); ?></div>
+            </div>
+            <div class="rh-brides__row">
+                <div class="rh-brides__thumbs">
+                    <?php
+                    for ( $i = 1; $i <= 8; $i++ ) {
+                        $p = isset( $brides[ $i ] ) ? $brides[ $i ] : null;
+                        rowhome_card( array( 'post' => $p, 'variant' => 'thumb', 'ribbon' => false, 'ratio' => '1/1' ) );
+                    }
+                    ?>
+                </div>
+                <aside class="rh-brides__ad" aria-label="Advertisement"><?php rowhome_ad( 'rect' ); ?></aside>
+            </div>
+        </section>
+
+        <!-- 12. PRH MUSIC & ART -->
+        <section class="rh-section rh-musicart" aria-labelledby="sec-musicart">
+            <?php rowhome_section_header( 'MUSIC & ART', array( 'link' => rowhome_dept_url( 'dept-music-art' ) ) ); ?>
+            <div class="rh-musicart__layout">
+                <aside class="rh-musicart__ad" aria-label="Advertisement"><?php rowhome_ad( 'rect' ); ?></aside>
+                <div class="rh-grid rh-grid--3 rh-grid--dotted">
+                    <?php
+                    $ma_posts = rowhome_dept_posts( array( 'dept-music-art', 'dept-film' ), 3, $exclude );
+                    $ma_ph    = array( 'MUSIC', 'FILM', 'MUSIC' );
+                    for ( $i = 0; $i < 3; $i++ ) {
+                        $p = isset( $ma_posts[ $i ] ) ? $ma_posts[ $i ] : null;
+                        rowhome_card( array(
+                            'post'   => $p,
+                            'ribbon' => $p ? '' : $ma_ph[ $i ],
+                            'prefer' => array( 'dept-film', 'dept-music-art' ),
+                            'words'  => 16,
+                        ) );
+                    }
+                    ?>
+                </div>
+            </div>
+        </section>
+
+        <!-- 13. Tagline + leaderboard -->
+        <?php rowhome_tagline_divider(); ?>
+        <?php rowhome_ad( 'leader' ); ?>
+
+        <!-- 14. PRH WRITERS BLOCK — 2 horizontal cards -->
+        <section class="rh-section rh-writers" aria-labelledby="sec-writers">
+            <?php rowhome_section_header( 'WRITERS BLOCK', array( 'link' => rowhome_dept_url( 'dept-writers-block' ) ) ); ?>
+            <div class="rh-grid rh-grid--2 rh-grid--dotted">
+                <?php rowhome_cards_for( 'dept-writers-block', 2, array( 'variant' => 'wide', 'ribbon' => false, 'avatar' => false, 'ratio' => '1/1', 'words' => 30 ), $exclude ); ?>
+            </div>
+        </section>
+
+        <!-- 15. PRH MAGAZINE AD'S DIRECTORY -->
+        <section class="rh-section rh-directory" aria-labelledby="sec-directory">
+            <?php
+            rowhome_section_header( "MAGAZINE AD'S DIRECTORY", array( 'link' => home_url( '/advertise/' ) ) );
+            $advertisers = rowhome_advertiser_tiles( 8 );
+            ?>
+            <div class="rh-directory__strip">
+                <?php foreach ( $advertisers as $ad ) : ?>
+                    <a class="rh-directory__tile" href="<?php echo esc_url( $ad['url'] ); ?>" <?php echo $ad['external'] ? 'target="_blank" rel="noopener sponsored"' : ''; ?> aria-label="<?php echo esc_attr( $ad['name'] ); ?>">
+                        <?php if ( $ad['img'] ) : ?>
+                            <img src="<?php echo esc_url( $ad['img'] ); ?>" alt="<?php echo esc_attr( $ad['name'] ); ?>" loading="lazy">
+                        <?php else : ?>
+                            <?php echo rowhome_placeholder_html( $ad['name'], '3/4' ); ?>
+                        <?php endif; ?>
                     </a>
                 <?php endforeach; ?>
-            </div><!-- .rh-hot-list__stacked -->
+            </div>
+        </section>
 
-            <!-- Col 3: Sidebar — 300×300 ad + 3 TickerItems (Most Read) -->
-            <div class="rh-hot-list__sidebar rh-sidebar">
-
-                <!-- 300×300 ad -->
-                <div class="rh-sidebar-block">
-                    <div class="rh-ad rh-ad--rect" aria-label="Advertisement · 300 × 300">
-                        Advertisement &middot; 300 &times; 300
-                    </div>
-                </div>
-
-                <!-- Most Read ticker -->
-                <div class="rh-sidebar-block">
-                    <div class="rh-sidebar-block__label">Most Read</div>
-                    <?php
-                    if ($ticker_q->have_posts()) :
-                        $tick_num = 0;
-                        while ($ticker_q->have_posts()) : $ticker_q->the_post();
-                            $tick_num++;
-                            $tick_terms = get_the_terms(get_the_ID(), 'department_category');
-                            $tick_tag   = ($tick_terms && !is_wp_error($tick_terms)) ? $tick_terms[0]->name : '';
-                    ?>
-                        <a href="<?php the_permalink(); ?>" class="rh-ticker-item-link">
-                            <div class="rh-ticker-item">
-                                <span class="rh-ticker-item__index"><?php echo str_pad($tick_num, 2, '0', STR_PAD_LEFT); ?></span>
-                                <div>
-                                    <?php if ($tick_tag) : ?>
-                                        <span class="rh-eyebrow"><?php echo esc_html($tick_tag); ?></span>
-                                    <?php endif; ?>
-                                    <p class="rh-ticker-item__headline"><?php the_title(); ?></p>
-                                    <span class="rh-ticker-item__byline">By <?php the_author(); ?></span>
-                                </div>
-                            </div>
-                        </a>
-                    <?php
-                        endwhile;
-                        wp_reset_postdata();
-                    else :
-                        $ticker_fallbacks = array(
-                            array('kicker' => 'Life',    'title' => 'Skinny Cheesesteaks: A Family Tradition', 'author' => 'Dorette Rota Jackson'),
-                            array('kicker' => 'Sports',  'title' => 'Eagles Playoff Preview 2026',              'author' => 'James Mitchell'),
-                            array('kicker' => 'Menu',    'title' => 'Where to Brunch in South Philly',          'author' => 'Robert Chen'),
-                        );
-                        foreach ($ticker_fallbacks as $ti => $t) :
-                    ?>
-                        <div class="rh-ticker-item">
-                            <span class="rh-ticker-item__index"><?php echo str_pad($ti + 1, 2, '0', STR_PAD_LEFT); ?></span>
-                            <div>
-                                <span class="rh-eyebrow"><?php echo esc_html($t['kicker']); ?></span>
-                                <p class="rh-ticker-item__headline"><?php echo esc_html($t['title']); ?></p>
-                                <span class="rh-ticker-item__byline">By <?php echo esc_html($t['author']); ?></span>
-                            </div>
-                        </div>
-                    <?php
-                        endforeach;
-                    endif;
-                    ?>
-                </div><!-- .rh-sidebar-block (ticker) -->
-            </div><!-- .rh-hot-list__sidebar -->
-
-        </div><!-- .rh-hot-list__grid -->
     </div><!-- .rh-container -->
-</section><!-- .rh-hot-list -->
 
-<!-- ================================================================
-     5. DEPARTMENT SPOTLIGHTS
-     3 tinted panels: Food (Menu dept) / Real Estate / Arts (Music & Art)
-     Each: image + h3 + dek + "Read All →"
-     Tints are data-driven via CSS custom properties.
-     Spec: §2.1 section 5
-     ================================================================ -->
-<section class="rh-dept-spotlights-section rh-section" aria-labelledby="rh-spotlights-heading">
-    <div class="rh-container">
-        <h2 id="rh-spotlights-heading" class="rh-section-header__title" style="text-align:center;margin-bottom:32px;">
-            Department Spotlights
-        </h2>
-        <div class="rh-dept-spotlights">
+</main>
 
-            <?php
-            $spotlights = array(
-                array(
-                    'query'   => $spotlight_food_q,
-                    'class'   => 'rh-dept-spotlight--food',
-                    'dept'    => 'Menu',
-                    'slug'    => 'dept-menu',
-                    'fallback_title' => "Philadelphia's Hottest Restaurants",
-                    'fallback_dek'   => "From South Street to Fishtown, discover the dining experiences shaping the city's food scene this season.",
-                    'fallback_img'   => 'https://placehold.co/800x600/f8e7e0/0c0c0c?text=Menu',
-                ),
-                array(
-                    'query'   => $spotlight_re_q,
-                    'class'   => 'rh-dept-spotlight--real-estate',
-                    'dept'    => 'Real Estate',
-                    'slug'    => 'dept-real-estate',
-                    'fallback_title' => 'The Row Home Market Is Booming',
-                    'fallback_dek'   => "Philadelphia's historic housing stock is seeing renewed interest. Here's what buyers and sellers need to know right now.",
-                    'fallback_img'   => 'https://placehold.co/800x600/e6e9e3/0c0c0c?text=Real+Estate',
-                ),
-                array(
-                    'query'   => $spotlight_arts_q,
-                    'class'   => 'rh-dept-spotlight--arts',
-                    'dept'    => 'Music & Art',
-                    'slug'    => 'dept-music-art',
-                    'fallback_title' => 'Local Artists Transforming the City',
-                    'fallback_dek'   => 'Murals, music venues, and gallery openings — the arts are alive across every Philadelphia neighborhood.',
-                    'fallback_img'   => 'https://placehold.co/800x600/eee4d8/0c0c0c?text=Music+%26+Art',
-                ),
-            );
-
-            foreach ($spotlights as $sp) :
-                $sp_title  = $sp['fallback_title'];
-                $sp_dek    = $sp['fallback_dek'];
-                $sp_url    = home_url('/');
-                $sp_img    = $sp['fallback_img'];
-
-                if ($sp['query']->have_posts()) {
-                    $sp['query']->the_post();
-                    $sp_title = get_the_title();
-                    $sp_dek   = wp_trim_words(get_the_excerpt(), 20);
-                    $sp_url   = get_permalink();
-                    $sp_img   = get_the_post_thumbnail_url(null, 'rowhome-article-card') ?: $sp['fallback_img'];
-                    wp_reset_postdata();
-                }
-            ?>
-                <div class="rh-dept-spotlight <?php echo esc_attr($sp['class']); ?>">
-                    <img src="<?php echo esc_url($sp_img); ?>"
-                         alt="<?php echo esc_attr($sp_title); ?>"
-                         class="rh-dept-spotlight__image rh-photo"
-                         loading="lazy">
-                    <h3 class="rh-dept-spotlight__title"><?php echo esc_html($sp_title); ?></h3>
-                    <p class="rh-dept-spotlight__dek"><?php echo esc_html($sp_dek); ?></p>
-                    <a href="<?php echo esc_url(home_url('/department_category/' . $sp['slug'])); ?>"
-                       class="rh-dept-spotlight__cta">
-                        Read All &rarr;
-                    </a>
-                </div>
-            <?php endforeach; ?>
-
-        </div><!-- .rh-dept-spotlights -->
-    </div><!-- .rh-container -->
-</section><!-- .rh-dept-spotlights-section -->
-
-<!-- ================================================================
-     6. ALL DEPARTMENTS
-     Centered h2 + 21-item 3-col index grid (number / name / arrow)
-     Spec: §2.1 section 6
-     ================================================================ -->
-<section class="rh-all-depts rh-section" aria-labelledby="rh-all-depts-heading">
-    <div class="rh-container">
-        <h2 id="rh-all-depts-heading" class="rh-all-depts__heading">All Departments</h2>
-
-        <div class="rh-all-depts__grid">
-            <?php foreach ($all_departments as $idx => $dept) :
-                $dept_num  = str_pad($idx + 1, 2, '0', STR_PAD_LEFT);
-                $dept_slug = $dept['slug'];
-                $dept_url  = home_url('/department_category/' . $dept_slug);
-            ?>
-                <a href="<?php echo esc_url($dept_url); ?>" class="rh-dept-index-item">
-                    <span class="rh-dept-index-item__num"><?php echo esc_html($dept_num); ?></span>
-                    <span class="rh-dept-index-item__name"><?php echo esc_html($dept['name']); ?></span>
-                    <span class="rh-dept-index-item__arrow" aria-hidden="true">&rarr;</span>
-                </a>
-            <?php endforeach; ?>
-        </div><!-- .rh-all-depts__grid -->
-    </div><!-- .rh-container -->
-</section><!-- .rh-all-depts -->
-
-<?php get_footer('homepage'); ?>
+<?php get_footer(); ?>

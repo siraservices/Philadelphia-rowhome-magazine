@@ -193,7 +193,7 @@ get_header();
 }
 
 .welcome-eyebrow {
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 12px;
 	font-weight: 600;
 	letter-spacing: 0.15em;
@@ -203,7 +203,7 @@ get_header();
 }
 
 .welcome-title {
-	font-family: 'Instrument Serif', serif;
+	font-family: var(--rh-display);
 	font-size: clamp(2rem, 5vw, 3.5rem);
 	font-weight: 400;
 	margin: 0 0 16px;
@@ -211,7 +211,7 @@ get_header();
 }
 
 .welcome-subtitle {
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 1.1rem;
 	color: rgba(255,255,255,0.75);
 	margin: 0;
@@ -228,7 +228,7 @@ get_header();
 	color: #c00;
 	padding: 12px 16px;
 	border-radius: 4px;
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 0.9rem;
 	margin-bottom: 24px;
 }
@@ -243,7 +243,7 @@ get_header();
 }
 
 .welcome-section-title {
-	font-family: 'Instrument Serif', serif;
+	font-family: var(--rh-display);
 	font-size: 1.6rem;
 	font-weight: 400;
 	color: #000;
@@ -251,7 +251,7 @@ get_header();
 }
 
 .welcome-section-desc {
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 0.9rem;
 	color: #666;
 	margin: 0 0 28px;
@@ -316,7 +316,7 @@ get_header();
 }
 
 .welcome-dept-label {
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 0.95rem;
 	font-weight: 600;
 	color: #333;
@@ -324,7 +324,7 @@ get_header();
 }
 
 .welcome-dept-desc {
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 0.78rem;
 	color: #888;
 	line-height: 1.4;
@@ -364,7 +364,7 @@ get_header();
 }
 
 .welcome-subscribe-title {
-	font-family: 'Instrument Serif', serif;
+	font-family: var(--rh-display);
 	font-size: 1.5rem;
 	font-weight: 400;
 	color: #fff;
@@ -372,7 +372,7 @@ get_header();
 }
 
 .welcome-subscribe-desc {
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 0.9rem;
 	color: rgba(255,255,255,0.75);
 	margin: 0;
@@ -383,7 +383,7 @@ get_header();
 	display: inline-block;
 	background: #5f8a8b;
 	color: #fff;
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 0.85rem;
 	font-weight: 600;
 	letter-spacing: 0.05em;
@@ -410,7 +410,7 @@ get_header();
 .welcome-btn-primary {
 	background: #000;
 	color: #fff;
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 0.9rem;
 	font-weight: 600;
 	letter-spacing: 0.08em;
@@ -431,7 +431,7 @@ get_header();
 	border: none;
 	padding: 0;
 	cursor: pointer;
-	font-family: 'Montserrat', sans-serif;
+	font-family: var(--rh-ui);
 	font-size: 0.85rem;
 	color: #888;
 	text-decoration: underline;

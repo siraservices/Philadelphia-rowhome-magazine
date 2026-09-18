@@ -1,17 +1,11 @@
 <?php
 /**
- * Pictorial footer — Direction B
+ * Pictorial footer — closes <main>, then the shared site footer.
  * Loaded by single-pictorial.php via get_footer('pictorial').
  *
  * @package RowHome_Magazine
- * @since 2.0.0
- * @see SIR-778
+ * @since 2.1.0
  */
 ?>
 </main><!-- #main .rh-pictorial-main -->
-
-<?php get_template_part('template-parts/footer-direction-b'); ?>
-
-<?php wp_footer(); ?>
-</body>
-</html>
+<?php get_footer();

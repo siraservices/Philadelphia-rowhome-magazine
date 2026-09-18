@@ -80,7 +80,7 @@ $share_title    = rawurlencode(get_the_title());
             <div class="rh-article-meta-strip__col">
                 <span class="rh-article-meta-strip__label"><?php esc_html_e('By', 'rowhome-magazine'); ?></span>
                 <a href="<?php echo esc_url(get_author_posts_url($author_id)); ?>" class="rh-article-meta-strip__author rh-byline">
-                    <?php the_author(); ?>
+                    <?php echo rowhome_byline_text(get_the_ID(), ''); ?>
                 </a>
             </div>
 
@@ -264,7 +264,7 @@ $share_title    = rawurlencode(get_the_title());
                             <span class="rh-ticker-item__index"><?php echo sprintf('%02d', $ticker_index); ?></span>
                             <div>
                                 <div class="rh-ticker-item__headline"><?php the_title(); ?></div>
-                                <div class="rh-ticker-item__byline"><?php the_author(); ?></div>
+                                <div class="rh-ticker-item__byline"><?php echo rowhome_byline_text(get_the_ID(), ""); ?></div>
                             </div>
                         </a>
                     <?php

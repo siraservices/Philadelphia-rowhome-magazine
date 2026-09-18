@@ -143,7 +143,7 @@ wp_reset_postdata();
                             <h2 class="section-featured__title"><?php the_title(); ?></h2>
                             <p class="section-featured__excerpt"><?php echo wp_trim_words(get_the_excerpt(), 30); ?></p>
                             <div class="section-featured__meta">
-                                By <span class="section-featured__author"><?php echo esc_html(get_the_author()); ?></span> &middot; <?php echo esc_html(get_the_date()); ?>
+                                By <span class="section-featured__author"><?php echo rowhome_byline_text(get_the_ID(), ""); ?></span> &middot; <?php echo esc_html(get_the_date()); ?>
                             </div>
                         </div>
                     </a>

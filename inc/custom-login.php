@@ -20,7 +20,7 @@ function rowhome_magazine_login_enqueue_scripts() {
     // Enqueue Google Fonts used by the theme
     wp_enqueue_style(
         'rowhome-login-fonts',
-        'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:wght@400;500;600;700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Hind+Guntur:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,300..800;1,300..800&display=swap',
         array(),
         null
     );

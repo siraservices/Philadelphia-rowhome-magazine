@@ -3,13 +3,13 @@
  *
  * Branded login experience matching site identity:
  * Colors: Black #000, Red #FF0000, Background #000000
- * Fonts: Instrument Serif (display), Montserrat (UI)
+ * Fonts: theme tokens (--rh-display / --rh-ui)
  */
 
 /* ── Base Layout ── */
 body.login {
     background-color: #000000;
-    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--rh-ui);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -40,7 +40,7 @@ body.login {
 }
 
 .rowhome-login-tagline {
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: var(--rh-display);
     font-size: 15px;
     font-style: italic;
     color: #ccc;
@@ -74,7 +74,7 @@ body.login {
 #loginform label,
 #registerform label,
 #lostpasswordform label {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-size: 13px;
     font-weight: 600;
     color: #333;
@@ -90,7 +90,7 @@ body.login {
 #registerform input[type="text"],
 #registerform input[type="email"],
 #lostpasswordform input[type="text"] {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-size: 14px;
     border: 1px solid #d0d0d0;
     border-radius: 6px;
@@ -124,7 +124,7 @@ body.login {
 /* ── Submit Button ── */
 #wp-submit,
 .login .button-primary {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.05em;
@@ -165,7 +165,7 @@ body.login {
 .login #login_error,
 .login .message,
 .login .success {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-size: 13px;
     border-radius: 6px;
     max-width: 380px;
@@ -196,7 +196,7 @@ body.login {
 
 #login #nav a,
 #login #backtoblog a {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-size: 12px;
     font-weight: 500;
     color: #aaa;
@@ -226,7 +226,7 @@ body.login {
     background: #ffffff;
     border: 1px solid #d0d0d0;
     border-radius: 6px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-size: 14px;
     font-weight: 500;
     color: #333;
@@ -263,7 +263,7 @@ body.login {
 }
 
 .rowhome-login-divider span {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-size: 11px;
     font-weight: 600;
     color: #999;
@@ -287,7 +287,7 @@ body.login .clear {
 }
 
 .rowhome-subscribe-cta {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-size: 13px;
     color: #aaa;
     margin: 0 0 8px;
@@ -306,7 +306,7 @@ body.login .clear {
 }
 
 .rowhome-login-copyright {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--rh-ui);
     font-size: 11px;
     color: #777;
     margin: 0;

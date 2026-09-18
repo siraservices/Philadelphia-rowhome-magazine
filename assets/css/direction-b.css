@@ -609,7 +609,7 @@
 
 .rh-prose {
     font-family: var(--rh-body);
-    font-size: var(--rh-body);
+    font-size: var(--rh-body-size);
     line-height: var(--rh-lh-body);
     color: var(--rh-ink-2);
     max-width: 680px;
@@ -621,13 +621,14 @@
 
 /* Drop cap on first paragraph */
 .rh-prose > p:first-of-type::first-letter {
-    font-family: var(--rh-display);
-    font-size: 5em;
+    font-family: var(--rh-dropcap);
+    font-weight: 400;
+    font-size: 4.6em;
     float: left;
-    line-height: .8;
-    padding-right: .08em;
-    padding-top: .06em;
-    color: var(--rh-accent);
+    line-height: .78;
+    margin: .08em .12em 0 0;
+    padding: 0;
+    color: var(--rh-dropcap);
 }
 
 .rh-prose h2 {
