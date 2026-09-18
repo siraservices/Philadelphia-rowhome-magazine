@@ -18,6 +18,7 @@ if (!defined('ROWHOME_THEME_VERSION')) {
 
 // Homepage + shared helpers (cards, ribbons, departments, ads).
 require_once get_template_directory() . '/inc/homepage-helpers.php';
+require_once get_template_directory() . '/inc/sections.php';
 
 /**
  * Theme Setup

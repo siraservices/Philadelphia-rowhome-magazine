@@ -358,19 +358,6 @@ function rowhome_section_header( $name, $o = array() ) {
     echo '</header>';
 }
 
-/**
- * Department landing URL for a slug (falls back to home).
- */
-function rowhome_dept_url( $slug ) {
-    $term = get_term_by( 'slug', $slug, 'department_category' );
-    if ( $term && ! is_wp_error( $term ) ) {
-        $link = get_term_link( $term );
-        if ( ! is_wp_error( $link ) ) {
-            return $link;
-        }
-    }
-    return home_url( '/department_category/' . $slug . '/' );
-}
 
 /**
  * Dotted rule with centered italic tagline.
@@ -426,41 +413,6 @@ function rowhome_inline_svg( $rel_path ) {
     return preg_replace( '/^<\?xml[^>]*>\s*/', '', $svg );
 }
 
-/**
- * The department list used by Discover / Topics and section reconciliation.
- * Live department_category terms first; the canonical 21 as fallback.
- *
- * @return array[] { name, slug, url }
- */
-function rowhome_departments() {
-    static $cache = null;
-    if ( $cache !== null ) {
-        return $cache;
-    }
-    $out   = array();
-    $terms = get_terms( array( 'taxonomy' => 'department_category', 'hide_empty' => false, 'orderby' => 'name' ) );
-    if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-        foreach ( $terms as $t ) {
-            $link = get_term_link( $t );
-            $out[] = array( 'name' => $t->name, 'slug' => $t->slug, 'url' => is_wp_error( $link ) ? home_url( '/' ) : $link );
-        }
-    }
-    if ( empty( $out ) ) {
-        $fallback = array(
-            'Life' => 'dept-life', 'Health' => 'dept-health', 'Fashion' => 'dept-fashion', 'Brides Guide' => 'dept-brides-guide',
-            'Community' => 'dept-community', 'Writers Block' => 'dept-writers-block', 'Business' => 'dept-business',
-            'Real Estate' => 'dept-real-estate', 'Tech' => 'dept-tech', 'Education' => 'dept-education', 'Politics' => 'dept-politics',
-            'Music & Art' => 'dept-music-art', 'Film' => 'dept-film', 'Flashback' => 'dept-flashback', 'History' => 'dept-history',
-            'Menu' => 'dept-menu', 'Travel' => 'dept-travel', '2025 Hotspots' => 'dept-2025-hotspots', 'Events' => 'dept-events',
-            'Sports' => 'dept-sports', 'Environment' => 'dept-environment', 'Games' => 'dept-games', 'People' => 'dept-people',
-        );
-        foreach ( $fallback as $name => $slug ) {
-            $out[] = array( 'name' => $name, 'slug' => $slug, 'url' => home_url( '/department_category/' . $slug . '/' ) );
-        }
-    }
-    $cache = $out;
-    return $out;
-}
 
 /**
  * People for the Discover panel: authors with published posts, padded with placeholders.
