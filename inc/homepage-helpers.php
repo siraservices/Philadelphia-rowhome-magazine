@@ -209,7 +209,10 @@ function rowhome_placeholder_html( $label = '', $ratio = '4/3' ) {
 function rowhome_post_image_html( $post = null, $size = 'rowhome-article-card', $label = '', $ratio = '4/3' ) {
     if ( $post && has_post_thumbnail( $post ) ) {
         $img = get_the_post_thumbnail( $post, $size, array( 'class' => 'rh-img', 'loading' => 'lazy' ) );
-        return '<div class="rh-img-wrap" style="--rh-ph-ratio:' . esc_attr( $ratio ) . '">' . $img . '</div>';
+        // A thumbnail ID whose attachment file is missing returns '' — fall through to the placeholder.
+        if ( $img ) {
+            return '<div class="rh-img-wrap" style="--rh-ph-ratio:' . esc_attr( $ratio ) . '">' . $img . '</div>';
+        }
     }
     return rowhome_placeholder_html( $label, $ratio );
 }

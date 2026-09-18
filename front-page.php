@@ -67,7 +67,7 @@ $exclude   = $cover_id ? array( $cover_id ) : array();
 
     <div class="rh-container">
 
-        <!-- 4 + 5. LIFE and 2025 HOTSPOTS share a skyscraper ad -->
+        <!-- 4 + 5. LIFE and HOT SPOTS share a skyscraper ad -->
         <div class="rh-with-sky">
             <div class="rh-with-sky__main">
 
@@ -93,10 +93,10 @@ $exclude   = $cover_id ? array( $cover_id ) : array();
                     </div>
                 </section>
 
-                <!-- 5. PRH 2025 HOTSPOTS -->
+                <!-- 5. PRH HOT SPOTS (current year) -->
                 <section class="rh-section rh-hotspots" aria-labelledby="sec-hotspots">
                     <?php
-                    rowhome_section_header( '2025 HOTSPOTS', array(
+                    rowhome_section_header( 'HOT SPOTS ' . date( 'Y' ), array(
                         'link'  => rowhome_dept_url( 'dept-2025-hotspots' ),
                         'extra' => '<span class="rh-script rh-script--red">Hot Spots</span>',
                     ) );
