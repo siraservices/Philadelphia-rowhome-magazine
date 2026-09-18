@@ -467,3 +467,21 @@ body.rh-discover-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
     .rh-btn-outline, .rh-discover-btn__icon span { transition: none; }
 }
+
+/* ---------- About page: department grid ------------------------------- */
+.about-depts { background: transparent; gap: 0; border-top: 1px solid #e0e0e0; border-left: 1px solid #e0e0e0; }
+.about-depts .about-mission__block { border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; padding: 28px 22px; }
+.about-depts .about-mission__block h3 { font-family: var(--rh-display); font-size: 20px; margin-bottom: 6px; }
+.about-depts .about-mission__block h3 a:hover { color: var(--rh-accent); }
+.about-depts .about-mission__block p { font-family: var(--rh-body); font-size: 16px; margin: 0; color: #444; }
+.about-team__grid .team-card__avatar .rh-avatar { width: 96px; height: 96px; margin: 0 auto; }
+
+/* ---------- Legal pages: rhythm --------------------------------------- */
+.legal-section h2 { margin: 0 0 14px; }
+.legal-section h3 { margin: 22px 0 8px; font-size: 22px; }
+.legal-section p { margin: 0 0 14px; }
+.legal-section ul { margin: 0 0 18px; padding-left: 22px; }
+.legal-section li { margin-bottom: 6px; }
+.legal-page-intro { margin-bottom: 14px; }
+.legal-nav-box ul, .legal-related-links ul { margin: 0 0 24px; padding-left: 20px; }
+.legal-nav-box h3, .legal-related-links h3 { margin-bottom: 8px; }

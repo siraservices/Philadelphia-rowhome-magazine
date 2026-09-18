@@ -20,8 +20,8 @@ get_header();
             <div class="container">
                 <p class="advertise-hero__eyebrow">Reach Philadelphia</p>
                 <h1 class="advertise-hero__title">Advertise With RowHome</h1>
-                <p class="advertise-hero__subtitle">Put your brand in front of 40,000+ engaged Philadelphia readers — in print and online.</p>
-                <a href="mailto:advertising@rowhomemag.com" class="subscribe-btn-primary">Request a Media Kit &rarr;</a>
+                <p class="advertise-hero__subtitle">Put your brand in front of 20,000+ engaged Philadelphia readers — in print and online.</p>
+                <a href="mailto:rowhomejordan@gmail.com" class="subscribe-btn-primary">Request a Media Kit &rarr;</a>
             </div>
         </div>
 
@@ -34,7 +34,7 @@ get_header();
                 </div>
                 <div class="advertise-stats-grid">
                     <div class="advertise-stat-card">
-                        <div class="advertise-stat-number">40,000+</div>
+                        <div class="advertise-stat-number">20,000+</div>
                         <div class="advertise-stat-label">Monthly Readers</div>
                         <div class="advertise-stat-desc">Across print and digital channels</div>
                     </div>
@@ -218,11 +218,7 @@ get_header();
                     <div class="advertise-contact-options">
                         <div class="advertise-contact-option">
                             <strong>Email</strong>
-                            <a href="mailto:advertising@rowhomemag.com">advertising@rowhomemag.com</a>
-                        </div>
-                        <div class="advertise-contact-option">
-                            <strong>Phone</strong>
-                            <a href="tel:+12155550150">(215) 555-0150</a>
+                            <a href="mailto:rowhomejordan@gmail.com">rowhomejordan@gmail.com</a>
                         </div>
                         <div class="advertise-contact-option">
                             <strong>Contact Form</strong>

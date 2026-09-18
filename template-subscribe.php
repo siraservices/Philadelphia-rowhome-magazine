@@ -21,7 +21,7 @@ get_header();
                 <div class="container">
                     <p class="subscribe-hero__eyebrow">Philadelphia RowHome Magazine</p>
                     <h1 class="subscribe-hero__title">Read It. Live It. Love Philly.</h1>
-                    <p class="subscribe-hero__subtitle">Join over 40,000 readers who rely on RowHome Magazine for the best of Philadelphia living — neighborhoods, culture, food, real estate, and more.</p>
+                    <p class="subscribe-hero__subtitle">Join more than 20,000 readers who rely on RowHome Magazine for the best of Philadelphia living — neighborhoods, culture, food, real estate, and more.</p>
                 </div>
             </div>
         </div>
@@ -118,7 +118,7 @@ get_header();
                 <!-- Audience Stats -->
                 <div class="advertise-stats">
                     <div class="advertise-stat">
-                        <span class="advertise-stat__number">40K+</span>
+                        <span class="advertise-stat__number">20K+</span>
                         <span class="advertise-stat__label">Monthly Readers</span>
                     </div>
                     <div class="advertise-stat">
@@ -149,7 +149,7 @@ get_header();
                             <li>Sponsored Article Placements</li>
                             <li>Newsletter Sponsorships</li>
                         </ul>
-                        <a href="mailto:advertising@rowhomemag.com?subject=Digital%20Advertising%20Inquiry" class="subscribe-btn-secondary advertise-tier__cta">Inquire</a>
+                        <a href="mailto:rowhomejordan@gmail.com?subject=Digital%20Advertising%20Inquiry" class="subscribe-btn-secondary advertise-tier__cta">Inquire</a>
                     </div>
 
                     <div class="advertise-tier advertise-tier--featured">
@@ -162,7 +162,7 @@ get_header();
                             <li>Quarter Page (4.25″ × 5.5″)</li>
                             <li>Back Cover (Premium)</li>
                         </ul>
-                        <a href="mailto:advertising@rowhomemag.com?subject=Print%20Advertising%20Inquiry" class="subscribe-btn-primary advertise-tier__cta">Inquire</a>
+                        <a href="mailto:rowhomejordan@gmail.com?subject=Print%20Advertising%20Inquiry" class="subscribe-btn-primary advertise-tier__cta">Inquire</a>
                     </div>
 
                     <div class="advertise-tier">
@@ -175,7 +175,7 @@ get_header();
                             <li>Branded Editorial Series</li>
                             <li>Podcast Mentions</li>
                         </ul>
-                        <a href="mailto:advertising@rowhomemag.com?subject=Integrated%20Campaign%20Inquiry" class="subscribe-btn-secondary advertise-tier__cta">Inquire</a>
+                        <a href="mailto:rowhomejordan@gmail.com?subject=Integrated%20Campaign%20Inquiry" class="subscribe-btn-secondary advertise-tier__cta">Inquire</a>
                     </div>
 
                 </div>
@@ -198,11 +198,11 @@ get_header();
                         </div>
                         <div class="advertise-guideline">
                             <h4>Contact</h4>
-                            <p>Email <a href="mailto:advertising@rowhomemag.com">advertising@rowhomemag.com</a> for a current media kit, rate card, and availability.</p>
+                            <p>Email <a href="mailto:rowhomejordan@gmail.com">rowhomejordan@gmail.com</a> for a current media kit, rate card, and availability.</p>
                         </div>
                     </div>
                     <div class="advertise-guidelines__cta">
-                        <a href="mailto:advertising@rowhomemag.com?subject=Media%20Kit%20Request" class="subscribe-btn-primary">Request Media Kit</a>
+                        <a href="mailto:rowhomejordan@gmail.com?subject=Media%20Kit%20Request" class="subscribe-btn-primary">Request Media Kit</a>
                         <a href="<?php echo esc_url(home_url('/contact')); ?>" class="subscribe-btn-secondary">Contact Us</a>
                     </div>
                 </div>

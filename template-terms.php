@@ -2,14 +2,16 @@
 /**
  * Template Name: Terms of Use
  *
- * Terms of Use page for Philadelphia RowHome Magazine.
- * Covers intellectual property, acceptable use, disclaimers, and liability.
+ * Terms of Use for rowhomemag.com.
+ * Copy source: claude/rowhomemag-adsense-pages.md (project doc).
  *
  * @package RowHome_Magazine
- * @since 1.0.0
+ * @since 2.1.0
  */
 
 get_header();
+$rh_effective_date = 'September 19, 2026';
+$rh_general_email  = 'rowhomejordan@gmail.com';
 ?>
 
 <div id="primary" class="content-area">
@@ -19,7 +21,7 @@ get_header();
             <div class="container">
                 <p class="legal-page-eyebrow">Philadelphia RowHome Magazine</p>
                 <h1 class="legal-page-title">Terms of Use</h1>
-                <p class="legal-page-meta">Last updated: <?php echo date('F j, Y'); ?></p>
+                <p class="legal-page-meta">Effective date: <?php echo esc_html( $rh_effective_date ); ?></p>
             </div>
         </div>
 
@@ -27,117 +29,100 @@ get_header();
             <div class="legal-page-layout">
                 <div class="legal-page-content">
 
-                    <p class="legal-page-intro">Welcome to Philadelphia RowHome Magazine. By accessing or using this website (<strong>rowhomemag.com</strong>), you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use this site. We reserve the right to modify these terms at any time; your continued use of the site constitutes acceptance of any changes.</p>
+                    <p class="legal-page-intro">Welcome to rowhomemag.com (the &ldquo;Site&rdquo;), operated by Philadelphia RowHome, Inc. (&ldquo;RowHome,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;). By accessing or using the Site, you agree to these Terms of Use. If you do not agree, please do not use the Site.</p>
 
-                    <!-- 1. Use of the Site -->
-                    <section id="section-1" class="legal-section">
-                        <h2>1. Use of the Site</h2>
-                        <p>This website is provided for personal, non-commercial use. You agree to use this site only for lawful purposes and in a manner that does not infringe the rights of others or restrict or inhibit their use and enjoyment of the site.</p>
-                        <p>You agree not to:</p>
+                    <section class="legal-section" id="use-of-site">
+                        <h2>Use of the Site</h2>
+                        <p>You may use the Site for personal, non-commercial purposes. You agree not to:</p>
                         <ul>
-                            <li>Use the site in any way that violates applicable local, national, or international laws or regulations</li>
-                            <li>Transmit any unsolicited advertising, spam, or promotional materials</li>
-                            <li>Attempt to gain unauthorized access to any portion of the site or its related systems</li>
-                            <li>Use automated tools to scrape, crawl, or download content from this site without written permission</li>
-                            <li>Impersonate any person or entity, or falsely represent your affiliation with any person or entity</li>
-                            <li>Engage in any conduct that restricts or inhibits anyone's use or enjoyment of the site</li>
+                            <li>Use the Site in any way that violates the law</li>
+                            <li>Copy, scrape, or republish Site content except as allowed below</li>
+                            <li>Interfere with the Site&rsquo;s operation or security, or try to gain unauthorized access to any part of it</li>
+                            <li>Use automated tools to access the Site in a way that places an unreasonable load on it</li>
+                            <li>Click on advertisements in any way meant to artificially inflate clicks or impressions</li>
                         </ul>
                     </section>
 
-                    <!-- 2. Intellectual Property -->
-                    <section id="section-2" class="legal-section">
-                        <h2>2. Intellectual Property</h2>
-                        <p>All content published on rowhomemag.com — including but not limited to articles, photographs, graphics, illustrations, audio clips, video clips, and the overall compilation and arrangement of content — is the property of Philadelphia RowHome Magazine LLC or its content suppliers and is protected by United States and international copyright, trademark, and other intellectual property laws.</p>
+                    <section class="legal-section" id="our-content">
+                        <h2>Our Content</h2>
+                        <p>All content on the Site, including articles, photographs, illustrations, logos, and design, is owned by RowHome or its contributors and licensors, and is protected by copyright and other laws. &ldquo;Philadelphia RowHome Magazine,&rdquo; &ldquo;RowHome,&rdquo; and our logos are trademarks of Philadelphia RowHome, Inc.</p>
+                        <p>You may share links to our articles and quote brief excerpts with credit and a link back to the original article. Any other use, including reproducing full articles or photographs, requires our written permission.</p>
+                    </section>
 
-                        <h3>Permitted Use</h3>
-                        <p>You may access and view content on this site for your personal, non-commercial use. You may share links to articles on social media or via email, provided you clearly attribute the content to RowHome Magazine and do not alter it.</p>
-
-                        <h3>Prohibited Use</h3>
-                        <p>Without express written permission from Philadelphia RowHome Magazine, you may not:</p>
+                    <section class="legal-section" id="submissions">
+                        <h2>Comments and Submissions</h2>
+                        <p>If you post a comment or send us material (such as story tips, photos, letters, or writing), you:</p>
                         <ul>
-                            <li>Reproduce, republish, distribute, or publicly display any substantial portion of this site's content</li>
-                            <li>Create derivative works based on our content</li>
-                            <li>Use our content for commercial purposes</li>
-                            <li>Remove any copyright, trademark, or other proprietary notices from our content</li>
+                            <li>Confirm that you own it or have the right to share it</li>
+                            <li>Give RowHome a non-exclusive, royalty-free, worldwide license to publish, edit, adapt, and distribute it in print and online, with credit where practical</li>
+                            <li>Agree that it is not unlawful, defamatory, harassing, obscene, or infringing on anyone else&rsquo;s rights</li>
                         </ul>
-                        <p>For licensing inquiries, please contact <a href="mailto:editorial@rowhomemag.com">editorial@rowhomemag.com</a>.</p>
-
-                        <h3>RowHome Trademarks</h3>
-                        <p>"RowHome Magazine," "Philadelphia RowHome Magazine," the RowHome logo, and related marks are trademarks of Philadelphia RowHome Magazine LLC. You may not use these marks without prior written permission.</p>
+                        <p>We may edit, decline, or remove any comment or submission at our discretion. We are not obligated to publish or return submissions.</p>
                     </section>
 
-                    <!-- 3. User-Submitted Content -->
-                    <section id="section-3" class="legal-section">
-                        <h2>3. User-Submitted Content</h2>
-                        <p>If you submit content to us — including letters to the editor, story pitches, reader photographs, or comments — you grant Philadelphia RowHome Magazine a non-exclusive, royalty-free, worldwide, perpetual license to use, reproduce, modify, publish, and distribute that content in connection with our editorial operations.</p>
-                        <p>You represent and warrant that you own or have the necessary rights to submit the content, that the content does not infringe any third-party rights, and that the content does not violate any applicable law.</p>
-                        <p>We reserve the right to edit, refuse, or remove any user-submitted content at our sole discretion.</p>
+                    <section class="legal-section" id="advertising">
+                        <h2>Advertising and Sponsored Content</h2>
+                        <p>The Site displays advertising, including ads served by Google and other third parties. Sponsored content will be clearly labeled. An advertisement or sponsorship does not mean we endorse the advertiser or its products or services. Your dealings with advertisers are solely between you and them.</p>
                     </section>
 
-                    <!-- 4. Third-Party Links -->
-                    <section id="section-4" class="legal-section">
-                        <h2>4. Third-Party Links</h2>
-                        <p>This site may contain links to third-party websites. These links are provided solely for your convenience. Philadelphia RowHome Magazine does not endorse, control, or assume responsibility for the content, privacy practices, or availability of any third-party sites. Visiting any third-party site is at your own risk.</p>
+                    <section class="legal-section" id="informational">
+                        <h2>Informational Content Only</h2>
+                        <p>Content on the Site, including real estate, health, home improvement, contractor, financial, and business content, is for general information only. It is not professional advice. Consult a qualified professional before making decisions based on anything you read here. Business listings and features are not guarantees of any business&rsquo;s quality or licensing. Please do your own research before hiring anyone.</p>
                     </section>
 
-                    <!-- 5. Advertisements -->
-                    <section id="section-5" class="legal-section">
-                        <h2>5. Advertising</h2>
-                        <p>This site displays advertisements served by Google AdSense and potentially other advertising partners. The presence of an advertisement does not constitute an endorsement of the advertiser's products or services by Philadelphia RowHome Magazine. Our editorial content is produced independently of our advertising relationships.</p>
+                    <section class="legal-section" id="links">
+                        <h2>Links to Other Websites</h2>
+                        <p>The Site contains links to third-party websites. We do not control them and are not responsible for their content, products, or privacy practices.</p>
                     </section>
 
-                    <!-- 6. Disclaimer of Warranties -->
-                    <section id="section-6" class="legal-section">
-                        <h2>6. Disclaimer of Warranties</h2>
-                        <p>THIS SITE AND ALL CONTENT ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, PHILADELPHIA ROWHOME MAGAZINE DISCLAIMS ALL WARRANTIES, INCLUDING BUT NOT LIMITED TO:</p>
+                    <section class="legal-section" id="copyright">
+                        <h2>Copyright Complaints</h2>
+                        <p>If you believe content on the Site infringes your copyright, email <a href="mailto:<?php echo esc_attr( $rh_general_email ); ?>"><?php echo esc_html( $rh_general_email ); ?></a> with:</p>
                         <ul>
-                            <li>Implied warranties of merchantability, fitness for a particular purpose, and non-infringement</li>
-                            <li>Warranties that the site will be uninterrupted, error-free, or free of viruses or other harmful components</li>
-                            <li>Warranties regarding the accuracy, completeness, reliability, or timeliness of any content on the site</li>
+                            <li>A description of the copyrighted work</li>
+                            <li>The URL where the material appears</li>
+                            <li>Your contact information</li>
+                            <li>A statement that you believe in good faith the use is unauthorized</li>
+                            <li>A statement, under penalty of perjury, that your notice is accurate and that you are the owner or are authorized to act for the owner</li>
+                            <li>Your physical or electronic signature</li>
                         </ul>
-                        <p>Philadelphia RowHome Magazine makes no warranties regarding the results that may be obtained from use of this site.</p>
                     </section>
 
-                    <!-- 7. Limitation of Liability -->
-                    <section id="section-7" class="legal-section">
-                        <h2>7. Limitation of Liability</h2>
-                        <p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, PHILADELPHIA ROWHOME MAGAZINE LLC, ITS OFFICERS, DIRECTORS, EMPLOYEES, CONTRIBUTORS, AND AGENTS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES — INCLUDING LOSS OF PROFITS, DATA, GOODWILL, OR OTHER INTANGIBLE LOSSES — ARISING FROM:</p>
-                        <ul>
-                            <li>Your use of or inability to use this site or its content</li>
-                            <li>Any unauthorized access to or alteration of your transmissions or data</li>
-                            <li>Any third-party content or conduct on the site</li>
-                            <li>Any other matter relating to this site</li>
-                        </ul>
-                        <p>In no event shall our total liability to you for all claims related to the site exceed the amount you paid us (if any) in the twelve months preceding the claim.</p>
+                    <section class="legal-section" id="warranties">
+                        <h2>Disclaimer of Warranties</h2>
+                        <p>The Site and its content are provided &ldquo;as is&rdquo; and &ldquo;as available,&rdquo; without warranties of any kind, express or implied. We do not guarantee that the Site will be error-free, uninterrupted, or free of viruses, or that its content is always complete or current.</p>
                     </section>
 
-                    <!-- 8. Indemnification -->
-                    <section id="section-8" class="legal-section">
-                        <h2>8. Indemnification</h2>
-                        <p>You agree to indemnify, defend, and hold harmless Philadelphia RowHome Magazine LLC and its officers, directors, employees, agents, and contributors from and against any claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising from your use of this site, your violation of these Terms, or your violation of any third-party rights.</p>
+                    <section class="legal-section" id="liability">
+                        <h2>Limitation of Liability</h2>
+                        <p>To the fullest extent permitted by law, RowHome and its owners, staff, and contributors will not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Site or its content.</p>
                     </section>
 
-                    <!-- 9. Governing Law -->
-                    <section id="section-9" class="legal-section">
-                        <h2>9. Governing Law</h2>
-                        <p>These Terms of Use shall be governed by and construed in accordance with the laws of the Commonwealth of Pennsylvania, United States, without regard to its conflict of law provisions. Any dispute arising under these Terms shall be subject to the exclusive jurisdiction of the courts located in Philadelphia, Pennsylvania.</p>
+                    <section class="legal-section" id="indemnification">
+                        <h2>Indemnification</h2>
+                        <p>You agree to indemnify and hold harmless RowHome from any claims, losses, or expenses (including reasonable attorneys&rsquo; fees) arising from your comments or submissions, or from your violation of these Terms.</p>
                     </section>
 
-                    <!-- 10. Changes to Terms -->
-                    <section id="section-10" class="legal-section">
-                        <h2>10. Changes to These Terms</h2>
-                        <p>We reserve the right to revise these Terms of Use at any time. When we make changes, we will update the "Last updated" date at the top of this page. Your continued use of rowhomemag.com after any revision constitutes your acceptance of the updated terms. We encourage you to review these terms periodically.</p>
+                    <section class="legal-section" id="privacy">
+                        <h2>Privacy</h2>
+                        <p>Your use of the Site is also governed by our <a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>">Privacy Policy</a>.</p>
                     </section>
 
-                    <!-- 11. Contact -->
-                    <section id="section-11" class="legal-section">
-                        <h2>11. Contact Us</h2>
-                        <p>For questions about these Terms of Use, please contact:</p>
+                    <section class="legal-section" id="changes">
+                        <h2>Changes to These Terms</h2>
+                        <p>We may update these Terms from time to time. Changes take effect when posted, and the effective date above will be updated. By continuing to use the Site, you accept the updated Terms.</p>
+                    </section>
+
+                    <section class="legal-section" id="governing-law">
+                        <h2>Governing Law</h2>
+                        <p>These Terms are governed by the laws of the Commonwealth of Pennsylvania, without regard to its conflict-of-law rules. Any dispute will be resolved in the state or federal courts located in Philadelphia County, Pennsylvania.</p>
+                    </section>
+
+                    <section class="legal-section" id="contact">
+                        <h2>Contact</h2>
                         <address class="legal-contact-address">
-                            <strong>Philadelphia RowHome Magazine</strong><br>
-                            1234 South Street, Suite 200<br>
-                            Philadelphia, PA 19147<br>
-                            <a href="mailto:hello@rowhomemag.com">hello@rowhomemag.com</a>
+                            <strong>Philadelphia RowHome, Inc.</strong> &middot; Philadelphia, PA<br>
+                            Email: <a href="mailto:<?php echo esc_attr( $rh_general_email ); ?>"><?php echo esc_html( $rh_general_email ); ?></a>
                         </address>
                     </section>
 
@@ -147,25 +132,28 @@ get_header();
                     <div class="legal-nav-box">
                         <h3>In These Terms</h3>
                         <ul>
-                            <li><a href="#section-1">1. Use of the Site</a></li>
-                            <li><a href="#section-2">2. Intellectual Property</a></li>
-                            <li><a href="#section-3">3. User Content</a></li>
-                            <li><a href="#section-4">4. Third-Party Links</a></li>
-                            <li><a href="#section-5">5. Advertising</a></li>
-                            <li><a href="#section-6">6. Disclaimer of Warranties</a></li>
-                            <li><a href="#section-7">7. Limitation of Liability</a></li>
-                            <li><a href="#section-8">8. Indemnification</a></li>
-                            <li><a href="#section-9">9. Governing Law</a></li>
-                            <li><a href="#section-10">10. Changes to Terms</a></li>
-                            <li><a href="#section-11">11. Contact Us</a></li>
+                            <li><a href="#use-of-site">Use of the Site</a></li>
+                            <li><a href="#our-content">Our Content</a></li>
+                            <li><a href="#submissions">Comments and Submissions</a></li>
+                            <li><a href="#advertising">Advertising and Sponsored Content</a></li>
+                            <li><a href="#informational">Informational Content Only</a></li>
+                            <li><a href="#links">Links to Other Websites</a></li>
+                            <li><a href="#copyright">Copyright Complaints</a></li>
+                            <li><a href="#warranties">Disclaimer of Warranties</a></li>
+                            <li><a href="#liability">Limitation of Liability</a></li>
+                            <li><a href="#indemnification">Indemnification</a></li>
+                            <li><a href="#privacy">Privacy</a></li>
+                            <li><a href="#changes">Changes to These Terms</a></li>
+                            <li><a href="#governing-law">Governing Law</a></li>
+                            <li><a href="#contact">Contact</a></li>
                         </ul>
                     </div>
                     <div class="legal-related-links">
                         <h3>Related</h3>
                         <ul>
-                            <li><a href="<?php echo esc_url(home_url('/privacy')); ?>">Privacy Policy</a></li>
-                            <li><a href="<?php echo esc_url(home_url('/contact')); ?>">Contact Us</a></li>
-                            <li><a href="<?php echo esc_url(home_url('/about')); ?>">About Us</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/privacy-policy/' ) ); ?>">Privacy Policy</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact Us</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>">About Us</a></li>
                         </ul>
                     </div>
                 </aside>

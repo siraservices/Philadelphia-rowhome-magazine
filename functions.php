@@ -767,47 +767,43 @@ add_filter('body_class', 'rowhome_magazine_template_body_classes');
  * Pages: About, Contact, Privacy Policy, Terms of Use, Advertise With Us.
  */
 function rowhome_magazine_create_required_pages() {
-    if ( get_option( 'rowhome_pages_created' ) ) {
+    // Versioned so the slug rename (privacy -> privacy-policy, terms -> terms-of-use) runs once on existing sites.
+    if ( (int) get_option( 'rowhome_pages_version', 0 ) >= 2 ) {
         return;
     }
 
     $pages = array(
-        array(
-            'title'    => 'About',
-            'slug'     => 'about',
-            'template' => 'template-about.php',
-            'content'  => '',
-        ),
-        array(
-            'title'    => 'Contact',
-            'slug'     => 'contact',
-            'template' => 'template-contact.php',
-            'content'  => '',
-        ),
-        array(
-            'title'    => 'Privacy Policy',
-            'slug'     => 'privacy',
-            'template' => 'template-privacy.php',
-            'content'  => '',
-        ),
-        array(
-            'title'    => 'Terms of Use',
-            'slug'     => 'terms',
-            'template' => 'template-terms.php',
-            'content'  => '',
-        ),
-        array(
-            'title'    => 'Advertise With Us',
-            'slug'     => 'advertise',
-            'template' => 'template-advertise.php',
-            'content'  => '',
-        ),
+        array( 'title' => 'About',          'slug' => 'about',          'template' => 'template-about.php',     'legacy' => array() ),
+        array( 'title' => 'Contact',        'slug' => 'contact',        'template' => 'template-contact.php',   'legacy' => array() ),
+        array( 'title' => 'Privacy Policy', 'slug' => 'privacy-policy', 'template' => 'template-privacy.php',   'legacy' => array( 'privacy' ) ),
+        array( 'title' => 'Terms of Use',   'slug' => 'terms-of-use',   'template' => 'template-terms.php',     'legacy' => array( 'terms' ) ),
+        array( 'title' => 'Advertise With Us', 'slug' => 'advertise',   'template' => 'template-advertise.php', 'legacy' => array() ),
     );
 
     foreach ( $pages as $page ) {
-        // Skip if a page with this slug already exists.
         $existing = get_page_by_path( $page['slug'] );
+
+        // Rename a legacy-slug page instead of creating a duplicate.
+        if ( ! $existing ) {
+            foreach ( $page['legacy'] as $old_slug ) {
+                $legacy = get_page_by_path( $old_slug );
+                if ( $legacy ) {
+                    wp_update_post( array( 'ID' => $legacy->ID, 'post_name' => $page['slug'] ) );
+                    $existing = $legacy;
+                    break;
+                }
+            }
+        }
+
         if ( $existing ) {
+            // Make sure the theme template is assigned and the page is live
+            // (WordPress ships a draft "Privacy Policy" page with this slug).
+            if ( $page['template'] && get_post_meta( $existing->ID, '_wp_page_template', true ) !== $page['template'] ) {
+                update_post_meta( $existing->ID, '_wp_page_template', $page['template'] );
+            }
+            if ( $existing->post_status !== 'publish' ) {
+                wp_update_post( array( 'ID' => $existing->ID, 'post_status' => 'publish' ) );
+            }
             continue;
         }
 
@@ -816,7 +812,7 @@ function rowhome_magazine_create_required_pages() {
             'post_name'    => $page['slug'],
             'post_status'  => 'publish',
             'post_type'    => 'page',
-            'post_content' => $page['content'],
+            'post_content' => '',
         ) );
 
         if ( $page_id && ! is_wp_error( $page_id ) && $page['template'] ) {
@@ -824,9 +820,31 @@ function rowhome_magazine_create_required_pages() {
         }
     }
 
-    update_option( 'rowhome_pages_created', true );
+    // Settings -> Privacy: point WordPress at the Privacy Policy page if not set.
+    $privacy = get_page_by_path( 'privacy-policy' );
+    if ( $privacy && ! (int) get_option( 'wp_page_for_privacy_policy' ) ) {
+        update_option( 'wp_page_for_privacy_policy', $privacy->ID );
+    }
+
+    update_option( 'rowhome_pages_version', 2 );
 }
 add_action( 'admin_init', 'rowhome_magazine_create_required_pages' );
+
+/**
+ * Redirect legacy /privacy and /terms URLs to the renamed pages.
+ */
+function rowhome_magazine_legacy_page_redirects() {
+    if ( is_admin() ) {
+        return;
+    }
+    $path = trim( (string) parse_url( $_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH ), '/' );
+    $map  = array( 'privacy' => '/privacy-policy/', 'terms' => '/terms-of-use/' );
+    if ( isset( $map[ $path ] ) && ! get_page_by_path( $path ) ) {
+        wp_safe_redirect( home_url( $map[ $path ] ), 301 );
+        exit;
+    }
+}
+add_action( 'template_redirect', 'rowhome_magazine_legacy_page_redirects' );
 
 /**
  * Auto-create primary and footer navigation menus if they don't exist.
@@ -875,8 +893,8 @@ function rowhome_magazine_create_default_menus() {
             array( 'title' => 'About Us',        'url' => home_url( '/about' ) ),
             array( 'title' => 'Contact Us',       'url' => home_url( '/contact' ) ),
             array( 'title' => 'Advertise With Us','url' => home_url( '/advertise' ) ),
-            array( 'title' => 'Privacy Policy',   'url' => home_url( '/privacy' ) ),
-            array( 'title' => 'Terms of Use',     'url' => home_url( '/terms' ) ),
+            array( 'title' => 'Privacy Policy',   'url' => home_url( '/privacy-policy' ) ),
+            array( 'title' => 'Terms of Use',     'url' => home_url( '/terms-of-use' ) ),
         );
 
         foreach ( $footer_items as $item ) {

@@ -2,14 +2,17 @@
 /**
  * Template Name: Privacy Policy
  *
- * Privacy policy page for Philadelphia RowHome Magazine.
- * Covers data collection, cookies, third-party services, and user rights.
+ * Privacy Policy for rowhomemag.com.
+ * Copy source: claude/rowhomemag-adsense-pages.md (project doc).
+ * Google Analytics section omitted — GA is not enqueued in this theme.
  *
  * @package RowHome_Magazine
- * @since 1.0.0
+ * @since 2.1.0
  */
 
 get_header();
+$rh_effective_date = 'September 19, 2026';
+$rh_privacy_email  = 'rowhomejordan@gmail.com';
 ?>
 
 <div id="primary" class="content-area">
@@ -19,7 +22,7 @@ get_header();
             <div class="container">
                 <p class="legal-page-eyebrow">Philadelphia RowHome Magazine</p>
                 <h1 class="legal-page-title">Privacy Policy</h1>
-                <p class="legal-page-meta">Last updated: <?php echo date('F j, Y'); ?></p>
+                <p class="legal-page-meta">Effective date: <?php echo esc_html( $rh_effective_date ); ?></p>
             </div>
         </div>
 
@@ -27,141 +30,149 @@ get_header();
             <div class="legal-page-layout">
                 <div class="legal-page-content">
 
-                    <p class="legal-page-intro">Philadelphia RowHome Magazine ("RowHome," "we," "us," or "our") operates the website <strong>rowhomemagazine.com</strong>. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services. Please read this policy carefully. If you disagree with its terms, please discontinue use of the site.</p>
+                    <p class="legal-page-intro">Philadelphia RowHome, Inc. (&ldquo;RowHome,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) publishes <em>Philadelphia RowHome Magazine</em> and operates rowhomemag.com (the &ldquo;Site&rdquo;). This Privacy Policy explains what information we collect when you visit the Site, how we use it, and the choices you have.</p>
+                    <p>By using the Site, you agree to the practices described in this policy.</p>
 
-                    <!-- 1. Information We Collect -->
-                    <section class="legal-section">
-                        <h2>1. Information We Collect</h2>
-
-                        <h3>Information You Provide Directly</h3>
-                        <p>We collect information you voluntarily provide when you:</p>
+                    <section class="legal-section" id="information-we-collect">
+                        <h2>Information We Collect</h2>
+                        <h3>Information you give us</h3>
                         <ul>
-                            <li>Subscribe to our newsletter or print magazine</li>
-                            <li>Submit a contact form</li>
-                            <li>Create an account on our website</li>
-                            <li>Submit a story pitch or reader contribution</li>
-                            <li>Inquire about advertising</li>
+                            <li><strong>Contacting us.</strong> If you email us, we receive your name, email address, and whatever you include in your message.</li>
+                            <li><strong>Newsletter.</strong> If you sign up for our newsletter, we collect your email address and, if you provide it, your name.</li>
+                            <li><strong>Comments.</strong> If you leave a comment, we collect the name, email address, and website (optional) you enter, the comment itself, and your IP address and browser user-agent string to help detect spam.</li>
+                            <li><strong>Submissions.</strong> If you send us story tips, photos, letters to the editor, or other material, we collect that material and your contact details.</li>
                         </ul>
-                        <p>This information may include your name, email address, mailing address, phone number, and any message content you provide.</p>
-
-                        <h3>Information Collected Automatically</h3>
-                        <p>When you visit rowhomemagazine.com, we automatically collect certain information about your device and browsing behavior, including:</p>
+                        <h3>Information collected automatically</h3>
+                        <p>When you visit the Site, we and our service providers automatically collect certain information, including:</p>
                         <ul>
-                            <li>IP address and approximate geographic location</li>
-                            <li>Browser type and version</li>
-                            <li>Operating system</li>
-                            <li>Pages visited and time spent on each page</li>
-                            <li>Referring URLs</li>
-                            <li>Device identifiers and cookie data</li>
+                            <li>IP address and approximate location (city/region level)</li>
+                            <li>Browser type, device type, and operating system</li>
+                            <li>Pages viewed, time spent on pages, and links clicked</li>
+                            <li>Referring website and the date and time of your visit</li>
                         </ul>
+                        <p>We collect this information using server logs, cookies, web beacons, and similar technologies.</p>
                     </section>
 
-                    <!-- 2. Cookies -->
-                    <section class="legal-section">
-                        <h2>2. Cookies and Tracking Technologies</h2>
-                        <p>We use cookies and similar tracking technologies to enhance your experience on our site. Cookies are small data files stored on your device.</p>
-
-                        <h3>Types of Cookies We Use</h3>
+                    <section class="legal-section" id="cookies">
+                        <h2>Cookies and Similar Technologies</h2>
+                        <p>Cookies are small text files stored on your browser. We use them for the following purposes:</p>
                         <ul>
-                            <li><strong>Essential cookies</strong> – Required for the website to function correctly (e.g., login sessions, security tokens).</li>
-                            <li><strong>Analytics cookies</strong> – Help us understand how visitors use our site (Google Analytics).</li>
-                            <li><strong>Advertising cookies</strong> – Used by Google AdSense and other ad partners to serve relevant advertisements based on your browsing history.</li>
-                            <li><strong>Preference cookies</strong> – Remember your settings and preferences across visits.</li>
+                            <li><strong>Essential cookies</strong> keep the Site working. For example, WordPress uses them to remember your details when you leave a comment and to keep administrators logged in.</li>
+                            <li><strong>Performance and analytics cookies</strong> help us understand how visitors use the Site so we can improve it.</li>
+                            <li><strong>Advertising cookies</strong> are used by us and our advertising partners to show ads and measure how they perform, as described below.</li>
                         </ul>
-
-                        <p>You can control cookies through your browser settings. Note that disabling certain cookies may limit functionality on this site.</p>
+                        <p>You can set your browser to refuse or delete cookies. Some parts of the Site may not work properly if you do.</p>
                     </section>
 
-                    <!-- 3. Third-Party Services -->
-                    <section class="legal-section">
-                        <h2>3. Third-Party Services</h2>
-                        <p>We use third-party services that may collect information about you independently under their own privacy policies:</p>
-
-                        <h3>Google Analytics</h3>
-                        <p>We use Google Analytics to analyze site traffic and usage patterns. Google Analytics collects anonymized data about your visits. You can opt out by installing the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">Google Analytics Opt-out Browser Add-on</a>. View <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a>.</p>
-
-                        <h3>Google AdSense</h3>
-                        <p>We display advertisements served by Google AdSense. Google uses cookies to serve ads based on your prior visits to this and other websites. You can opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">Google's Ads Settings</a>. View <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a>.</p>
-
-                        <h3>Email Service Providers</h3>
-                        <p>If you subscribe to our newsletter, your email address is stored with our email service provider and used solely to send you RowHome Magazine communications. You may unsubscribe at any time using the link in any email we send.</p>
+                    <section class="legal-section" id="advertising">
+                        <h2>Advertising</h2>
+                        <p>We use <strong>Google AdSense</strong> to display advertising on the Site. Ad revenue helps us keep publishing the neighborhood stories you read here.</p>
+                        <ul>
+                            <li>Third-party vendors, including Google, use cookies to serve ads based on a user&rsquo;s prior visits to this website or other websites.</li>
+                            <li>Google&rsquo;s use of advertising cookies enables it and its partners to serve ads to our users based on their visit to this Site and/or other sites on the Internet.</li>
+                            <li>Third parties may place and read cookies on your browser, or use web beacons or IP addresses, to collect information as a result of ad serving on this Site.</li>
+                        </ul>
+                        <p>To learn more, see <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">How Google uses information from sites or apps that use its services</a> and <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">How Google uses cookies in advertising</a>.</p>
+                        <p><strong>Your advertising choices</strong></p>
+                        <ul>
+                            <li>You can opt out of personalized advertising from Google by visiting <a href="https://adssettings.google.com" target="_blank" rel="noopener">Google Ads Settings</a>.</li>
+                            <li>You can opt out of personalized advertising from many third-party vendors at <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener">www.aboutads.info/choices</a> or the <a href="https://optout.networkadvertising.org" target="_blank" rel="noopener">Network Advertising Initiative opt-out page</a>.</li>
+                            <li>Visitors in the European Economic Area, the UK, and Switzerland can also visit <a href="https://www.youronlinechoices.eu" target="_blank" rel="noopener">Your Online Choices</a>.</li>
+                        </ul>
+                        <p><strong>Third-party ad vendors on this Site:</strong></p>
+                        <ul>
+                            <li>Google AdSense &mdash; <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></li>
+                        </ul>
+                        <p>If we add other advertising networks, we will list them here with links to their websites and opt-out pages.</p>
+                        <p>Opting out does not stop you from seeing ads. It means the ads you see will be less tailored to your interests.</p>
+                        <p>Advertisements on the Site do not mean that RowHome endorses the advertiser or its products or services.</p>
                     </section>
 
-                    <!-- 4. How We Use Your Information -->
-                    <section class="legal-section">
-                        <h2>4. How We Use Your Information</h2>
+                    <section class="legal-section" id="how-we-use">
+                        <h2>How We Use Information</h2>
                         <p>We use the information we collect to:</p>
                         <ul>
-                            <li>Provide, operate, and improve our website and services</li>
-                            <li>Send you our newsletter and editorial updates (with your consent)</li>
-                            <li>Respond to your inquiries and customer service requests</li>
-                            <li>Process subscriptions and advertising arrangements</li>
-                            <li>Analyze site traffic and user behavior to improve content</li>
-                            <li>Detect and prevent fraud or abuse</li>
-                            <li>Comply with applicable laws and regulations</li>
+                            <li>Publish, operate, and improve the Site and the magazine</li>
+                            <li>Respond to your messages, submissions, and advertising inquiries</li>
+                            <li>Send newsletters and updates you&rsquo;ve asked for (you can unsubscribe at any time)</li>
+                            <li>Display advertising, including personalized advertising where permitted</li>
+                            <li>Understand readership and measure how content and ads perform</li>
+                            <li>Protect the Site from spam, fraud, and security threats</li>
+                            <li>Comply with legal obligations</li>
                         </ul>
-                        <p>We do not sell your personal information to third parties.</p>
                     </section>
 
-                    <!-- 5. Data Sharing -->
-                    <section class="legal-section">
-                        <h2>5. Data Sharing and Disclosure</h2>
-                        <p>We may share your information in the following circumstances:</p>
+                    <section class="legal-section" id="how-we-share">
+                        <h2>How We Share Information</h2>
+                        <p>We do not sell your personal information for money. We share information only as follows:</p>
                         <ul>
-                            <li><strong>Service providers</strong> – Third-party vendors who help us operate the website (hosting, email, analytics) under confidentiality agreements.</li>
-                            <li><strong>Legal requirements</strong> – When required by law, court order, or governmental authority.</li>
-                            <li><strong>Business transfers</strong> – In connection with a merger, acquisition, or sale of all or a portion of our assets.</li>
-                            <li><strong>With your consent</strong> – For any other purpose with your explicit consent.</li>
+                            <li><strong>Service providers</strong> that help us run the Site, such as our web host (Hostinger), our security provider (Wordfence, which processes IP addresses to block malicious traffic), and our email/newsletter provider. They may use your information only to provide services to us.</li>
+                            <li><strong>Advertising partners</strong>, such as Google, as described in the Advertising section above.</li>
+                            <li><strong>Comment avatars.</strong> An anonymized string created from your email address (a &ldquo;hash&rdquo;) may be sent to the Gravatar service to check whether you have a profile picture. Gravatar&rsquo;s privacy policy is at <a href="https://automattic.com/privacy/" target="_blank" rel="noopener">automattic.com/privacy</a>.</li>
+                            <li><strong>Legal reasons.</strong> We may share information if required by law, or to protect the rights, property, or safety of RowHome, our readers, or others.</li>
+                            <li><strong>Business transfers.</strong> If RowHome is involved in a merger, acquisition, or sale of assets, your information may be transferred as part of that transaction.</li>
                         </ul>
+                        <p>Under some U.S. state privacy laws, using advertising cookies for personalized ads may count as a &ldquo;sale&rdquo; or &ldquo;sharing&rdquo; of personal information. See &ldquo;Your Privacy Rights&rdquo; below for how to opt out.</p>
                     </section>
 
-                    <!-- 6. Data Retention -->
-                    <section class="legal-section">
-                        <h2>6. Data Retention</h2>
-                        <p>We retain your personal information for as long as necessary to fulfill the purposes outlined in this policy, comply with legal obligations, resolve disputes, and enforce our agreements. When information is no longer needed, we securely delete or anonymize it.</p>
-                    </section>
-
-                    <!-- 7. Your Rights -->
-                    <section class="legal-section">
-                        <h2>7. Your Rights</h2>
-                        <p>Depending on your location, you may have the following rights regarding your personal data:</p>
+                    <section class="legal-section" id="your-rights">
+                        <h2>Your Privacy Rights</h2>
+                        <p><strong>All visitors</strong> can:</p>
                         <ul>
-                            <li><strong>Access</strong> – Request a copy of the personal data we hold about you.</li>
-                            <li><strong>Correction</strong> – Request that we correct inaccurate or incomplete data.</li>
-                            <li><strong>Deletion</strong> – Request that we delete your personal data.</li>
-                            <li><strong>Opt-out</strong> – Opt out of newsletter communications at any time.</li>
-                            <li><strong>Data portability</strong> – Request your data in a machine-readable format.</li>
+                            <li>Control cookies through their browser settings</li>
+                            <li>Opt out of personalized ads using the links in the Advertising section</li>
+                            <li>Unsubscribe from our emails using the link in any newsletter</li>
+                            <li>Ask us to delete a comment they posted</li>
                         </ul>
-                        <p>To exercise any of these rights, please contact us at <a href="mailto:hello@rowhomemagazine.com">hello@rowhomemagazine.com</a>.</p>
+                        <p><strong>U.S. state residents.</strong> Depending on where you live (for example, California, Virginia, Colorado, Connecticut, and other states with consumer privacy laws), you may have the right to:</p>
+                        <ul>
+                            <li>Know what personal information we have collected about you, and get a copy of it</li>
+                            <li>Correct inaccurate personal information</li>
+                            <li>Delete your personal information</li>
+                            <li>Opt out of the &ldquo;sale&rdquo; or &ldquo;sharing&rdquo; of personal information, or its use for targeted advertising</li>
+                            <li>Not be discriminated against for exercising these rights</li>
+                        </ul>
+                        <p>To make a request, email us at <a href="mailto:<?php echo esc_attr( $rh_privacy_email ); ?>?subject=Privacy%20Request"><?php echo esc_html( $rh_privacy_email ); ?></a> with the subject line &ldquo;Privacy Request.&rdquo; We may need to verify your identity before responding. You may use an authorized agent to make a request on your behalf.</p>
+                        <p><strong>Visitors in the EEA, UK, and Switzerland.</strong> We process your personal data based on your consent (for example, for advertising cookies), our legitimate interests (for example, running and securing the Site), and our legal obligations. You have the right to access, correct, delete, restrict, or object to our processing of your data, and to data portability. You may withdraw consent at any time through the cookie/consent message shown on the Site. You may also lodge a complaint with your local data protection authority.</p>
                     </section>
 
-                    <!-- 8. Children's Privacy -->
-                    <section class="legal-section">
-                        <h2>8. Children's Privacy</h2>
-                        <p>Our website is not directed to children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have inadvertently collected such information, please contact us immediately and we will delete it.</p>
+                    <section class="legal-section" id="data-retention">
+                        <h2>Data Retention</h2>
+                        <p>We keep personal information only as long as we need it:</p>
+                        <ul>
+                            <li><strong>Comments</strong> and their related data are kept until the comment is removed.</li>
+                            <li><strong>Newsletter data</strong> is kept until you unsubscribe.</li>
+                            <li><strong>Messages</strong> are kept as long as needed to respond and for our reasonable business records.</li>
+                            <li><strong>Server and security logs</strong> are kept for a limited period and then deleted.</li>
+                        </ul>
                     </section>
 
-                    <!-- 9. Security -->
-                    <section class="legal-section">
-                        <h2>9. Security</h2>
-                        <p>We implement reasonable technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
+                    <section class="legal-section" id="children">
+                        <h2>Children&rsquo;s Privacy</h2>
+                        <p>The Site is intended for a general adult audience and is not directed to children under 13. We do not knowingly collect personal information from children under 13. If you believe a child has given us personal information, contact us and we will delete it.</p>
                     </section>
 
-                    <!-- 10. Changes -->
-                    <section class="legal-section">
-                        <h2>10. Changes to This Privacy Policy</h2>
-                        <p>We may update this Privacy Policy periodically. When we do, we will revise the "Last updated" date at the top of this page. We encourage you to review this policy regularly. Your continued use of the site after any changes constitutes acceptance of the updated policy.</p>
+                    <section class="legal-section" id="security">
+                        <h2>Security</h2>
+                        <p>We use reasonable safeguards, including a web application firewall, encrypted (HTTPS) connections, and access controls, to protect the information we collect. No website is completely secure, and we cannot guarantee the security of information sent to us online.</p>
                     </section>
 
-                    <!-- 11. Contact -->
-                    <section class="legal-section">
-                        <h2>11. Contact Us</h2>
-                        <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
+                    <section class="legal-section" id="links">
+                        <h2>Links to Other Websites</h2>
+                        <p>The Site contains links to other websites, including those of advertisers and businesses we feature. We are not responsible for their privacy practices. Please review their privacy policies.</p>
+                    </section>
+
+                    <section class="legal-section" id="changes">
+                        <h2>Changes to This Policy</h2>
+                        <p>We may update this Privacy Policy from time to time. When we do, we will change the effective date at the top of this page. Significant changes will be noted on the Site.</p>
+                    </section>
+
+                    <section class="legal-section" id="contact">
+                        <h2>Contact Us</h2>
+                        <p>Questions about this Privacy Policy or your information?</p>
                         <address class="legal-contact-address">
-                            <strong>Philadelphia RowHome Magazine</strong><br>
-                            1234 South Street, Suite 200<br>
-                            Philadelphia, PA 19147<br>
-                            <a href="mailto:hello@rowhomemagazine.com">hello@rowhomemagazine.com</a>
+                            <strong>Philadelphia RowHome, Inc.</strong> &middot; Philadelphia, PA<br>
+                            Email: <a href="mailto:<?php echo esc_attr( $rh_privacy_email ); ?>"><?php echo esc_html( $rh_privacy_email ); ?></a>
                         </address>
                     </section>
 
@@ -171,25 +182,26 @@ get_header();
                     <div class="legal-nav-box">
                         <h3>In This Policy</h3>
                         <ul>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(1)').scrollIntoView({behavior:'smooth'}); return false;">1. Information We Collect</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(2)').scrollIntoView({behavior:'smooth'}); return false;">2. Cookies</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(3)').scrollIntoView({behavior:'smooth'}); return false;">3. Third-Party Services</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(4)').scrollIntoView({behavior:'smooth'}); return false;">4. How We Use Your Info</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(5)').scrollIntoView({behavior:'smooth'}); return false;">5. Data Sharing</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(6)').scrollIntoView({behavior:'smooth'}); return false;">6. Data Retention</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(7)').scrollIntoView({behavior:'smooth'}); return false;">7. Your Rights</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(8)').scrollIntoView({behavior:'smooth'}); return false;">8. Children's Privacy</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(9)').scrollIntoView({behavior:'smooth'}); return false;">9. Security</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(10)').scrollIntoView({behavior:'smooth'}); return false;">10. Policy Changes</a></li>
-                            <li><a href="#" onclick="document.querySelector('.legal-section:nth-child(11)').scrollIntoView({behavior:'smooth'}); return false;">11. Contact Us</a></li>
+                            <li><a href="#information-we-collect">Information We Collect</a></li>
+                            <li><a href="#cookies">Cookies</a></li>
+                            <li><a href="#advertising">Advertising</a></li>
+                            <li><a href="#how-we-use">How We Use Information</a></li>
+                            <li><a href="#how-we-share">How We Share Information</a></li>
+                            <li><a href="#your-rights">Your Privacy Rights</a></li>
+                            <li><a href="#data-retention">Data Retention</a></li>
+                            <li><a href="#children">Children&rsquo;s Privacy</a></li>
+                            <li><a href="#security">Security</a></li>
+                            <li><a href="#links">Links to Other Websites</a></li>
+                            <li><a href="#changes">Changes to This Policy</a></li>
+                            <li><a href="#contact">Contact Us</a></li>
                         </ul>
                     </div>
                     <div class="legal-related-links">
                         <h3>Related</h3>
                         <ul>
-                            <li><a href="<?php echo esc_url(home_url('/terms')); ?>">Terms of Use</a></li>
-                            <li><a href="<?php echo esc_url(home_url('/contact')); ?>">Contact Us</a></li>
-                            <li><a href="<?php echo esc_url(home_url('/about')); ?>">About Us</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/terms-of-use/' ) ); ?>">Terms of Use</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact Us</a></li>
+                            <li><a href="<?php echo esc_url( home_url( '/about/' ) ); ?>">About Us</a></li>
                         </ul>
                     </div>
                 </aside>
